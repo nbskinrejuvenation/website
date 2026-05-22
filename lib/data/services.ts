@@ -1,4 +1,5 @@
 import { createPublicClient } from '@/lib/supabase/public'
+import { withResolvedHeroImage } from '@/lib/images/treatment-hero'
 import { unstable_cache } from 'next/cache'
 import type { Treatment, TreatmentCard } from '@/types/database'
 
@@ -14,7 +15,7 @@ export const getAllServices = unstable_cache(
       .order('sort_order', { ascending: true })
 
     if (error) throw new Error(`getAllServices: ${error.message}`)
-    return (data ?? []) as TreatmentCard[]
+    return ((data ?? []) as TreatmentCard[]).map(withResolvedHeroImage)
   },
   ['all-services'],
   { tags: ['services'], revalidate: 60 },
@@ -37,7 +38,7 @@ export const getServiceBySlug = unstable_cache(
       throw new Error(`getServiceBySlug(${slug}): ${error.message}`)
     }
 
-    return data as Treatment
+    return withResolvedHeroImage(data as Treatment)
   },
   ['service-by-slug'],
   { tags: ['services'], revalidate: 60 },
@@ -56,7 +57,7 @@ export async function getServiceBySlugPreview(slug: string): Promise<Treatment |
     if (error.code === 'PGRST116') return null
     throw new Error(`getServiceBySlugPreview(${slug}): ${error.message}`)
   }
-  return data as Treatment
+  return withResolvedHeroImage(data as Treatment)
 }
 
 /** Treatments grouped by category — used for nav dropdowns. */

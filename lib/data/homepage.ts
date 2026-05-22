@@ -1,4 +1,5 @@
 import { createPublicClient } from '@/lib/supabase/public'
+import { withResolvedHeroImage } from '@/lib/images/treatment-hero'
 import { unstable_cache } from 'next/cache'
 import type { TreatmentCard } from '@/types/database'
 
@@ -14,7 +15,7 @@ export const getHomepageFeaturedServices = unstable_cache(
       .order('sort_order', { ascending: true })
 
     if (error) throw new Error(`getHomepageFeaturedServices: ${error.message}`)
-    return (data ?? []) as TreatmentCard[]
+    return ((data ?? []) as TreatmentCard[]).map(withResolvedHeroImage)
   },
   ['homepage-featured-services'],
   { tags: ['services', 'homepage'], revalidate: 60 },
