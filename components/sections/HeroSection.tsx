@@ -1,10 +1,15 @@
+'use client'
+
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { heroStagger, kenBurns } from '@/lib/motion/config'
 
 interface Props {
   eyebrow?: string
-  heading: string
+  heading: ReactNode
   subheading?: string
   ctaLabel: string
   ctaHref: string
@@ -23,20 +28,28 @@ export function HeroSection({
   heroImageUrl,
   heroImageAlt,
 }: Props) {
+  const reduceMotion = useReducedMotion()
+
   return (
     <section className="relative min-h-[88vh] overflow-hidden">
-      {/* Background: Nanobanana image or rose placeholder */}
       <div className="absolute inset-0">
         {heroImageUrl ? (
           <>
-            <Image
-              src={heroImageUrl}
-              alt={heroImageAlt ?? ''}
-              fill
-              className="object-cover object-center"
-              priority
-              sizes="100vw"
-            />
+            <motion.div
+              className="absolute inset-0"
+              initial={reduceMotion ? false : { scale: 1 }}
+              animate={reduceMotion ? undefined : { scale: kenBurns.scale }}
+              transition={reduceMotion ? undefined : kenBurns.transition}
+            >
+              <Image
+                src={heroImageUrl}
+                alt={heroImageAlt ?? ''}
+                fill
+                className="object-cover object-center"
+                priority
+                sizes="100vw"
+              />
+            </motion.div>
             <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/80 to-cream/30" />
           </>
         ) : (
@@ -45,18 +58,36 @@ export function HeroSection({
       </div>
 
       <div className="section-container relative z-10 flex min-h-[88vh] items-center py-20">
-        <div className="max-w-xl animate-slide-up">
-          {eyebrow && <p className="eyebrow mb-5">{eyebrow}</p>}
-          <h1 className="font-display text-4xl font-light leading-[1.15] tracking-tight text-ink md:text-5xl lg:text-6xl">
+        <motion.div
+          className="max-w-xl"
+          variants={reduceMotion ? undefined : heroStagger.container}
+          initial={reduceMotion ? false : 'hidden'}
+          animate={reduceMotion ? undefined : 'visible'}
+        >
+          {eyebrow && (
+            <motion.p className="eyebrow mb-5" variants={reduceMotion ? undefined : heroStagger.item}>
+              {eyebrow}
+            </motion.p>
+          )}
+          <motion.h1
+            className="font-display text-4xl font-light leading-[1.15] tracking-tight text-ink md:text-5xl lg:text-6xl"
+            variants={reduceMotion ? undefined : heroStagger.item}
+          >
             {heading}
-          </h1>
+          </motion.h1>
           {subheading && (
-            <p className="mt-6 max-w-md text-base leading-relaxed text-ink-muted md:text-lg">
+            <motion.p
+              className="mt-6 max-w-md text-base leading-relaxed text-ink-muted md:text-lg"
+              variants={reduceMotion ? undefined : heroStagger.item}
+            >
               {subheading}
-            </p>
+            </motion.p>
           )}
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <motion.div
+            className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+            variants={reduceMotion ? undefined : heroStagger.item}
+          >
             {phone && (
               <a href={`tel:${phone.replace(/\s/g, '')}`} className="btn-phone">
                 <Phone className="h-4 w-4" aria-hidden="true" />
@@ -66,12 +97,15 @@ export function HeroSection({
             <Link href={ctaHref} className="btn-outline">
               {ctaLabel}
             </Link>
-          </div>
+          </motion.div>
 
-          <p className="mt-6 text-sm text-ink-faint">
+          <motion.p
+            className="mt-6 text-sm text-ink-faint"
+            variants={reduceMotion ? undefined : heroStagger.item}
+          >
             Free 30-minute consultation · By appointment · Dee Why
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </div>
     </section>
   )

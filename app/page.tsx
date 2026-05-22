@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getHomepageFeaturedServices } from '@/lib/data/homepage'
 import { getTestimonialsByPage } from '@/lib/data/testimonials'
+import { Reveal } from '@/components/motion/Reveal'
 import { HeroSection } from '@/components/sections/HeroSection'
 import { TrustPillars } from '@/components/sections/TrustPillars'
 import { IntroStrip } from '@/components/sections/IntroStrip'
@@ -34,7 +35,12 @@ export default async function HomePage() {
 
       <HeroSection
         eyebrow="Northern Beaches · Dee Why"
-        heading="Enhance your natural beauty"
+        heading={
+          <>
+            Enhance your{' '}
+            <span className="font-normal italic text-brand-600">natural beauty</span>
+          </>
+        }
         subheading="Personalised face and body treatments in a calm, boutique clinic — where expertise meets care."
         ctaLabel="Book free consultation"
         ctaHref="/contact"
@@ -43,31 +49,41 @@ export default async function HomePage() {
         heroImageAlt="Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, Dee Why"
       />
 
-      <TrustPillars />
+      <Reveal>
+        <TrustPillars />
+      </Reveal>
 
-      <IntroStrip
-        body="Our mission is to help you look and feel your best with advanced skin rejuvenation — delivered with warmth, precision, and respect for what makes you uniquely beautiful."
-      />
+      <Reveal delay={0.05}>
+        <IntroStrip
+          body="Our mission is to help you look and feel your best with advanced skin rejuvenation — delivered with warmth, precision, and respect for what makes you uniquely beautiful."
+        />
+      </Reveal>
 
-      <TreatmentsGrid
-        services={featuredServices}
-        heading="Our treatments"
-        subheading="Curated face and body services — each tailored to your skin goals."
-        showViewAll
-      />
+      <Reveal delay={0.05}>
+        <TreatmentsGrid
+          services={featuredServices}
+          heading="Our treatments"
+          subheading="Curated face and body services — each tailored to your skin goals."
+          showViewAll
+        />
+      </Reveal>
 
       {testimonials.length > 0 && (
-        <TestimonialsSection testimonials={testimonials} />
+        <Reveal delay={0.05}>
+          <TestimonialsSection testimonials={testimonials} />
+        </Reveal>
       )}
 
-      <CTABanner
-        heading="Book your free consultation"
-        body="Call us to arrange a complimentary 30-minute skin assessment at our Dee Why clinic. We'll recommend the most effective treatment for you."
-        ctaLabel="Contact us"
-        ctaHref="/contact"
-        phone={settings.phone ?? undefined}
-        phonePrimary
-      />
+      <Reveal delay={0.05}>
+        <CTABanner
+          heading="Book your free consultation"
+          body="Call us to arrange a complimentary 30-minute skin assessment at our Dee Why clinic. We'll recommend the most effective treatment for you."
+          ctaLabel="Contact us"
+          ctaHref="/contact"
+          phone={settings.phone ?? undefined}
+          phonePrimary
+        />
+      </Reveal>
     </>
   )
 }

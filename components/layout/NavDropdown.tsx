@@ -9,9 +9,11 @@ import { cn } from '@/lib/utils/cn'
 interface Props {
   label: string
   services: TreatmentCard[]
+  variant?: 'default' | 'light'
 }
 
-export function NavDropdown({ label, services }: Props) {
+export function NavDropdown({ label, services, variant = 'default' }: Props) {
+  const isLight = variant === 'light'
   const [open, setOpen] = useState(false)
 
   return (
@@ -23,7 +25,13 @@ export function NavDropdown({ label, services }: Props) {
       <button
         className={cn(
           'flex items-center gap-1 rounded px-3 py-2 text-sm font-medium transition-colors',
-          open ? 'text-brand-600' : 'text-ink-muted hover:text-brand-600',
+          isLight
+            ? open
+              ? 'text-brand-200'
+              : 'text-cream/95 hover:text-brand-200'
+            : open
+              ? 'text-brand-700'
+              : 'text-ink hover:text-brand-700',
         )}
         aria-expanded={open}
         aria-haspopup="true"
@@ -33,7 +41,7 @@ export function NavDropdown({ label, services }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 w-64 rounded-sm border border-sand-dark/60 bg-cream py-2 shadow-soft">
+        <div className="absolute left-0 top-full z-50 w-64 rounded-sm border border-brand-300 bg-white py-2 shadow-soft">
           {services.map(service => (
             <Link
               key={service.id}

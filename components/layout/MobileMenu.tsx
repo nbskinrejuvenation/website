@@ -24,7 +24,7 @@ export function MobileMenu({ settings, faceServices, bodyServices }: Props) {
     <div className="md:hidden">
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="rounded-sm p-2 text-ink-muted transition-colors hover:text-brand-600"
+        className="rounded-sm p-2 text-cream/95 transition-colors hover:text-brand-200"
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
       >
