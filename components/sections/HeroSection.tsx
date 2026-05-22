@@ -3,7 +3,6 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { heroStagger, kenBurns } from '@/lib/motion/config'
 
@@ -13,7 +12,8 @@ interface Props {
   subheading?: string
   ctaLabel: string
   ctaHref: string
-  phone?: string
+  secondaryCtaLabel?: string
+  secondaryCtaHref?: string
   heroImageUrl?: string
   heroImageAlt?: string
   /** Full clinic address shown under CTAs */
@@ -26,7 +26,8 @@ export function HeroSection({
   subheading,
   ctaLabel,
   ctaHref,
-  phone,
+  secondaryCtaLabel,
+  secondaryCtaHref,
   heroImageUrl,
   heroImageAlt,
   locationLine,
@@ -91,11 +92,10 @@ export function HeroSection({
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
             variants={reduceMotion ? undefined : heroStagger.item}
           >
-            {phone && (
-              <a href={`tel:${phone.replace(/\s/g, '')}`} className="btn-phone">
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                {phone}
-              </a>
+            {secondaryCtaLabel && secondaryCtaHref && (
+              <Link href={secondaryCtaHref} className="btn-phone">
+                {secondaryCtaLabel}
+              </Link>
             )}
             <Link href={ctaHref} className="btn-outline">
               {ctaLabel}

@@ -44,7 +44,8 @@ export default async function HomePage() {
         subheading="Personalised face and body treatments in a calm, boutique clinic — where expertise meets care."
         ctaLabel="Book free consultation"
         ctaHref="/contact"
-        phone={settings.phone ?? undefined}
+        secondaryCtaLabel="See all treatments"
+        secondaryCtaHref="/services"
         heroImageUrl="/images/hero-home.png"
         heroImageAlt={`Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, ${fullAddress}`}
         locationLine={fullAddress}
