@@ -5,6 +5,7 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 import { TreatmentBody } from '@/components/treatment/TreatmentBody'
 import { TreatmentFAQ } from '@/components/treatment/TreatmentFAQ'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -84,6 +85,8 @@ export default async function ServicePage({ params }: Props) {
       {hasFaqs && (
         <TreatmentFAQ faqs={service.schema_faq!} serviceName={service.title} />
       )}
+
+      <InstagramSection {...instagramSectionFromSettings(settings)} />
 
       <CTABanner
         heading="Book your free consultation"

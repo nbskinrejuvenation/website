@@ -11,6 +11,7 @@ SET
   postcode = '2099',
   lat = -33.7509,
   lng = 151.2863,
+  instagram_url = 'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
   updated_at = NOW()
 WHERE id IS NOT NULL;
 
@@ -24,6 +25,7 @@ INSERT INTO site_settings (
   postcode,
   lat,
   lng,
+  instagram_url,
   updated_at
 )
 SELECT
@@ -35,5 +37,6 @@ SELECT
   '2099',
   -33.7509,
   151.2863,
+  'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
   NOW()
 WHERE NOT EXISTS (SELECT 1 FROM site_settings LIMIT 1);

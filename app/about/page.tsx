@@ -3,6 +3,7 @@ import { getPage } from '@/lib/data/pages'
 import { getTestimonialsByPage } from '@/lib/data/testimonials'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 import { formatFullAddress } from '@/lib/site/address'
@@ -85,6 +86,8 @@ export default async function AboutPage() {
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
+
+      <InstagramSection {...instagramSectionFromSettings(settings)} />
 
       <CTABanner
         heading="Book your free consultation"

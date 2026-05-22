@@ -1,5 +1,6 @@
 import { createPublicClient } from '@/lib/supabase/public'
 import { CLINIC_ADDRESS_PARTS } from '@/lib/site/address'
+import { DEFAULT_INSTAGRAM_URL } from '@/lib/site/social'
 import { unstable_cache } from 'next/cache'
 import type { SiteSettings } from '@/types/database'
 
@@ -15,7 +16,7 @@ const FALLBACK: SiteSettings = {
   lat: -33.7509,
   lng: 151.2863,
   facebook_url: null,
-  instagram_url: null,
+  instagram_url: DEFAULT_INSTAGRAM_URL,
   booking_url: null,
   updated_at: null,
 }

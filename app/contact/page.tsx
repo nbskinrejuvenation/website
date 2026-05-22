@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { ConsultationForm } from '@/components/forms/ConsultationForm'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 import { CLINIC_ADDRESS_FULL, formatFullAddress } from '@/lib/site/address'
@@ -100,6 +101,8 @@ export default async function ContactPage() {
           </div>
         </div>
       </section>
+
+      <InstagramSection {...instagramSectionFromSettings(settings)} />
     </>
   )
 }

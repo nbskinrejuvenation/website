@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { getAllServices } from '@/lib/data/services'
+import { getSiteSettings } from '@/lib/data/site-settings'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { ServiceCard } from '@/components/treatment/ServiceCard'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 import { CLINIC_ADDRESS_FULL } from '@/lib/site/address'
@@ -14,12 +16,13 @@ export const metadata: Metadata = {
 }
 
 export default async function ServicesPage() {
-  const services = await getAllServices()
+  const [services, settings] = await Promise.all([getAllServices(), getSiteSettings()])
 
   const face = services.filter(s => s.category === 'face')
   const body = services.filter(s => s.category === 'body')
 
   return (
+    <>
     <div className="section-container py-16">
       <h1 className="section-heading mb-12 text-center">Our Treatments</h1>
 
@@ -56,5 +59,8 @@ export default async function ServicesPage() {
         </p>
       )}
     </div>
+
+    <InstagramSection {...instagramSectionFromSettings(settings)} />
+    </>
   )
 }

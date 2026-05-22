@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getSpecials } from '@/lib/data/specials'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { SpecialCard } from '@/components/sections/SpecialCard'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
@@ -45,6 +46,8 @@ export default async function SpecialsPage() {
           </div>
         )}
       </section>
+
+      <InstagramSection {...instagramSectionFromSettings(settings)} />
 
       <CTABanner
         heading="Book your free consultation"

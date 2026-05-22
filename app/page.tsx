@@ -8,6 +8,7 @@ import { TrustPillars } from '@/components/sections/TrustPillars'
 import { IntroStrip } from '@/components/sections/IntroStrip'
 import { TreatmentsGrid } from '@/components/sections/TreatmentsGrid'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
+import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { CLINIC_ADDRESS_FULL, formatFullAddress } from '@/lib/site/address'
@@ -68,6 +69,10 @@ export default async function HomePage() {
           subheading="Curated face and body services — each tailored to your skin goals."
           showViewAll
         />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <InstagramSection {...instagramSectionFromSettings(settings)} />
       </Reveal>
 
       <Reveal delay={0.05}>
