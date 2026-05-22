@@ -3,11 +3,15 @@ import { getSpecials } from '@/lib/data/specials'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { SpecialCard } from '@/components/sections/SpecialCard'
 import { CTABanner } from '@/components/sections/CTABanner'
+import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+
+const description =
+  'Exclusive offers and weekly specials at Naturally Beautiful Skin Rejuvenation. Free consultations, refer-a-friend rewards, and pack pricing.'
 
 export const metadata: Metadata = {
-  title: 'Specials & Offers',
-  description:
-    'Exclusive offers and weekly specials at Naturally Beautiful Skin Rejuvenation. Free consultations, refer-a-friend rewards, and pack pricing.',
+  title: pageTitle('Specials & Offers'),
+  description,
+  openGraph: openGraphDefaults('Specials & Offers', description),
   alternates: { canonical: '/specials' },
 }
 

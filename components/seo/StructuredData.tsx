@@ -1,4 +1,5 @@
 import type { SiteSettings, Treatment } from '@/types/database'
+import { absoluteUrl } from '@/lib/seo/metadata'
 
 interface Faq {
   question: string
@@ -20,7 +21,7 @@ export function StructuredData(props: Props) {
         '@context': 'https://schema.org',
         '@type': 'BeautySalon',
         name: settings.business_name,
-        url: process.env.NEXT_PUBLIC_SITE_URL,
+        url: absoluteUrl('/'),
         telephone: settings.phone,
         address: {
           '@type': 'PostalAddress',
@@ -57,10 +58,10 @@ export function StructuredData(props: Props) {
         provider: {
           '@type': 'BeautySalon',
           name: settings.business_name,
-          url: process.env.NEXT_PUBLIC_SITE_URL,
+          url: absoluteUrl('/'),
         },
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/services/${treatment.slug}`,
-        ...(treatment.hero_image ? { image: treatment.hero_image } : {}),
+        url: absoluteUrl(`/services/${treatment.slug}`),
+        ...(treatment.hero_image ? { image: absoluteUrl(treatment.hero_image) } : {}),
         category: treatment.category,
       }
       break

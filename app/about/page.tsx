@@ -4,21 +4,26 @@ import { getTestimonialsByPage } from '@/lib/data/testimonials'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { CTABanner } from '@/components/sections/CTABanner'
+import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+
+const fallbackDescription =
+  "Meet Lilian, founder of Naturally Beautiful Skin Rejuvenation. Accredited beauty therapist on Sydney's Northern Beaches."
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getPage('about')
+    const description = page.seo_description ?? fallbackDescription
     return {
-      title: page.seo_title ?? 'About Us',
-      description:
-        page.seo_description ??
-        "Meet Lilian, founder of Naturally Beautiful Skin Rejuvenation. Accredited beauty therapist on Sydney's Northern Beaches.",
+      title: pageTitle('About Us'),
+      description,
+      openGraph: openGraphDefaults('About Us', description),
       alternates: { canonical: '/about' },
     }
   } catch {
     return {
-      title: 'About Us',
-      description: "Meet Lilian, founder of Naturally Beautiful Skin Rejuvenation. Accredited beauty therapist on Sydney's Northern Beaches.",
+      title: pageTitle('About Us'),
+      description: fallbackDescription,
+      openGraph: openGraphDefaults('About Us', fallbackDescription),
       alternates: { canonical: '/about' },
     }
   }

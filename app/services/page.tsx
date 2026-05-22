@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
 import { getAllServices } from '@/lib/data/services'
 import { ServiceCard } from '@/components/treatment/ServiceCard'
+import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+
+const description =
+  'Explore all face and body treatments at Naturally Beautiful Skin Rejuvenation — micro needling, HIFU, laser, and more. Northern Beaches, Sydney.'
 
 export const metadata: Metadata = {
-  title: 'Our Treatments',
-  description:
-    'Explore all face and body treatments at Naturally Beautiful Skin Rejuvenation — micro needling, HIFU, laser, and more. Northern Beaches, Sydney.',
+  title: pageTitle('Our Treatments'),
+  description,
+  openGraph: openGraphDefaults('Our Treatments', description),
   alternates: { canonical: '/services' },
 }
 

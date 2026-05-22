@@ -12,7 +12,6 @@ import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
 
 export const metadata: Metadata = {
-  title: 'Naturally Beautiful Skin Rejuvenation',
   description:
     "Luxury skin rejuvenation on Sydney's Northern Beaches. Face and body treatments in Dee Why — book your free consultation today.",
   alternates: { canonical: '/' },

@@ -2,11 +2,15 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { ConsultationForm } from '@/components/forms/ConsultationForm'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+
+const description =
+  'Book a FREE consultation at Naturally Beautiful Skin Rejuvenation, Dee Why NSW. Call or send us a message.'
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
-  description:
-    'Book a FREE consultation at Naturally Beautiful Skin Rejuvenation, Dee Why NSW. Call or send us a message.',
+  title: pageTitle('Contact Us'),
+  description,
+  openGraph: openGraphDefaults('Contact Us', description),
   alternates: { canonical: '/contact' },
 }
 

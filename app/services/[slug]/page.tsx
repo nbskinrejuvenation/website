@@ -7,6 +7,10 @@ import { TreatmentBody } from '@/components/treatment/TreatmentBody'
 import { TreatmentFAQ } from '@/components/treatment/TreatmentFAQ'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildBreadcrumbSchema } from '@/lib/seo/breadcrumbs'
+import { getIndexableFaqs } from '@/lib/seo/faq'
+import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -19,20 +23,25 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const service = await getServiceBySlug(slug)
+  const [service, settings] = await Promise.all([
+    getServiceBySlug(slug),
+    getSiteSettings(),
+  ])
   if (!service) return {}
 
-  const title = service.seo_title ?? service.title
+  const brand = settings.business_name ?? 'Naturally Beautiful Skin Rejuvenation'
   const description = service.seo_description ?? service.subtitle ?? undefined
+  const ogTitle = `${service.title} | ${brand}`
 
   return {
-    title,
+    title: pageTitle(service.title),
     description,
-    openGraph: {
-      title,
-      description,
-      ...(service.og_image_url ? { images: [{ url: service.og_image_url }] } : {}),
-    },
+    openGraph: openGraphDefaults(
+      ogTitle,
+      description ?? '',
+      service.og_image_url ?? service.hero_image,
+      `/services/${slug}`,
+    ),
     alternates: { canonical: `/services/${slug}` },
   }
 }
@@ -46,12 +55,21 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
-  const hasFaqs = (service.schema_faq?.length ?? 0) > 0
+  const allFaqs = service.schema_faq ?? []
+  const hasFaqs = allFaqs.length > 0
+  const indexableFaqs = getIndexableFaqs(allFaqs)
 
   return (
     <>
       <StructuredData type="Service" treatment={service} settings={settings} />
-      {hasFaqs && <StructuredData type="FAQPage" faqs={service.schema_faq!} />}
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Treatments', path: '/services' },
+          { name: service.title, path: `/services/${slug}` },
+        ])}
+      />
+      {indexableFaqs.length > 0 && <StructuredData type="FAQPage" faqs={indexableFaqs} />}
 
       <TreatmentHero
         title={service.title}

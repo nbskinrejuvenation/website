@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer'
 import { PreviewBanner } from '@/components/layout/PreviewBanner'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getServicesByCategory } from '@/lib/data/services'
+import { buildOpenGraphImages, SITE_URL } from '@/lib/seo/metadata'
 
 const sans = DM_Sans({
   subsets: ['latin'],
@@ -25,29 +26,47 @@ const display = Cormorant_Garamond({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, headerList] = await Promise.all([getSiteSettings(), headers()])
   const businessName = settings.business_name ?? 'Naturally Beautiful Skin Rejuvenation'
+  const isPreview = headerList.get('x-preview-mode') === '1'
+  const description =
+    "Luxury skin rejuvenation on Sydney's Northern Beaches. Micro needling, HIFU, laser and more — book your free consultation in Dee Why."
+  const ogImages = buildOpenGraphImages()
 
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nbskinrejuvenation.com.au',
-    ),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: businessName,
       template: `%s | ${businessName}`,
     },
-    description:
-      "Luxury skin rejuvenation on Sydney's Northern Beaches. Micro needling, HIFU, laser and more — book your free consultation in Dee Why.",
+    description,
     openGraph: {
       type: 'website',
       siteName: businessName,
+      locale: 'en_AU',
+      url: SITE_URL,
+      title: businessName,
+      description,
+      images: ogImages,
     },
-    twitter: { card: 'summary_large_image' },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+    twitter: {
+      card: 'summary_large_image',
+      title: businessName,
+      description,
+      images: [ogImages[0].url],
     },
+    robots: isPreview
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+          },
+        },
   }
 }
 
