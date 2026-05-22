@@ -17,7 +17,7 @@ photorealistic 16:9 horizontal, subject slightly off-centre right,
 negative space on left for headline
 ```
 
-Save as `public/images/hero-home.jpg` and wire in `app/page.tsx` when ready.
+Homepage uses `public/images/hero-home.png` (wired in `app/page.tsx`).
 
 ## Treatment card placeholders (4:3)
 

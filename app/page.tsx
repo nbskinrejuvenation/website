@@ -39,6 +39,8 @@ export default async function HomePage() {
         ctaLabel="Book free consultation"
         ctaHref="/contact"
         phone={settings.phone ?? undefined}
+        heroImageUrl="/images/hero-home.png"
+        heroImageAlt="Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, Dee Why"
       />
 
       <TrustPillars />
