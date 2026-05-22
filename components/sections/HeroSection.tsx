@@ -97,7 +97,10 @@ export function HeroSection({
                 {secondaryCtaLabel}
               </Link>
             )}
-            <Link href={ctaHref} className="btn-outline">
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center justify-center gap-2 rounded-sm bg-brand-800 px-8 py-3.5 text-sm font-medium tracking-wide text-cream transition-all duration-300 hover:bg-brand-900 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
+            >
               {ctaLabel}
             </Link>
           </motion.div>

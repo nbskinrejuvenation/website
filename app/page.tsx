@@ -42,7 +42,7 @@ export default async function HomePage() {
           </>
         }
         subheading="Personalised face and body treatments in a calm, boutique clinic — where expertise meets care."
-        ctaLabel="Book free consultation"
+        ctaLabel="Book Free Consultation"
         ctaHref="/contact"
         secondaryCtaLabel="See all treatments"
         secondaryCtaHref="/services"
