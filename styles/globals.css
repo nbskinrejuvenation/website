@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* ── CSS Custom Properties (design tokens) ─────────────────────────────────── */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14% 10%;
+  --primary: 18 52% 52%;           /* brand copper */
+  --primary-foreground: 0 0% 100%;
+  --muted: 30 10% 96%;
+  --muted-foreground: 25 5% 45%;
+  --border: 30 8% 88%;
+  --ring: 18 52% 52%;
+
+  /* Font vars — populated by next/font in layout.tsx */
+  --font-sans: '';
+  --font-display: '';
+}
+
+/* ── Base Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* ── Focus styles ───────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── Prose ─────────────────────────────────────────────────────────────────── */
+.prose h2, .prose h3 {
+  font-family: var(--font-display), Georgia, serif;
+  color: hsl(var(--foreground));
+}
+
+/* ── Component layer ───────────────────────────────────────────────────────── */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-none bg-brand-500 px-8 py-3
+           text-sm font-semibold uppercase tracking-widest text-white
+           transition-colors duration-200 hover:bg-brand-600
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-none border border-brand-500 px-8 py-3
+           text-sm font-semibold uppercase tracking-widest text-brand-500
+           transition-colors duration-200 hover:bg-brand-500 hover:text-white
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+  }
+
+  .section-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl font-light tracking-wide text-neutral-800 md:text-4xl;
+  }
+}
