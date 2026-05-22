@@ -1,9 +1,10 @@
 'use client'
 
 import Image from 'next/image'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Quote, Star } from 'lucide-react'
 import type { Testimonial } from '@/types/database'
-import useEmblaCarousel from 'embla-carousel-react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { easeOut } from '@/lib/motion/config'
 
 interface Props {
   testimonials: Testimonial[]
@@ -11,73 +12,142 @@ interface Props {
   heading?: string
 }
 
+function ClientAvatar({ name, avatarUrl }: { name: string; avatarUrl: string | null }) {
+  if (avatarUrl) {
+    return (
+      <Image
+        src={avatarUrl}
+        alt=""
+        width={48}
+        height={48}
+        className="h-12 w-12 rounded-full object-cover ring-2 ring-brand-100"
+      />
+    )
+  }
+
+  const initials = name
+    .split(/\s+/)
+    .map(part => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+
+  return (
+    <div
+      className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 font-medium text-brand-700 ring-2 ring-brand-50"
+      aria-hidden="true"
+    >
+      {initials}
+    </div>
+  )
+}
+
+function StarRating() {
+  return (
+    <div className="flex gap-0.5" aria-label="5 out of 5 stars">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star key={i} className="h-3.5 w-3.5 fill-brand-400 text-brand-400" aria-hidden="true" />
+      ))}
+    </div>
+  )
+}
+
+function TestimonialCard({
+  testimonial,
+  index,
+  reduceMotion,
+}: {
+  testimonial: Testimonial
+  index: number
+  reduceMotion: boolean | null
+}) {
+  return (
+    <motion.article
+      initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-48px' }}
+      transition={{ duration: 0.75, delay: index * 0.12, ease: easeOut }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-sm bg-cream p-8 shadow-[0_8px_40px_-12px_rgba(42,38,36,0.15)] ring-1 ring-cream/80 md:p-10"
+    >
+      <Quote
+        className="absolute right-6 top-6 h-9 w-9 text-brand-200/90 transition-colors group-hover:text-brand-300"
+        strokeWidth={1}
+        aria-hidden="true"
+      />
+
+      <StarRating />
+
+      <blockquote className="mt-6 flex-1">
+        <p className="text-[15px] leading-[1.8] text-ink-muted md:text-base md:leading-[1.85]">
+          {testimonial.body}
+        </p>
+      </blockquote>
+
+      <footer className="mt-8 flex items-center gap-4 border-t border-sand-dark/50 pt-6">
+        <ClientAvatar name={testimonial.client_name} avatarUrl={testimonial.avatar_url} />
+        <div className="min-w-0">
+          <p className="font-medium text-ink">{testimonial.client_name}</p>
+          {testimonial.treatment_ref && (
+            <p className="mt-1.5">
+              <span className="inline-block rounded-sm bg-brand-50 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-brand-700">
+                {testimonial.treatment_ref}
+              </span>
+            </p>
+          )}
+        </div>
+      </footer>
+    </motion.article>
+  )
+}
+
 export function TestimonialsSection({
   testimonials,
   eyebrow = 'See what',
   heading = 'Our clients say',
 }: Props) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const reduceMotion = useReducedMotion()
 
   if (testimonials.length === 0) return null
 
   return (
-    <section className="bg-cream-dark py-20 md:py-24" aria-labelledby="testimonials-heading">
-      <div className="section-container">
-        <p className="eyebrow mb-3 text-center">{eyebrow}</p>
-        <h2 id="testimonials-heading" className="section-heading mb-14 text-center">
-          {heading}
-        </h2>
+    <section
+      className="relative overflow-hidden bg-brand-950 py-20 md:py-28"
+      aria-labelledby="testimonials-heading"
+    >
+      <div
+        className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-brand-800/30 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-brand-700/20 blur-3xl"
+        aria-hidden="true"
+      />
 
-        <div className="relative px-6">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
-              {testimonials.map(t => (
-                <div
-                  key={t.id}
-                  className="min-w-0 flex-[0_0_100%] px-3 md:flex-[0_0_50%] lg:flex-[0_0_33.33%]"
-                >
-                  <blockquote className="flex h-full flex-col rounded-sm bg-white p-8 shadow-card ring-1 ring-sand-dark/40">
-                    <p className="flex-1 font-display text-lg font-light italic leading-relaxed text-ink-muted">
-                      &ldquo;{t.body}&rdquo;
-                    </p>
-                    <footer className="mt-8 flex items-center gap-4 border-t border-sand-dark/40 pt-6">
-                      {t.avatar_url && (
-                        <Image
-                          src={t.avatar_url}
-                          alt=""
-                          width={44}
-                          height={44}
-                          className="h-11 w-11 rounded-full object-cover"
-                        />
-                      )}
-                      <div>
-                        <p className="text-sm font-medium text-ink">{t.client_name}</p>
-                        {t.treatment_ref && (
-                          <p className="text-xs text-ink-faint">
-                            Treatment: {t.treatment_ref}
-                          </p>
-                        )}
-                      </div>
-                    </footer>
-                  </blockquote>
-                </div>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={() => emblaApi?.scrollPrev()}
-            className="absolute -left-2 top-1/2 -translate-y-1/2 rounded-full bg-white p-2.5 shadow-soft ring-1 ring-sand-dark/40 transition-colors hover:bg-brand-50 md:left-0"
-            aria-label="Previous"
+      <div className="section-container relative">
+        <div className="mx-auto mb-12 max-w-xl text-center md:mb-16">
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-brand-200">
+            {eyebrow}
+          </p>
+          <h2
+            id="testimonials-heading"
+            className="font-display text-3xl font-light tracking-tight text-cream md:text-4xl lg:text-[2.75rem]"
           >
-            <ChevronLeft className="h-5 w-5 text-ink-muted" />
-          </button>
-          <button
-            onClick={() => emblaApi?.scrollNext()}
-            className="absolute -right-2 top-1/2 -translate-y-1/2 rounded-full bg-white p-2.5 shadow-soft ring-1 ring-sand-dark/40 transition-colors hover:bg-brand-50 md:right-0"
-            aria-label="Next"
-          >
-            <ChevronRight className="h-5 w-5 text-ink-muted" />
-          </button>
+            {heading}
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-cream/60">
+            Real stories from women who chose a personalised approach to skin rejuvenation
+          </p>
+        </div>
+
+        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8">
+          {testimonials.map((t, i) => (
+            <TestimonialCard
+              key={t.id}
+              testimonial={t}
+              index={i}
+              reduceMotion={reduceMotion}
+            />
+          ))}
         </div>
       </div>
     </section>
