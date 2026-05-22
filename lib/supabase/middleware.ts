@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { type NextRequest, NextResponse } from 'next/server'
+import { getPublicSupabaseEnv } from '@/lib/supabase/env'
 
 /**
  * Edge-compatible Supabase client for use in middleware.ts only.
@@ -8,10 +9,11 @@ import { type NextRequest, NextResponse } from 'next/server'
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
+  const { url, anonKey } = getPublicSupabaseEnv()
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {

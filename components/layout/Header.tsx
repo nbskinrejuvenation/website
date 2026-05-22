@@ -31,12 +31,30 @@ export function Header({ settings, servicesByCategory }: Props) {
               About Us
             </Link>
           </li>
-          {faceServices.length > 0 && (
-            <li><NavDropdown label="Face" services={faceServices} /></li>
-          )}
-          {bodyServices.length > 0 && (
-            <li><NavDropdown label="Body" services={bodyServices} /></li>
-          )}
+          <li>
+            {faceServices.length > 0 ? (
+              <NavDropdown label="Face" services={faceServices} />
+            ) : (
+              <Link
+                href="/services#face"
+                className="rounded px-3 py-2 text-sm font-medium text-neutral-600 hover:text-brand-500 transition-colors"
+              >
+                Face
+              </Link>
+            )}
+          </li>
+          <li>
+            {bodyServices.length > 0 ? (
+              <NavDropdown label="Body" services={bodyServices} />
+            ) : (
+              <Link
+                href="/services#body"
+                className="rounded px-3 py-2 text-sm font-medium text-neutral-600 hover:text-brand-500 transition-colors"
+              >
+                Body
+              </Link>
+            )}
+          </li>
           <li>
             <Link href="/specials" className="rounded px-3 py-2 text-sm font-medium text-neutral-600 hover:text-brand-500 transition-colors">
               Specials

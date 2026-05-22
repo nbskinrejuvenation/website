@@ -1,0 +1,491 @@
+{
+  "_meta": {
+    "audit_date": "2026-05-21",
+    "source": "https://nbskinrejuvenation.com.au",
+    "method": "Browser crawl via Claude in Chrome MCP",
+    "service_count": 18,
+    "note": "Pricing rows are raw text exactly as displayed on the page. Each row contains an area/variant label and one or more price values. Recommend parsing into structured fields (variant, mode, price, savings) at the seed-data stage."
+  },
+  "services": {
+    "carbon-peel": {
+      "h1": "Carbon Peel",
+      "category": ["face"],
+      "taglines": ["Gently exfoliates, clears and purifies your skin.", "Long-lasting clearer, brighter and smoother skin", "Simple and easy care."],
+      "subtitle_hero": "CARBON PEEL AKA \"HOLLYWOOD PEEL\"",
+      "faq": [
+        "How many Carbon Peel sessions are recommended?",
+        "How long does the treatment take?",
+        "What is the recovery time?",
+        "How long to these results last?",
+        "Is Carbon Peel painful?",
+        "Is this treatment suitable for everyone?"
+      ],
+      "pricing": [
+        "Face only $140 One session",
+        "Face & Neck $210 One session",
+        "Face, Neck & Décolletage $280 One session",
+        "Back $300 One session",
+        "Face only $336 $112 per session, Save $84",
+        "Face & Neck $504 $168 per session, Save $126",
+        "Face, Neck & Décolletage $672 $224 per session, Save $168",
+        "Back $720 $240 per session, Save $180"
+      ],
+      "pack_size": 3,
+      "recommended_for": ["Unever skin tone", "Oily skin", "Sun damage", "Pigmentation", "Enlarged pores", "Acne and bemishes", "Rosacea", "Wrinkles", "Blackheads"],
+      "_typos_to_fix": ["Unever skin tone -> Uneven skin tone", "bemishes -> blemishes"]
+    },
+    "fibroblast-plasma": {
+      "h1": "Fibroblast Plasma",
+      "category": ["face", "body"],
+      "taglines": ["Instant non-surgical skin lifting", "We rise by lifting others… and by lifting ourselves", "Time to connect the dots."],
+      "subtitle_hero": "FIBROBLAST PLASMA SKIN LIFT",
+      "faq": [
+        "How many sessions of Fibroblast Plasma are recommended?",
+        "How long does the session take?",
+        "Is there any downtime?",
+        "How long does it take until I can see the results?",
+        "How long will the results last?",
+        "Is Fibroblast Plasma suitable for everyone?",
+        "Is the treatment painful?"
+      ],
+      "pricing": [
+        "Skin tag and warts removal From $70 Please note we require a medical clearance for this treatment",
+        "Wrinkles From $100 One session",
+        "Under eye $300 One session",
+        "Belly button lift $300 One session",
+        "Crows feet (sides of the eyes) $300 One session",
+        "Blepharoplasty (droopy eyelids) $300 One session",
+        "Lip flip $300 One session",
+        "Eyebrow lift $300 One session",
+        "Marionette lines (sides of the mouth aka Nasolabial folds) $300 One session",
+        "Smoker lines (around the mouth) $300 One session",
+        "Forehead $400 One session",
+        "Neck $500 One session",
+        "Tummy tightening $800 One session",
+        "Pigmentation removal from $70 One session"
+      ],
+      "pack_size": null,
+      "_note": "Only service with NO pack pricing — single-session only. Requires medical clearance for some variants."
+    },
+    "fractional-rf": {
+      "h1": "Fractional RF",
+      "category": ["face"],
+      "taglines": ["Reclaim a firmer, plumper, younger skin.", "Filters are great, but great skin is better.", "Aging is unavoidable, but looking your age is not."],
+      "faq": [
+        "How many treatments are recommended?",
+        "How long does the treatment take?",
+        "What is the recovery time?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "How long will the results last?"
+      ],
+      "pricing": [
+        "Face only $250 One session",
+        "Face & Neck $300 One session",
+        "Face, Neck & Décolletage $350 One session",
+        "Stretch marks From $180 One session",
+        "Face only $600 $200 per session, Save $150",
+        "Face & Neck $720 $240 per session, Save $180",
+        "Face, Neck & Décolletage $840 $280 per session, Save $210",
+        "Stretch marks From $432 From $144 per session, Save from $108"
+      ],
+      "pack_size": 3
+    },
+    "hifu": {
+      "h1": "HIFU",
+      "category": ["face"],
+      "taglines": ["Just like cosmetic surgery, only not.", "It's not a miracle, but it might as well be.", "Happiness is the best facelift."],
+      "subtitle_hero": "HIFU NON-SURGICAL FACELIFT",
+      "faq": [
+        "How many HIFU sessions are recommended?",
+        "How long does the session take?",
+        "Is HIFU a natural treatment?",
+        "Is this treatment suitable for everyone?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Can I treat my whole body with this treatment?",
+        "Can I combine other treatments with this?"
+      ],
+      "pricing": [
+        "Face only $999 One session",
+        "Neck only $400 One session",
+        "Face & Neck $1200 One session",
+        "Face, Neck & Décolletage $1500 One session",
+        "Stomach $999 One session",
+        "Face only $2398 $799 per session, Save $599",
+        "Neck only $960 $320 per session, Save $240",
+        "Face & Neck $2880 $960 per session, Save $720",
+        "Face, Neck & Décolletage $3600 $1200 per session, Save $900",
+        "Stomach $2398 $799 per session, Save $599"
+      ],
+      "pack_size": 3,
+      "_note": "Includes Stomach pricing — listed in Face menu only but also treats body. Could be reclassified to both."
+    },
+    "hydrodermabrasion": {
+      "h1": "Hydrodermabrasion",
+      "category": ["face"],
+      "taglines": ["Hydrated, happy and healthy skin.", "De-stress, De-grease and Detox.", "Enjoy no down-time"],
+      "faq": [
+        "How many treatments are recommended?",
+        "How long does the treatment take?",
+        "How long is the recovery?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Is this treatment right for me?"
+      ],
+      "pricing": [
+        "Face only $120 One session",
+        "Face & Neck $180 One session",
+        "Face, Neck & Décolletage $240 One session",
+        "Face only $288 $96 per session, Save $72",
+        "Face & Neck $432 $144 per session, Save $108",
+        "Face, Neck & Décolletage $576 $192 per session, Save $144"
+      ],
+      "pack_size": 3
+    },
+    "laser-rejuvenation": {
+      "h1": "Laser Rejuvenation",
+      "category": ["face"],
+      "taglines": ["Unleash the natural beauty from within.", "Free your youthfulness within.", "Empower the skin you're in."],
+      "subtitle_hero": "YAG LASER FOR REJUVENATION WAVELENGTH OF 1064 NM",
+      "faq": [
+        "How many sessions are recommended?",
+        "How long does the session take?",
+        "Is this treatment suitable for everyone?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Is there any downtime?"
+      ],
+      "pricing": [
+        "Face $170 One session",
+        "Face & Neck $255 One session",
+        "Face, Neck & Décolletage $340 One session",
+        "Body From $170 One session",
+        "Face $816 $136 per session, Save $204",
+        "Face & Neck $1224 $204 per session, Save $306",
+        "Face, Neck & Décolletage $1632 $272 per session, Save $408",
+        "Body $816 $136 per session, Save $204"
+      ],
+      "pack_size": 6,
+      "_note": "Pack of 6, not 3 — only service with this pack size. Schema must allow variable pack_size per service."
+    },
+    "medi-aesthetic-peels": {
+      "h1": "Medi-Aesthetic Peels",
+      "category": ["face"],
+      "taglines": ["Peel away the years.", "Strip away life's imperfections.", "Reveal your true self."],
+      "subtitle_hero": "MEDI-AESTHETIC POWER PEELS",
+      "faq": [
+        "How many sessions are recommended?",
+        "How long does the treatment take?",
+        "Is this treatment suitable for everyone?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Can I use several peels and treatments at the same time?"
+      ],
+      "pricing": [
+        "Vitamin A - Face only $120 One session",
+        "Vitamin A - Face & Neck $150 One session",
+        "Vitamin A - Face, Neck & Décolletage $180 One session",
+        "Vitamin A - Back From $120 One session",
+        "TCA 15% or Berry Pigment Control - Face only $190 One session",
+        "TCA 15% or Berry Pigment Control - Face & Neck $220 One session",
+        "TCA 15% or Berry Pigment Control - Face, Neck & Décolletage $250 One session",
+        "TCA 15% or Berry Pigment Control - Back From $190 One session",
+        "Tretinoin - Face only $160 One session",
+        "Tretinoin - Face & Neck $240 One session",
+        "Tretinoin - Face, Neck & Décolletage $320 One session",
+        "Tretinoin - Back From $160 One session",
+        "Vitamin A - Face only $288 $96 per session, Save $72",
+        "Vitamin A - Face & Neck $360 $120 per session, Save $90",
+        "Vitamin A - Face, Neck & Décolletage $432 $144 per session, Save $108",
+        "Vitamin A - Back From $288 From $96 per session, Save from $72",
+        "TCA 15% or Berry Pigment Control - Face only $456 $152 per session, Save $114",
+        "TCA 15% or Berry Pigment Control - Face & Neck $528 $176 per session, Save $132",
+        "TCA 15% or Berry Pigment Control - Face, Neck & Décolletage $600 $200 per session, Save $150",
+        "TCA 15% or Berry Pigment Control - Back From $456 From $152 per session, Save from $114",
+        "Tretinoin - Face only $384 $128 per session, Save $96",
+        "Tretinoin - Face & Neck $576 $192 per session, Save $144",
+        "Tretinoin - Face, Neck & Décolletage $768 $256 per session, Save $192",
+        "Tretinoin - Back From $384 From $128 per session, Save from $96"
+      ],
+      "pack_size": 3,
+      "_typo_to_fix": "medi-easthetic -> medi-aesthetic (in body copy)",
+      "_note": "Most complex pricing: 3 peel variants × 4 areas × 2 modes = 24 rows. Schema needs `variant_group` column."
+    },
+    "microdermabrasion": {
+      "h1": "Microdermabrasion",
+      "category": ["face"],
+      "taglines": ["Say hello to the real you.", "Don't change it – revive it.", "Out with the old, in with the new."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any  downtime?",
+        "Is it suitable for everyone?",
+        "Is the treatment painful?"
+      ],
+      "pricing": [
+        "Face $60 One session",
+        "Face & Neck $90 One session",
+        "Face, Neck & Décolletage $120 One session",
+        "Face $144 $48 per session, Save $36",
+        "Face & Neck $216 $72 per session, Save $54",
+        "Face, Neck & Décolletage $288 $96 per session, Save $72"
+      ],
+      "pack_size": 3,
+      "recommended_for": ["Age spots", "Uneven skin tone", "Wrinkles and fine lines", "Acne scarring", "Dull and lifeless skin", "Dark spots", "Stretch marks"],
+      "_typo_to_fix": "Is there any  downtime? (double space)"
+    },
+    "micro-needling": {
+      "h1": "Micro Needling",
+      "category": ["face"],
+      "taglines": ["Turn back the clock", "Regain a smoother, healthier and younger complexion.", "Enjoy little to no down-time"],
+      "faq": [
+        "How many treatments are recommended?",
+        "How long does the treatment take?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?"
+      ],
+      "pricing": [
+        "Face only $190 One session",
+        "Face & Neck $210 One session",
+        "Face, Neck & Décolletage $230 One session",
+        "Stretch marks From $190 One session",
+        "Add Tretinoin peel From $60 One session",
+        "Face only $456 $152 per session, Save $114",
+        "Face & Neck $504 $168 per session, Save $126",
+        "Face, Neck & Décolletage $552 $184 per session, Save $138",
+        "Stretch marks From $456 From $152 per session, Save from $114",
+        "Add Tretinoin peel From $144 From $48 per session, Save from $36"
+      ],
+      "pack_size": 3,
+      "recommended_for": ["Stretch marks", "Acne scaring", "Fine lines", "Skin pigmentation", "Scarring", "Enlarged pores"],
+      "_note": "Only 4 FAQs — fewer than other services. Has add-on pricing for Tretinoin peel combo.",
+      "_typo_to_fix": "Acne scaring -> Acne scarring"
+    },
+    "radiofrequency": {
+      "h1": "Radiofrequency",
+      "category": ["face"],
+      "taglines": ["Reawaken your youth.", "Kick signs of aging to the curb.", "Your journey to beautiful skin starts here."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is it suitable for everyone?"
+      ],
+      "pricing": [
+        "Face only $90 One session",
+        "Neck only $90 One session",
+        "Face & Neck $135 One session",
+        "Face, Neck & Décolletage $180 One session",
+        "Face only $432 $72 per session, Save $108",
+        "Neck only $432 $72 per session, Save $108",
+        "Face & Neck $648 $108 per session, Save $162",
+        "Face, Neck & Décolletage $864 $144 per session, Save $216"
+      ],
+      "pack_size": 6,
+      "_note": "No <main> element on this page — different template variant. Pack of 6."
+    },
+    "tattoo-removal-with-saline-solution": {
+      "h1": "Tattoo Removal with Saline Solution",
+      "category": ["face"],
+      "taglines": ["Time to wash away the past", "Embrace new beginnings in a natural way", "Love the skin you're in"],
+      "faq": [
+        "How many sessions are recommended?",
+        "How long does the session take?",
+        "Is this treatment suitable for everyone?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Is there any downtime?"
+      ],
+      "pricing": [
+        "Eyebrow $150"
+      ],
+      "pack_size": null,
+      "_note": "Only ONE price ($150 for eyebrow). Distinct from /tattoo-removal/ (laser) — this is saline-based for cosmetic tattoos. Worth flagging to client: should there be more variants?"
+    },
+    "zena-algae-peel": {
+      "h1": "Zena Algae Peel",
+      "category": ["face"],
+      "taglines": ["Let nature transform you.", "Nature's solution for beautiful skin.", "Embrace your natural beauty through nature itself."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is it suitable for everyone?",
+        "Is the treatment painful?"
+      ],
+      "pricing": [
+        "Face only $250 One session",
+        "Face & Neck $375 One session",
+        "Face, Neck & Décolletage $500 One session",
+        "Back From $250 One session",
+        "Face only $600 $200 per session, Save $150",
+        "Face & Neck $900 $300 per session, Save $225",
+        "Face, Neck & Décolletage $1200 $400 per session, Save $300",
+        "Back $600 From $200 per session, Save from $150"
+      ],
+      "pack_size": 3
+    },
+    "ems-for-muscle-gain": {
+      "h1": "EMS for Muscle Gain",
+      "category": ["body"],
+      "taglines": ["Take your body to the next level.", "The results may shock you.", "A flawless body starts from within."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is this treatment suitable for everyone?"
+      ],
+      "pricing": [
+        "One area $140 One session",
+        "Two areas $210 One session",
+        "Three areas $280 One session",
+        "Four areas $350 One session",
+        "One area $672 $112 per session, Save $168",
+        "Two areas $1008 $168 per session, Save $252",
+        "Three areas $1344 $224 per session, Save $336",
+        "Four areas $1680 $280 per session, Save $420"
+      ],
+      "pack_size": 6
+    },
+    "ems-for-pelvic-floor-strengthening": {
+      "h1": "EMS for Pelvic Floor Strengthening",
+      "category": ["body"],
+      "taglines": ["Regain control of the things that matter.", "Tighten up where it counts.", "Restore your confidence in life."],
+      "faq": [
+        "How many sessions do I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is this treatment suitable for everyone?"
+      ],
+      "pricing": [
+        "Pelvic floor $140 One session",
+        "Pelvic floor $672 $112 per session, Save $168"
+      ],
+      "pack_size": 6,
+      "_note": "Single variant only — pelvic floor area. Wellness/medical treatment."
+    },
+    "fat-cavitation": {
+      "h1": "Fat Cavitation",
+      "category": ["body"],
+      "taglines": ["Get the body shape of your dreams.", "Let go of what no longer serves you.", "Start loving your body."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long until I can see the results?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is it suitable for everyone?"
+      ],
+      "pricing": [
+        "Saddle Bags $90 One session",
+        "Love handles (aka muffin tops) $90 One session",
+        "Butt $90 One session",
+        "Stomach $130 One session",
+        "Legs front (thighs only) $180 One session",
+        "Legs back (thighs only) $180 One session",
+        "Saddle Bags $432 $72 per session, Save $108",
+        "Love handles (aka muffin tops) $432 $72 per session, Save $108",
+        "Butt $432 $72 per session, Save $108",
+        "Stomach $624 $104 per session, Save $156",
+        "Legs front (thighs only) $864 $144 per session, Save $216",
+        "Legs back (thighs only) $864 $144 per session, Save $216"
+      ],
+      "pack_size": 6
+    },
+    "laser-for-nail-fungus": {
+      "h1": "Laser for Nail Fungus",
+      "category": ["body"],
+      "taglines": ["Put your best foot forward.", "Flawless nail health at your fingertips - and toes!", "Easy treatment and easy self-care."],
+      "faq": [
+        "How many sessions will I need?",
+        "How long does the session take?",
+        "How long will the results last?",
+        "Is there any downtime?",
+        "Is it suitable for everyone?",
+        "Is the treatment painful?"
+      ],
+      "pricing": [
+        "Per nail $70 One session",
+        "Per nail $224 $56 per session, Save $56"
+      ],
+      "pack_size": 4,
+      "_note": "Per-nail pricing. Pack appears to be 4 sessions based on $224/$56 = 4."
+    },
+    "kumashape": {
+      "h1": "Kumashape",
+      "category": ["body"],
+      "taglines": ["Sculpt the body of your dreams!", "Your body is beautiful, so let's bring out the best of it!", "Boost your results from the inside-out!"],
+      "faq": [
+        "How many sessions are recommended?",
+        "How long does the treatment take?",
+        "How long will the results last?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "What is the recovery time for Kumashape?"
+      ],
+      "pricing": [
+        "Saddle Bags $100 One session",
+        "Love handles (aka muffin tops) $100 One session",
+        "Butt $100 One session",
+        "Stomach $140 One session",
+        "Legs front (thighs only) $140 One session",
+        "Legs back (thighs only) $140 One session",
+        "Saddle Bags $480 $80 per session, Save $120",
+        "Love handles (aka muffin tops) $480 $80 per session, Save $120",
+        "Butt $480 $80 per session, Save $120",
+        "Stomach $672 $112 per session, Save $168",
+        "Legs front (thighs only) $672 $112 per session, Save $168",
+        "Legs back (thighs only) $672 $112 per session, Save $168"
+      ],
+      "pack_size": 6,
+      "_note": "Same area variants as Fat Cavitation but $10–$40 higher per session."
+    },
+    "tattoo-removal": {
+      "h1": "Tattoo Removal",
+      "category": ["body"],
+      "taglines": ["Reveal the real you", "No regrets, just fresh beginnings!", "Let's help you say goodbye to yesterday"],
+      "faq": [
+        "How many sessions are recommended?",
+        "How long does the treatment take?",
+        "How long do I need to wait between sessions?",
+        "How long does it take until I can see the results?",
+        "Is the treatment painful?",
+        "Is this treatment suitable for everyone?"
+      ],
+      "pricing": [
+        "Eyebrow cosmetic tattoo $120",
+        "4 cm2 - 2cm x 2cm $50 Approximate size of a 20c coin",
+        "20 cm2 - 5cm x 4cm $100 Approximate size of a matchbox",
+        "50 cm2 - 10cm x 5cm $130 Approximate size of a credit card",
+        "100 cm2 - 10cm x 10cm $170 Approximate size of a passport",
+        "150 cm2 - 15cm x 10cm $240 Approximate size of quarter A4 page",
+        "300 cm2 - 20cm x 15cm $320 Approximate size of half A4 page",
+        "400 cm2 - 20cm x 20cm $380 Approximate size of a dinner plate",
+        "600 cm2 - 30cm x 20cm $580 Approximate size of a A4 page"
+      ],
+      "pack_size": null,
+      "_note": "UNIQUE pricing model: by tattoo size in cm². 9 size tiers. Each comes with a real-world comparison (coin, matchbox, A4 page). Schema must support free-form variant labels and helpful 'size_comparison' field."
+    }
+  },
+  "schema_implications": {
+    "1": "pack_size varies per service: null (no packs), 3, 4, or 6. Must be per-service column, not a global constant.",
+    "2": "Some services have NO pack pricing (fibroblast-plasma, tattoo-removal-with-saline-solution, tattoo-removal).",
+    "3": "Pricing variants are free-form labels — must be TEXT, not an enum of areas. Examples: 'Saddle Bags', 'Pelvic floor', '4 cm2 - 2cm x 2cm', 'Vitamin A - Face only'.",
+    "4": "Medi-Aesthetic Peels uses a `variant_group` concept (Vitamin A vs TCA 15% vs Tretinoin) — could be modeled as a nested grouping or just a prefix in the label.",
+    "5": "'From $X' pricing exists — need a `is_starting_price` boolean column or store price as text.",
+    "6": "Recommended for: not present on every service (e.g. Radiofrequency has none scraped). Field must be nullable.",
+    "7": "FAQ count varies 4-8 per service.",
+    "8": "Some services note medical clearance is required (Fibroblast skin tags) — surface this as a `requires_medical_clearance` flag or as part of the variant note."
+  }
+}

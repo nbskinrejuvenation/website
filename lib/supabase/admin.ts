@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database.generated'
+import { getPublicSupabaseEnv } from '@/lib/supabase/env'
 
 /**
  * Service-role Supabase client — bypasses ALL RLS policies.
@@ -27,8 +28,9 @@ export function createAdminClient() {
     )
   }
 
+  const { url } = getPublicSupabaseEnv()
   adminClient = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    url,
     process.env.SUPABASE_SERVICE_ROLE_KEY,
     {
       auth: {

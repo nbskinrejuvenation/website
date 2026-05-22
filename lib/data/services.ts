@@ -17,7 +17,7 @@ export const getAllServices = unstable_cache(
     return (data ?? []) as TreatmentCard[]
   },
   ['all-services'],
-  { tags: ['services'], revalidate: false },
+  { tags: ['services'], revalidate: 60 },
 )
 
 /** Single published treatment by slug — used in /services/[slug]. */
@@ -40,7 +40,7 @@ export const getServiceBySlug = unstable_cache(
     return data as Treatment
   },
   ['service-by-slug'],
-  { tags: ['services'], revalidate: false },
+  { tags: ['services'], revalidate: 60 },
 )
 
 /** Preview variant — fetches draft + published. Not cached. */
@@ -70,7 +70,7 @@ export const getServicesByCategory = unstable_cache(
     }, {})
   },
   ['services-by-category'],
-  { tags: ['services'], revalidate: false },
+  { tags: ['services'], revalidate: 60 },
 )
 
 /** All published slugs for generateStaticParams. */

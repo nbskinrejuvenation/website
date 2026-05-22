@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '@/types/database.generated'
+import { getPublicSupabaseEnv } from '@/lib/supabase/env'
 
 /**
  * Browser-side Supabase client for use in Client Components.
@@ -9,8 +10,6 @@ import type { Database } from '@/types/database.generated'
  * Never import the admin client into a Client Component.
  */
 export function createClient() {
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const { url, anonKey } = getPublicSupabaseEnv()
+  return createBrowserClient<Database>(url, anonKey)
 }

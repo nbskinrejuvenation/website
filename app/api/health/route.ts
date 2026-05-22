@@ -10,16 +10,21 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET() {
   try {
     const supabase = await createClient()
-    const { error } = await supabase
-      .from('site_settings')
-      .select('id')
-      .single()
+    const [settingsResult, treatmentsResult] = await Promise.all([
+      supabase.from('site_settings').select('id').maybeSingle(),
+      supabase
+        .from('treatments')
+        .select('slug', { count: 'exact', head: true })
+        .eq('status', 'published'),
+    ])
 
-    if (error) throw error
+    if (settingsResult.error) throw settingsResult.error
+    if (treatmentsResult.error) throw treatmentsResult.error
 
     return NextResponse.json({
       status: 'ok',
       supabase: 'ok',
+      published_treatments: treatmentsResult.count ?? 0,
       timestamp: new Date().toISOString(),
     })
   } catch (error) {

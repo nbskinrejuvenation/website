@@ -17,5 +17,5 @@ export const getHomepageFeaturedServices = unstable_cache(
     return (data ?? []) as TreatmentCard[]
   },
   ['homepage-featured-services'],
-  { tags: ['services', 'homepage'], revalidate: false },
+  { tags: ['services', 'homepage'], revalidate: 60 },
 )

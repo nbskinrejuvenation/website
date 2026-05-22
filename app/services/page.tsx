@@ -20,7 +20,7 @@ export default async function ServicesPage() {
       <h1 className="section-heading mb-12 text-center">Our Treatments</h1>
 
       {face.length > 0 && (
-        <section className="mb-16">
+        <section id="face" className="mb-16 scroll-mt-24">
           <h2 className="mb-8 text-xl font-semibold uppercase tracking-widest text-brand-500">
             Face
           </h2>
@@ -33,7 +33,7 @@ export default async function ServicesPage() {
       )}
 
       {body.length > 0 && (
-        <section>
+        <section id="body" className="scroll-mt-24">
           <h2 className="mb-8 text-xl font-semibold uppercase tracking-widest text-brand-500">
             Body
           </h2>
@@ -43,6 +43,13 @@ export default async function ServicesPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {face.length === 0 && body.length === 0 && (
+        <p className="text-center text-neutral-500">
+          Our treatment list is being updated. Please check back soon or call us to book a
+          consultation.
+        </p>
       )}
     </div>
   )
