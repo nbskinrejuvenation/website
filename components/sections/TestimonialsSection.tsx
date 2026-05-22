@@ -7,12 +7,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
   testimonials: Testimonial[]
+  eyebrow?: string
   heading?: string
 }
 
 export function TestimonialsSection({
   testimonials,
-  heading = 'What our clients say',
+  eyebrow = 'See what',
+  heading = 'Our clients say',
 }: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
 
@@ -21,7 +23,7 @@ export function TestimonialsSection({
   return (
     <section className="bg-cream-dark py-20 md:py-24" aria-labelledby="testimonials-heading">
       <div className="section-container">
-        <p className="eyebrow mb-3 text-center">Client stories</p>
+        <p className="eyebrow mb-3 text-center">{eyebrow}</p>
         <h2 id="testimonials-heading" className="section-heading mb-14 text-center">
           {heading}
         </h2>
@@ -51,7 +53,9 @@ export function TestimonialsSection({
                       <div>
                         <p className="text-sm font-medium text-ink">{t.client_name}</p>
                         {t.treatment_ref && (
-                          <p className="text-xs text-ink-faint">{t.treatment_ref}</p>
+                          <p className="text-xs text-ink-faint">
+                            Treatment: {t.treatment_ref}
+                          </p>
                         )}
                       </div>
                     </footer>

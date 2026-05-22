@@ -70,11 +70,13 @@ export default async function HomePage() {
         />
       </Reveal>
 
-      {testimonials.length > 0 && (
-        <Reveal delay={0.05}>
-          <TestimonialsSection testimonials={testimonials} />
-        </Reveal>
-      )}
+      <Reveal delay={0.05}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          eyebrow="See what"
+          heading="Our clients say"
+        />
+      </Reveal>
 
       <Reveal delay={0.05}>
         <CTABanner
