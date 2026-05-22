@@ -3,9 +3,9 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { ConsultationForm } from '@/components/forms/ConsultationForm'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+import { CLINIC_ADDRESS_FULL, formatFullAddress } from '@/lib/site/address'
 
-const description =
-  'Book a FREE consultation at Naturally Beautiful Skin Rejuvenation, Dee Why NSW. Call or send us a message.'
+const description = `Book a FREE consultation at Naturally Beautiful Skin Rejuvenation, ${CLINIC_ADDRESS_FULL}. Call or send us a message.`
 
 export const metadata: Metadata = {
   title: pageTitle('Contact Us'),
@@ -55,12 +55,7 @@ export default async function ContactPage() {
               {(settings.address || settings.suburb) && (
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Address</dt>
-                  <dd className="mt-1">
-                    {settings.address && <>{settings.address}<br /></>}
-                    {[settings.suburb, settings.state, settings.postcode]
-                      .filter(Boolean)
-                      .join(', ')}
-                  </dd>
+                  <dd className="mt-1">{formatFullAddress(settings)}</dd>
                 </div>
               )}
               {settings.booking_url && (

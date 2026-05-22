@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Facebook, Instagram, Phone } from 'lucide-react'
 import type { SiteSettings } from '@/types/database'
+import { formatFullAddress } from '@/lib/site/address'
 import { Logo } from './Logo'
 
 interface Props {
@@ -58,18 +59,8 @@ export function Footer({ settings }: Props) {
                   </a>
                 </p>
               )}
-              {(settings.suburb || settings.address) && (
-                <p className="text-cream/60">
-                  {settings.address && (
-                    <>
-                      {settings.address}
-                      <br />
-                    </>
-                  )}
-                  {settings.suburb}
-                  {settings.state ? `, ${settings.state}` : ''}
-                  {settings.postcode ? ` ${settings.postcode}` : ''}
-                </p>
+              {(settings.address || settings.suburb) && (
+                <p className="text-cream/60">{formatFullAddress(settings)}</p>
               )}
             </address>
           </div>

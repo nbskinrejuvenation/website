@@ -16,6 +16,8 @@ interface Props {
   phone?: string
   heroImageUrl?: string
   heroImageAlt?: string
+  /** Full clinic address shown under CTAs */
+  locationLine?: string
 }
 
 export function HeroSection({
@@ -27,6 +29,7 @@ export function HeroSection({
   phone,
   heroImageUrl,
   heroImageAlt,
+  locationLine,
 }: Props) {
   const reduceMotion = useReducedMotion()
 
@@ -99,12 +102,14 @@ export function HeroSection({
             </Link>
           </motion.div>
 
-          <motion.p
-            className="mt-6 text-sm text-ink-faint"
-            variants={reduceMotion ? undefined : heroStagger.item}
-          >
-            Free 30-minute consultation · By appointment · Dee Why
-          </motion.p>
+          {locationLine && (
+            <motion.p
+              className="mt-6 text-sm text-ink-faint"
+              variants={reduceMotion ? undefined : heroStagger.item}
+            >
+              Free 30-minute consultation · By appointment · {locationLine}
+            </motion.p>
+          )}
         </motion.div>
       </div>
     </section>

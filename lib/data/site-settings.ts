@@ -1,4 +1,5 @@
 import { createPublicClient } from '@/lib/supabase/public'
+import { CLINIC_ADDRESS_PARTS } from '@/lib/site/address'
 import { unstable_cache } from 'next/cache'
 import type { SiteSettings } from '@/types/database'
 
@@ -7,10 +8,10 @@ const FALLBACK: SiteSettings = {
   id: 'fallback',
   business_name: 'Naturally Beautiful Skin Rejuvenation',
   phone: '0404 203 800',
-  address: 'Shop 9–10, 8–12 Pacific Parade',
-  suburb: 'Dee Why',
-  state: 'NSW',
-  postcode: '2099',
+  address: CLINIC_ADDRESS_PARTS.address,
+  suburb: CLINIC_ADDRESS_PARTS.suburb,
+  state: CLINIC_ADDRESS_PARTS.state,
+  postcode: CLINIC_ADDRESS_PARTS.postcode,
   lat: -33.7509,
   lng: 151.2863,
   facebook_url: null,

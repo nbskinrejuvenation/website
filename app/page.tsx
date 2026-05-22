@@ -10,10 +10,10 @@ import { TreatmentsGrid } from '@/components/sections/TreatmentsGrid'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { CLINIC_ADDRESS_FULL, formatFullAddress } from '@/lib/site/address'
 
 export const metadata: Metadata = {
-  description:
-    "Luxury skin rejuvenation on Sydney's Northern Beaches. Face and body treatments in Dee Why — book your free consultation today.",
+  description: `Luxury skin rejuvenation on Sydney's Northern Beaches. Visit us at ${CLINIC_ADDRESS_FULL} — book your free consultation today.`,
   alternates: { canonical: '/' },
 }
 
@@ -27,13 +27,14 @@ export default async function HomePage() {
   ])
 
   const featuredServices = allServices.slice(0, FEATURED_LIMIT)
+  const fullAddress = formatFullAddress(settings)
 
   return (
     <>
       <StructuredData type="LocalBusiness" settings={settings} />
 
       <HeroSection
-        eyebrow="Northern Beaches · Dee Why"
+        eyebrow={fullAddress}
         heading={
           <>
             Enhance your{' '}
@@ -45,11 +46,12 @@ export default async function HomePage() {
         ctaHref="/contact"
         phone={settings.phone ?? undefined}
         heroImageUrl="/images/hero-home.png"
-        heroImageAlt="Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, Dee Why"
+        heroImageAlt={`Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, ${fullAddress}`}
+        locationLine={fullAddress}
       />
 
       <Reveal>
-        <TrustPillars />
+        <TrustPillars fullAddress={fullAddress} />
       </Reveal>
 
       <Reveal delay={0.05}>
@@ -76,7 +78,7 @@ export default async function HomePage() {
       <Reveal delay={0.05}>
         <CTABanner
           heading="Book your free consultation"
-          body="Call us to arrange a complimentary 30-minute skin assessment at our Dee Why clinic. We'll recommend the most effective treatment for you."
+          body={`Call us to arrange a complimentary 30-minute skin assessment at ${fullAddress}. We'll recommend the most effective treatment for you.`}
           ctaLabel="Contact us"
           ctaHref="/contact"
           phone={settings.phone ?? undefined}

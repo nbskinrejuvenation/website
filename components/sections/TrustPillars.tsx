@@ -1,6 +1,10 @@
 import { Award, Heart, MapPin, Sparkles } from 'lucide-react'
 
-const pillars = [
+interface Props {
+  fullAddress: string
+}
+
+const pillars = (fullAddress: string) => [
   {
     icon: Award,
     title: 'Accredited professionals',
@@ -18,17 +22,18 @@ const pillars = [
   },
   {
     icon: MapPin,
-    title: 'Northern Beaches',
-    description: 'Boutique clinic in Dee Why — personalised care, by appointment.',
+    title: 'Our clinic',
+    description: `${fullAddress} — personalised care, by appointment.`,
   },
 ]
 
-export function TrustPillars() {
+export function TrustPillars({ fullAddress }: Props) {
+  const items = pillars(fullAddress)
   return (
     <section className="border-y border-sand-dark/60 bg-cream-dark py-14" aria-label="Why choose us">
       <div className="section-container">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map(({ icon: Icon, title, description }) => (
+          {items.map(({ icon: Icon, title, description }) => (
             <div key={title} className="text-center lg:text-left">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 text-brand-600 lg:mx-0">
                 <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />

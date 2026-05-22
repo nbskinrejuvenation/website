@@ -9,6 +9,7 @@ import { PreviewBanner } from '@/components/layout/PreviewBanner'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getServicesByCategory } from '@/lib/data/services'
 import { buildOpenGraphImages, SITE_URL } from '@/lib/seo/metadata'
+import { CLINIC_ADDRESS_FULL } from '@/lib/site/address'
 
 const sans = DM_Sans({
   subsets: ['latin'],
@@ -29,8 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const [settings, headerList] = await Promise.all([getSiteSettings(), headers()])
   const businessName = settings.business_name ?? 'Naturally Beautiful Skin Rejuvenation'
   const isPreview = headerList.get('x-preview-mode') === '1'
-  const description =
-    "Luxury skin rejuvenation on Sydney's Northern Beaches. Micro needling, HIFU, laser and more — book your free consultation in Dee Why."
+  const description = `Luxury skin rejuvenation on Sydney's Northern Beaches. Micro needling, HIFU, laser and more — ${CLINIC_ADDRESS_FULL}.`
   const ogImages = buildOpenGraphImages()
 
   return {

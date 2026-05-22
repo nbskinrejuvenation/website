@@ -5,6 +5,7 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+import { formatFullAddress } from '@/lib/site/address'
 
 const fallbackDescription =
   "Meet Lilian, founder of Naturally Beautiful Skin Rejuvenation. Accredited beauty therapist on Sydney's Northern Beaches."
@@ -34,6 +35,7 @@ export default async function AboutPage() {
     getTestimonialsByPage('about'),
     getSiteSettings(),
   ])
+  const fullAddress = formatFullAddress(settings)
 
   let bodyHtml: string | null = null
   try {
@@ -67,8 +69,8 @@ export default async function AboutPage() {
         <section className="section-container py-16">
           <div className="prose prose-neutral mx-auto max-w-3xl">
             <p>
-              Naturally Beautiful Skin Rejuvenation is a boutique beauty clinic in Dee Why on
-              Sydney&apos;s Northern Beaches, founded and run by Lilian — an accredited beauty
+              Naturally Beautiful Skin Rejuvenation is a boutique beauty clinic at {fullAddress},
+              founded and run by Lilian — an accredited beauty
               therapist with a passion for evidence-based skin treatments.
             </p>
             <p>
