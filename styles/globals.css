@@ -1,23 +1,19 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* ── CSS Custom Properties (design tokens) ─────────────────────────────────── */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 20 14% 10%;
-  --primary: 18 52% 52%;           /* brand copper */
+  --background: 30 33% 98%;
+  --foreground: 20 6% 16%;
+  --primary: 15 28% 61%;
   --primary-foreground: 0 0% 100%;
-  --muted: 30 10% 96%;
-  --muted-foreground: 25 5% 45%;
-  --border: 30 8% 88%;
-  --ring: 18 52% 52%;
-
-  /* Font vars — populated by next/font in layout.tsx */
+  --muted: 30 20% 95%;
+  --muted-foreground: 25 5% 42%;
+  --border: 30 15% 88%;
+  --ring: 15 28% 61%;
   --font-sans: '';
   --font-display: '';
 }
 
-/* ── Base Reset ─────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -32,44 +28,60 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-family: var(--font-sans), system-ui, sans-serif;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* ── Focus styles ───────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* ── Prose ─────────────────────────────────────────────────────────────────── */
 .prose h2, .prose h3 {
   font-family: var(--font-display), Georgia, serif;
   color: hsl(var(--foreground));
+  font-weight: 300;
 }
 
-/* ── Component layer ───────────────────────────────────────────────────────── */
+/* Placeholder hero — swap for Nanobanana image via heroImageUrl */
+.hero-placeholder {
+  background:
+    linear-gradient(105deg, rgba(250, 248, 246, 0.92) 0%, rgba(250, 248, 246, 0.75) 42%, rgba(250, 248, 246, 0.2) 68%),
+    linear-gradient(135deg, #f0e6e3 0%, #e5d4cf 35%, #d4b5ad 70%, #c49a8f 100%);
+}
+
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-none bg-brand-500 px-8 py-3
-           text-sm font-semibold uppercase tracking-widest text-white
-           transition-colors duration-200 hover:bg-brand-600
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2
+    @apply inline-flex items-center justify-center gap-2 rounded-sm bg-brand-500 px-8 py-3.5
+           text-sm font-medium tracking-wide text-white
+           transition-all duration-300 hover:bg-brand-600 hover:shadow-soft
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2
            disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-none border border-brand-500 px-8 py-3
-           text-sm font-semibold uppercase tracking-widest text-brand-500
-           transition-colors duration-200 hover:bg-brand-500 hover:text-white
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-brand-400 bg-transparent px-8 py-3.5
+           text-sm font-medium tracking-wide text-brand-600
+           transition-all duration-300 hover:border-brand-500 hover:bg-brand-50
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2;
+  }
+
+  .btn-phone {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm bg-ink px-8 py-3.5
+           text-sm font-medium tracking-wide text-cream
+           transition-all duration-300 hover:bg-brand-800 hover:shadow-soft
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2;
   }
 
   .section-container {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
   }
 
   .section-heading {
-    @apply font-display text-3xl font-light tracking-wide text-neutral-800 md:text-4xl;
+    @apply font-display text-3xl font-light tracking-tight text-ink md:text-4xl lg:text-[2.75rem];
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.2em] text-brand-600;
   }
 }

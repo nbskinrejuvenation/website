@@ -10,38 +10,48 @@ interface Props {
   heading?: string
 }
 
-export function TestimonialsSection({ testimonials, heading = 'What our clients say' }: Props) {
+export function TestimonialsSection({
+  testimonials,
+  heading = 'What our clients say',
+}: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
 
   if (testimonials.length === 0) return null
 
   return (
-    <section className="bg-neutral-50 py-20" aria-labelledby="testimonials-heading">
+    <section className="bg-cream-dark py-20 md:py-24" aria-labelledby="testimonials-heading">
       <div className="section-container">
-        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-brand-500">See what</p>
-        <h2 id="testimonials-heading" className="section-heading mb-12 text-center">{heading}</h2>
+        <p className="eyebrow mb-3 text-center">Client stories</p>
+        <h2 id="testimonials-heading" className="section-heading mb-14 text-center">
+          {heading}
+        </h2>
 
-        <div className="relative">
+        <div className="relative px-6">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
               {testimonials.map(t => (
-                <div key={t.id} className="min-w-0 flex-[0_0_100%] px-4 md:flex-[0_0_50%] lg:flex-[0_0_33.33%]">
-                  <blockquote className="flex h-full flex-col bg-white p-8 shadow-sm ring-1 ring-neutral-100">
-                    <p className="flex-1 text-sm leading-relaxed text-neutral-600">"{t.body}"</p>
-                    <footer className="mt-6 flex items-center gap-4">
+                <div
+                  key={t.id}
+                  className="min-w-0 flex-[0_0_100%] px-3 md:flex-[0_0_50%] lg:flex-[0_0_33.33%]"
+                >
+                  <blockquote className="flex h-full flex-col rounded-sm bg-white p-8 shadow-card ring-1 ring-sand-dark/40">
+                    <p className="flex-1 font-display text-lg font-light italic leading-relaxed text-ink-muted">
+                      &ldquo;{t.body}&rdquo;
+                    </p>
+                    <footer className="mt-8 flex items-center gap-4 border-t border-sand-dark/40 pt-6">
                       {t.avatar_url && (
                         <Image
                           src={t.avatar_url}
-                          alt={t.client_name}
-                          width={48}
-                          height={48}
-                          className="h-12 w-12 rounded-full object-cover"
+                          alt=""
+                          width={44}
+                          height={44}
+                          className="h-11 w-11 rounded-full object-cover"
                         />
                       )}
                       <div>
-                        <p className="text-sm font-semibold text-neutral-800">{t.client_name}</p>
+                        <p className="text-sm font-medium text-ink">{t.client_name}</p>
                         {t.treatment_ref && (
-                          <p className="text-xs text-neutral-500">Treatment: {t.treatment_ref}</p>
+                          <p className="text-xs text-ink-faint">{t.treatment_ref}</p>
                         )}
                       </div>
                     </footer>
@@ -50,11 +60,19 @@ export function TestimonialsSection({ testimonials, heading = 'What our clients 
               ))}
             </div>
           </div>
-          <button onClick={() => emblaApi?.scrollPrev()} className="absolute -left-4 top-1/2 -translate-y-1/2 rounded-full bg-white p-2 shadow-md hover:bg-neutral-50 transition-colors" aria-label="Previous testimonial">
-            <ChevronLeft className="h-5 w-5 text-neutral-600" />
+          <button
+            onClick={() => emblaApi?.scrollPrev()}
+            className="absolute -left-2 top-1/2 -translate-y-1/2 rounded-full bg-white p-2.5 shadow-soft ring-1 ring-sand-dark/40 transition-colors hover:bg-brand-50 md:left-0"
+            aria-label="Previous"
+          >
+            <ChevronLeft className="h-5 w-5 text-ink-muted" />
           </button>
-          <button onClick={() => emblaApi?.scrollNext()} className="absolute -right-4 top-1/2 -translate-y-1/2 rounded-full bg-white p-2 shadow-md hover:bg-neutral-50 transition-colors" aria-label="Next testimonial">
-            <ChevronRight className="h-5 w-5 text-neutral-600" />
+          <button
+            onClick={() => emblaApi?.scrollNext()}
+            className="absolute -right-2 top-1/2 -translate-y-1/2 rounded-full bg-white p-2.5 shadow-soft ring-1 ring-sand-dark/40 transition-colors hover:bg-brand-50 md:right-0"
+            aria-label="Next"
+          >
+            <ChevronRight className="h-5 w-5 text-ink-muted" />
           </button>
         </div>
       </div>

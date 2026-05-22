@@ -5,52 +5,85 @@ import type { TreatmentCard } from '@/types/database'
 interface Props {
   services: TreatmentCard[]
   heading?: string
+  subheading?: string
+  showViewAll?: boolean
 }
 
-export function TreatmentsGrid({ services, heading = 'Our Treatments' }: Props) {
+export function TreatmentsGrid({
+  services,
+  heading = 'Our treatments',
+  subheading,
+  showViewAll = false,
+}: Props) {
   if (services.length === 0) return null
 
   return (
-    <section className="section-container py-20" aria-labelledby="treatments-heading">
-      <h2 id="treatments-heading" className="section-heading mb-12 text-center">
-        {heading}
-      </h2>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {services.map(service => (
-          <Link
-            key={service.id}
-            href={`/services/${service.slug}`}
-            className="group relative flex flex-col overflow-hidden bg-white shadow-sm ring-1 ring-neutral-100 transition-shadow hover:shadow-md"
-          >
-            <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
-              {service.hero_image ? (
-                <Image
-                  src={service.hero_image}
-                  alt={service.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-100 to-brand-200" />
-              )}
-              <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-600">
-                {service.category}
-              </span>
-            </div>
-            <div className="flex flex-1 flex-col p-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-800 group-hover:text-brand-500 transition-colors">
-                {service.title}
-              </h3>
-              {service.subtitle && (
-                <p className="mt-1 text-sm text-neutral-500 line-clamp-2">{service.subtitle}</p>
-              )}
-              <span className="mt-3 text-xs font-semibold uppercase tracking-widest text-brand-500 group-hover:underline">
-                Learn more →
-              </span>
-            </div>
-          </Link>
-        ))}
+    <section className="bg-cream py-20 md:py-24" aria-labelledby="treatments-heading">
+      <div className="section-container">
+        <div className="mb-14 text-center">
+          <p className="eyebrow mb-3">Face & body</p>
+          <h2 id="treatments-heading" className="section-heading">
+            {heading}
+          </h2>
+          {subheading && (
+            <p className="mx-auto mt-4 max-w-lg text-ink-muted">{subheading}</p>
+          )}
+        </div>
+
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {services.map(service => (
+            <Link
+              key={service.id}
+              href={`/services/${service.slug}`}
+              className="group flex flex-col overflow-hidden rounded-sm bg-white shadow-card ring-1 ring-sand-dark/40 transition-all duration-300 hover:shadow-soft hover:ring-brand-200"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                {service.hero_image ? (
+                  <Image
+                    src={service.hero_image}
+                    alt={service.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                ) : (
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${
+                      service.category === 'body'
+                        ? 'from-brand-100 via-cream-dark to-brand-200/80'
+                        : 'from-brand-50 via-brand-100 to-brand-200/60'
+                    }`}
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="absolute left-3 top-3 rounded-sm bg-cream/95 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-brand-700">
+                  {service.category}
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="font-display text-lg font-light text-ink transition-colors group-hover:text-brand-600">
+                  {service.title}
+                </h3>
+                {service.subtitle && (
+                  <p className="mt-2 text-sm leading-relaxed text-ink-muted line-clamp-2">
+                    {service.subtitle}
+                  </p>
+                )}
+                <span className="mt-4 text-xs font-medium uppercase tracking-[0.12em] text-brand-600">
+                  Discover →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {showViewAll && (
+          <div className="mt-12 text-center">
+            <Link href="/services" className="btn-outline">
+              View all treatments
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   )

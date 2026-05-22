@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Lato, Playfair_Display } from 'next/font/google'
+import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import { headers } from 'next/headers'
 import '@/styles/globals.css'
 
@@ -9,16 +9,17 @@ import { PreviewBanner } from '@/components/layout/PreviewBanner'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getServicesByCategory } from '@/lib/data/services'
 
-const sans = Lato({
+const sans = DM_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '700'],
+  weight: ['400', '500', '600'],
   variable: '--font-sans',
   display: 'swap',
 })
 
-const display = Playfair_Display({
+const display = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['300', '400', '500'],
+  style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
 })
@@ -36,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${businessName}`,
     },
     description:
-      "Professional skin rejuvenation treatments on Sydney's Northern Beaches. Micro needling, HIFU, laser, and more. Book a free consultation today.",
+      "Luxury skin rejuvenation on Sydney's Northern Beaches. Micro needling, HIFU, laser and more — book your free consultation in Dee Why.",
     openGraph: {
       type: 'website',
       siteName: businessName,
@@ -61,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en-AU" className={`${sans.variable} ${display.variable}`}>
-      <body>
+      <body className="bg-cream text-ink antialiased">
         {isPreview && <PreviewBanner />}
         <Header settings={settings} servicesByCategory={servicesByCategory} />
         <main id="main-content">{children}</main>

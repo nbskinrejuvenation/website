@@ -23,7 +23,7 @@ export function NavDropdown({ label, services }: Props) {
       <button
         className={cn(
           'flex items-center gap-1 rounded px-3 py-2 text-sm font-medium transition-colors',
-          open ? 'text-brand-500' : 'text-neutral-600 hover:text-brand-500',
+          open ? 'text-brand-600' : 'text-ink-muted hover:text-brand-600',
         )}
         aria-expanded={open}
         aria-haspopup="true"
@@ -33,12 +33,12 @@ export function NavDropdown({ label, services }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 w-64 border border-neutral-100 bg-white py-2 shadow-lg">
+        <div className="absolute left-0 top-full z-50 w-64 rounded-sm border border-sand-dark/60 bg-cream py-2 shadow-soft">
           {services.map(service => (
             <Link
               key={service.id}
               href={`/services/${service.slug}`}
-              className="block px-4 py-2 text-sm text-neutral-700 hover:bg-brand-50 hover:text-brand-500 transition-colors"
+              className="block px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-brand-50 hover:text-brand-600"
               onClick={() => setOpen(false)}
             >
               {service.title}

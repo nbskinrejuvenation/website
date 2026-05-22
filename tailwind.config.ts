@@ -9,34 +9,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand palette — NB Skin Rejuvenation
+        // Soft rose accent — luxury calm rebrand
         brand: {
-          50:  '#fdf8f6',
-          100: '#f9ede7',
-          200: '#f2d5c8',
-          300: '#e8b39a',
-          400: '#d98b6b',
-          500: '#c96b47',   // Primary brand copper/terracotta
-          600: '#b05538',
-          700: '#8f422c',
-          800: '#743728',
-          900: '#5e2e21',
-          950: '#33160f',
+          50: '#FAF6F4',
+          100: '#F0E6E3',
+          200: '#E5D4CF',
+          300: '#D4B5AD',
+          400: '#C49A8F',
+          500: '#B8897E',
+          600: '#9E6F65',
+          700: '#825A52',
+          800: '#6B4A44',
+          900: '#563D38',
+          950: '#3D2A26',
         },
-        neutral: {
-          50:  '#fafaf9',
-          100: '#f5f5f4',
-          200: '#e7e5e4',
-          300: '#d6d3d1',
-          400: '#a8a29e',
-          500: '#78716c',
-          600: '#57534e',
-          700: '#44403c',
-          800: '#292524',
-          900: '#1c1917',
-          950: '#0c0a09',
+        cream: {
+          DEFAULT: '#FAF8F6',
+          dark: '#F3EDE6',
         },
-        // Semantic tokens
+        sand: {
+          DEFAULT: '#EBE3DA',
+          dark: '#E0D5C9',
+        },
+        ink: {
+          DEFAULT: '#2A2624',
+          muted: '#6E6863',
+          faint: '#9A948E',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
@@ -52,19 +51,13 @@ const config: Config = {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         display: ['var(--font-display)', 'Georgia', 'serif'],
       },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-        '112': '28rem',
-        '128': '32rem',
-      },
-      maxWidth: {
-        '8xl': '88rem',
-        '9xl': '96rem',
+      boxShadow: {
+        soft: '0 4px 24px -4px rgba(42, 38, 36, 0.08)',
+        card: '0 2px 16px -2px rgba(42, 38, 36, 0.06)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.4s ease-out',
+        'fade-in': 'fadeIn 0.6s ease-out',
+        'slide-up': 'slideUp 0.5s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -72,16 +65,8 @@ const config: Config = {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(12px)' },
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: '70ch',
-            color: 'hsl(var(--foreground))',
-          },
         },
       },
     },
