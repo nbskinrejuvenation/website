@@ -13,7 +13,7 @@ export function Header({ settings, servicesByCategory }: Props) {
   const bodyServices = servicesByCategory['body'] ?? []
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-brand-300 bg-brand-800 shadow-[0_2px_20px_-4px_rgba(42,38,36,0.35)]">
+    <header className="sticky top-0 z-40 border-b-2 border-brand-500 bg-brand-600 shadow-[0_2px_20px_-4px_rgba(42,38,36,0.25)]">
       <nav
         className="section-container flex h-[4.5rem] items-center justify-between gap-4"
         aria-label="Main navigation"
@@ -73,7 +73,7 @@ export function Header({ settings, servicesByCategory }: Props) {
 
         <Link
           href="/contact"
-          className="btn-phone hidden !bg-cream !px-5 !py-2.5 !text-brand-800 hover:!bg-brand-50 md:inline-flex"
+          className="btn-phone hidden !bg-cream !px-5 !py-2.5 !text-brand-600 hover:!bg-brand-50 md:inline-flex"
         >
           Book Appointment
         </Link>
