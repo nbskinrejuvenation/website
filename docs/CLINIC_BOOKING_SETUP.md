@@ -48,7 +48,16 @@ Until Google is configured, bookings still save to Supabase; calendar sync is sk
 
 Default booking path is `/book`. Optional: set `site_settings.booking_url` to `/book` in Supabase.
 
-### 5. Test an end-to-end booking
+### 5. Fix “row-level security policy” on `clients`
+
+The booking API must use the **service_role** secret, not the anon key.
+
+1. Supabase → **Project Settings → API** → copy **`service_role`** (secret)
+2. Set **`SUPABASE_SERVICE_ROLE_KEY`** in `.env.local` and Vercel — it must **not** match `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Run **`supabase/migrations/20260525_fix_booking_rls.sql`** in SQL Editor
+4. Restart `npm run dev` or redeploy Vercel
+
+### 6. Test an end-to-end booking
 
 1. Open `/book`
 2. Choose a date and 30-minute slot
@@ -56,7 +65,7 @@ Default booking path is `/book`. Optional: set `site_settings.booking_url` to `/
 4. Check **Supabase → Table Editor → `consultation_bookings`** and **`clients`**
 5. Check **Google Calendar** for the new event
 
-### 6. Adjust clinic hours
+### 7. Adjust clinic hours
 
 Edit **`availability_rules`** in Supabase (day 0 = Sunday … 6 = Saturday).
 
