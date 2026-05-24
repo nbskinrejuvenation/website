@@ -53,7 +53,9 @@ When you set a consultation to **Cancelled**, the app:
 3. Sends calendar cancellation updates to attendees (`sendUpdates=all`)
 4. Clears `google_event_id` in the database so the time slot can be booked again
 
-If calendar delete or email fails, the booking is still marked cancelled in Supabase. The inbox shows what succeeded (e.g. “cancellation email sent, calendar event removed”).
+If calendar delete or email fails, the booking is still marked cancelled in Supabase. The inbox shows the exact result (e.g. “email sent to client@…” or “email failed: …”).
+
+For already-cancelled bookings, use **Resend cancellation email** in the admin detail panel to send again (useful after fixing Resend config).
 
 ## Booking emails
 

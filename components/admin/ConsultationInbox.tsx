@@ -25,6 +25,7 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
     initialConsultations[0]?.id ?? null,
   )
   const [saving, setSaving] = useState(false)
+  const [resendingEmail, setResendingEmail] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   const selected = consultations.find(c => c.id === selectedId) ?? null
@@ -39,6 +40,31 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
       timeZone: 'Australia/Sydney',
     })
 
+  const resendCancellationEmail = async (id: string) => {
+    setResendingEmail(true)
+    setMessage(null)
+    try {
+      const res = await fetch(`/api/admin/consultations/${id}/resend-cancellation-email`, {
+        method: 'POST',
+      })
+      const json = (await res.json()) as {
+        sent?: boolean
+        error?: string | null
+        recipient?: string | null
+      }
+      if (!res.ok) throw new Error(json.error ?? 'Resend failed')
+      if (json.sent) {
+        setMessage(`Cancellation email sent to ${json.recipient}`)
+      } else {
+        setMessage(`Email not sent: ${json.error ?? 'unknown error'}`)
+      }
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'Resend failed')
+    } finally {
+      setResendingEmail(false)
+    }
+  }
+
   const patch = async (id: string, body: { status?: ConsultationStatus; internal_notes?: string | null }) => {
     setSaving(true)
     setMessage(null)
@@ -51,7 +77,7 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
       const json = (await res.json()) as {
         consultation?: ConsultationWithClient
         calendarEventRemoved?: boolean
-        cancellationEmailSent?: boolean
+        cancellationEmail?: { sent: boolean; error: string | null; recipient: string | null }
         error?: string
       }
       if (!res.ok) throw new Error(json.error ?? 'Update failed')
@@ -60,10 +86,10 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
       }
       if (json.consultation?.status === 'cancelled') {
         const parts = ['Saved — booking cancelled']
-        if (json.cancellationEmailSent) {
-          parts.push(`email sent to ${json.consultation.client.email}`)
-        } else {
-          parts.push('client email not sent — check RESEND_API_KEY and EMAIL_FROM on server')
+        if (json.cancellationEmail?.sent) {
+          parts.push(`email sent to ${json.cancellationEmail.recipient}`)
+        } else if (json.cancellationEmail) {
+          parts.push(`email failed: ${json.cancellationEmail.error ?? 'unknown error'}`)
         }
         if (json.calendarEventRemoved) parts.push('calendar event removed')
         setMessage(parts.join('. '))
@@ -165,8 +191,10 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
             <ConsultationDetail
               consultation={selected}
               saving={saving}
+              resendingEmail={resendingEmail}
               message={message}
               onPatch={patch}
+              onResendCancellationEmail={resendCancellationEmail}
               formatWhen={formatWhen}
             />
           )}
@@ -179,14 +207,18 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
 function ConsultationDetail({
   consultation: c,
   saving,
+  resendingEmail,
   message,
   onPatch,
+  onResendCancellationEmail,
   formatWhen,
 }: {
   consultation: ConsultationWithClient
   saving: boolean
+  resendingEmail: boolean
   message: string | null
   onPatch: (id: string, body: { status?: ConsultationStatus; internal_notes?: string | null }) => void
+  onResendCancellationEmail: (id: string) => void
   formatWhen: (iso: string) => string
 }) {
   const [notes, setNotes] = useState(c.internal_notes ?? '')
@@ -258,6 +290,25 @@ function ConsultationDetail({
         </div>
       </div>
 
+      {c.status === 'cancelled' && (
+        <div className="rounded-sm border border-sand-dark/60 bg-cream-dark/50 p-4">
+          <p className="text-xs font-medium uppercase tracking-widest text-ink-faint">
+            Client email
+          </p>
+          <p className="mt-2 text-sm text-ink-muted">
+            Sends cancellation + rebook link to {c.client.email}
+          </p>
+          <button
+            type="button"
+            disabled={saving || resendingEmail}
+            onClick={() => onResendCancellationEmail(c.id)}
+            className="btn-outline mt-3 disabled:opacity-50"
+          >
+            {resendingEmail ? 'Sending…' : 'Resend cancellation email'}
+          </button>
+        </div>
+      )}
+
       <div>
         <label htmlFor="internal_notes" className="mb-2 block text-xs font-medium uppercase tracking-widest text-ink-faint">
           Internal notes
@@ -284,7 +335,18 @@ function ConsultationDetail({
         <p className="text-xs text-ink-faint">Synced to Google Calendar</p>
       )}
 
-      {message && <p className="text-sm text-brand-600">{message}</p>}
+      {message && (
+        <p
+          className={cn(
+            'text-sm',
+            message.includes('failed') || message.includes('not sent')
+              ? 'text-red-600'
+              : 'text-brand-600',
+          )}
+        >
+          {message}
+        </p>
+      )}
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import { CONSULTATION_DURATION_MINUTES } from '@/lib/booking/constants'
 import { emailLayout, formatConsultationWhen } from '@/lib/email/layout'
+import type { EmailSendResult } from '@/lib/email/send-result'
+import { emailSent, emailSkipped } from '@/lib/email/send-result'
 import {
   emailButton,
   escapeHtml,
@@ -36,25 +38,33 @@ function cancellationHtml(input: ConsultationCancellationInput, when: string): s
   `)
 }
 
-/** Sends cancellation notice to the client. Returns false if skipped or failed. */
+/** Sends cancellation notice to the client. */
 export async function sendConsultationCancellationEmail(
   input: ConsultationCancellationInput,
-): Promise<boolean> {
+): Promise<EmailSendResult> {
   if (!isClientEmailConfigured()) {
-    console.warn('[email] Resend not configured — skipping cancellation email')
-    return false
+    const msg =
+      'Email not configured on server. Set RESEND_API_KEY and EMAIL_FROM (quoted if it has spaces) in Vercel or .env.local.'
+    console.warn('[email] cancellation:', msg)
+    return emailSkipped(msg)
+  }
+
+  const to = input.clientEmail.trim()
+  if (!to || !to.includes('@')) {
+    return emailSkipped('Client has no valid email address on file.')
   }
 
   const when = formatConsultationWhen(input.startsAt)
   try {
     await sendEmail({
-      to: input.clientEmail,
+      to,
       subject: `Consultation cancelled — ${when}`,
       html: cancellationHtml(input, when),
     })
-    return true
+    return emailSent()
   } catch (err) {
-    console.error('[email] cancellation:', err)
-    return false
+    const msg = err instanceof Error ? err.message : 'Resend send failed'
+    console.error('[email] cancellation:', msg)
+    return emailSkipped(msg)
   }
 }

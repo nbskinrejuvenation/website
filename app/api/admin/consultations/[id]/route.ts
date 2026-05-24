@@ -31,12 +31,12 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   }
 
   try {
-    const { consultation, calendarEventRemoved, cancellationEmailSent } =
+    const { consultation, calendarEventRemoved, cancellationEmail } =
       await updateConsultation(id, {
         status: result.data.status as ConsultationStatus | undefined,
         internal_notes: result.data.internal_notes,
       })
-    return NextResponse.json({ consultation, calendarEventRemoved, cancellationEmailSent })
+    return NextResponse.json({ consultation, calendarEventRemoved, cancellationEmail })
   } catch (err) {
     console.error('[admin/consultations PATCH]', err)
     return NextResponse.json({ error: 'Update failed' }, { status: 500 })

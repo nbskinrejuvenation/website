@@ -47,7 +47,7 @@ export async function sendEmail(input: {
   const from = getEmailFrom()
 
   const resend = getResendClient()
-  const { error } = await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from,
     to: input.to,
     subject: input.subject,
@@ -56,6 +56,9 @@ export async function sendEmail(input: {
 
   if (error) {
     throw new Error(error.message)
+  }
+  if (!data?.id) {
+    throw new Error('Resend accepted the request but returned no message id')
   }
 }
 
