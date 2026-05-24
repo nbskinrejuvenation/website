@@ -113,9 +113,11 @@ Reminders are **not** sent for cancelled, completed, or no-show bookings.
 
 ## Cancellation emails (admin)
 
-When staff mark a consultation **Cancelled** in `/admin/consultations`, the client receives a branded cancellation email with the original date/time and a link to rebook at `/book`.
+When staff mark a consultation **Cancelled** in `/admin/consultations`, the client receives a branded cancellation email with the original date/time and a prominent **Book a new consultation** button linking to `/book`.
 
-Uses the same Resend env vars as booking confirmations. Google Calendar may also notify attendees if an event existed.
+Requires `RESEND_API_KEY` and `EMAIL_FROM` (not `CLINIC_NOTIFICATION_EMAIL`). Google Calendar may also notify attendees if an event existed.
+
+**Note:** The email is only sent when status changes *to* cancelled (not if already cancelled). The admin inbox shows whether the email was sent.
 
 ---
 

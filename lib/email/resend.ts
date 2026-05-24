@@ -1,11 +1,21 @@
 import { Resend } from 'resend'
 
+/** Minimum config to email clients (confirmations, reminders, cancellations). */
+export function isClientEmailConfigured(): boolean {
+  return Boolean(process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim())
+}
+
+/** Full config including clinic inbox alerts on new bookings. */
 export function isEmailConfigured(): boolean {
   return Boolean(
-    process.env.RESEND_API_KEY?.trim() &&
-      process.env.EMAIL_FROM?.trim() &&
-      process.env.CLINIC_NOTIFICATION_EMAIL?.trim(),
+    isClientEmailConfigured() && process.env.CLINIC_NOTIFICATION_EMAIL?.trim(),
   )
+}
+
+export function emailButton(href: string, label: string): string {
+  return `<p style="margin:28px 0 0;text-align:center;">
+  <a href="${href}" style="display:inline-block;padding:14px 32px;background:#7d4a54;color:#faf7f4 !important;text-decoration:none;border-radius:2px;font-size:15px;font-weight:500;">${label}</a>
+</p>`
 }
 
 function getResendClient(): Resend {

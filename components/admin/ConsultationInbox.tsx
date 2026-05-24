@@ -60,9 +60,13 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
       }
       if (json.consultation?.status === 'cancelled') {
         const parts = ['Saved — booking cancelled']
-        if (json.cancellationEmailSent) parts.push('cancellation email sent')
+        if (json.cancellationEmailSent) {
+          parts.push(`email sent to ${json.consultation.client.email}`)
+        } else {
+          parts.push('client email not sent — check RESEND_API_KEY and EMAIL_FROM on server')
+        }
         if (json.calendarEventRemoved) parts.push('calendar event removed')
-        setMessage(parts.join(', '))
+        setMessage(parts.join('. '))
       } else {
         setMessage('Saved')
       }

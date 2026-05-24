@@ -1,5 +1,5 @@
 import { sendConsultationReminderEmail } from '@/lib/email/consultation-reminder'
-import { isEmailConfigured } from '@/lib/email/resend'
+import { isClientEmailConfigured } from '@/lib/email/resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { Client, ConsultationBooking } from '@/types/database'
 
@@ -33,7 +33,7 @@ export async function processConsultationReminders(
   )
 
   const baseResult: ReminderRunResult = {
-    configured: isEmailConfigured(),
+    configured: isClientEmailConfigured(),
     windowStart: windowStart.toISOString(),
     windowEnd: windowEnd.toISOString(),
     candidates: 0,
@@ -42,7 +42,7 @@ export async function processConsultationReminders(
     skipped: 0,
   }
 
-  if (!isEmailConfigured()) {
+  if (!isClientEmailConfigured()) {
     console.warn('[consultation-reminders] Email not configured — skipping')
     return baseResult
   }

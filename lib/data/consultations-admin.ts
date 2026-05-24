@@ -1,4 +1,5 @@
 import { sendConsultationCancellationEmail } from '@/lib/email/consultation-cancellation'
+import { resolveNestedClient } from '@/lib/email/resolve-client'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { deleteConsultationCalendarEvent } from '@/lib/google/calendar'
@@ -105,19 +106,23 @@ export async function updateConsultation(
 
   if (error) throw new Error(`updateConsultation: ${error.message}`)
 
+  const consultation = data as ConsultationWithClient
+  const clientForEmail =
+    resolveNestedClient(consultation.client) ?? resolveNestedClient(existing.client)
+
   let cancellationEmailSent = false
-  if (isNewCancellation && existing.client?.email) {
+  if (isNewCancellation && clientForEmail?.email) {
     const settings = await getSiteSettings()
     cancellationEmailSent = await sendConsultationCancellationEmail({
-      clientName: existing.client.full_name,
-      clientEmail: existing.client.email,
-      startsAt: new Date(existing.starts_at),
+      clientName: clientForEmail.full_name,
+      clientEmail: clientForEmail.email,
+      startsAt: new Date(consultation.starts_at),
       clinicPhone: settings.phone,
     })
   }
 
   return {
-    consultation: data as ConsultationWithClient,
+    consultation,
     calendarEventRemoved,
     cancellationEmailSent,
   }
