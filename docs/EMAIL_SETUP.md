@@ -94,7 +94,9 @@ CRON_SECRET=<openssl rand -hex 32>
 
 Vercel sends `Authorization: Bearer <CRON_SECRET>` when invoking cron routes.
 
-`vercel.json` schedules: `GET /api/cron/consultation-reminders` every hour (`0 * * * *` UTC).
+`vercel.json` schedules: `GET /api/cron/consultation-reminders` **once per day** at `21:00 UTC` (~8am Sydney, varies with DST).
+
+**Vercel Hobby** only allows daily cron jobs — hourly schedules block deployment. Upgrade to Pro for hourly reminders, or trigger manually via curl (below).
 
 ### Test locally
 
