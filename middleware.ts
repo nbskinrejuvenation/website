@@ -1,8 +1,33 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import {
+  isAdminApiLoginRoute,
+  isAdminLoginRoute,
+  isAdminRoute,
+  requestHasValidAdminSession,
+} from '@/lib/admin/session'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // ── Admin area (password-protected) ─────────────────────────────────────────
+  if (isAdminRoute(pathname) || pathname.startsWith('/api/admin/')) {
+    const isPublicAdminPath =
+      isAdminLoginRoute(pathname) || isAdminApiLoginRoute(pathname)
+
+    if (!isPublicAdminPath && !requestHasValidAdminSession(request)) {
+      if (pathname.startsWith('/api/admin/')) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+      const login = new URL('/admin/login', request.url)
+      login.searchParams.set('next', pathname)
+      return NextResponse.redirect(login)
+    }
+
+    const response = NextResponse.next()
+    response.headers.set('x-admin-route', '1')
+    return response
+  }
 
   // ── 1. Preview mode cookie passthrough ─────────────────────────────────────
   // The /api/preview route sets/clears the __previewMode cookie.

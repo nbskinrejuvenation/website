@@ -71,9 +71,15 @@ Edit **`availability_rules`** in Supabase (day 0 = Sunday … 6 = Saturday).
 
 ---
 
-## Phase 2 (later)
+## Phase 2 — Admin inbox (ready)
 
-- Admin inbox at `/admin/consultations`
+See **`docs/ADMIN_SETUP.md`**
+
+- Sign in at `/admin/login`
+- Manage consultations at `/admin/consultations`
+
+## Phase 3 (later)
+
 - Paid treatment appointments
 - Stripe, reminders, client portal
 - AI intake summary (optional)

@@ -10,9 +10,16 @@ Each booking on `/book` creates an event in your Google Calendar and stores the 
 
 ## 2. OAuth consent screen
 
-1. **OAuth consent screen** → External (or Internal if Workspace)
-2. Add your email as test user (while in Testing mode)
-3. Scopes: add `https://www.googleapis.com/auth/calendar.events`
+1. **OAuth consent screen** → **External** (or Internal only if you use Google Workspace for `@nbskinrejuvenation.com.au`)
+2. Fill app name (e.g. NB Skin Rejuvenation), support email, developer contact
+3. **Scopes** → Add scope → `https://www.googleapis.com/auth/calendar.events`
+4. **Test users** (required while Publishing status is **Testing**):
+   - Click **+ Add users**
+   - Add every Google account you will sign in with, e.g. `nbskinrejuvenation@gmail.com`
+   - The account used in OAuth Playground **must** be on this list
+5. **Save**
+
+Until the app is verified by Google, only listed test users can authorize. You do **not** need full verification for your own clinic booking.
 
 ## 3. OAuth credentials
 
@@ -55,6 +62,7 @@ Book a slot on `/book` and confirm the event appears in Google Calendar with cli
 
 | Issue | Fix |
 |-------|-----|
+| **403 access_denied** / “has not completed the Google verification process” | OAuth consent screen → **Test users** → add `nbskinrejuvenation@gmail.com` (exact account you use to sign in). Wait 1–2 minutes, try again in incognito. |
 | Event not created | Check Vercel logs for `[google-calendar]`; verify refresh token not expired |
 | Wrong timezone | Events use `Australia/Sydney` |
 | Slot still shown after book | Unique index on `starts_at` prevents duplicates; refresh `/book` |

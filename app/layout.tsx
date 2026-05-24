@@ -78,14 +78,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const headerList = await headers()
   const isPreview = headerList.get('x-preview-mode') === '1'
+  const isAdmin = headerList.get('x-admin-route') === '1'
 
   return (
     <html lang="en-AU" className={`${sans.variable} ${display.variable}`}>
       <body className="bg-cream text-ink antialiased">
         {isPreview && <PreviewBanner />}
-        <Header settings={settings} servicesByCategory={servicesByCategory} />
-        <main id="main-content">{children}</main>
-        <Footer settings={settings} />
+        {isAdmin ? (
+          children
+        ) : (
+          <>
+            <Header settings={settings} servicesByCategory={servicesByCategory} />
+            <main id="main-content">{children}</main>
+            <Footer settings={settings} />
+          </>
+        )}
       </body>
     </html>
   )

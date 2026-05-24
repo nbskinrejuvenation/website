@@ -117,6 +117,7 @@ export interface ConsultationBooking {
   source_page: string | null
   google_event_id: string | null
   google_calendar_synced: boolean
+  internal_notes: string | null
   created_at: string
   updated_at: string
 }
