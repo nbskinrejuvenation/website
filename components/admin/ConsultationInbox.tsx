@@ -51,14 +51,18 @@ export function ConsultationInbox({ initialConsultations, filter }: Props) {
       const json = (await res.json()) as {
         consultation?: ConsultationWithClient
         calendarEventRemoved?: boolean
+        cancellationEmailSent?: boolean
         error?: string
       }
       if (!res.ok) throw new Error(json.error ?? 'Update failed')
       if (json.consultation) {
         setConsultations(prev => prev.map(c => (c.id === id ? json.consultation! : c)))
       }
-      if (json.calendarEventRemoved) {
-        setMessage('Saved — Google Calendar event removed and client notified')
+      if (json.consultation?.status === 'cancelled') {
+        const parts = ['Saved — booking cancelled']
+        if (json.cancellationEmailSent) parts.push('cancellation email sent')
+        if (json.calendarEventRemoved) parts.push('calendar event removed')
+        setMessage(parts.join(', '))
       } else {
         setMessage('Saved')
       }

@@ -44,15 +44,16 @@ Default redirect: **`/admin/consultations`**
 - Use a strong `ADMIN_PASSWORD`; do not share the URL publicly
 - Phase 3 can add Supabase Auth or 2FA if needed
 
-## Google Calendar on cancel
+## Google Calendar + email on cancel
 
 When you set a consultation to **Cancelled**, the app:
 
-1. Deletes the event from your Google Calendar (if one was created at booking time)
-2. Sends cancellation updates to attendees (`sendUpdates=all`)
-3. Clears `google_event_id` in the database so the time slot can be booked again
+1. Sends a **cancellation email** to the client (Resend — same setup as booking confirmations)
+2. Deletes the event from your Google Calendar (if one was created at booking time)
+3. Sends calendar cancellation updates to attendees (`sendUpdates=all`)
+4. Clears `google_event_id` in the database so the time slot can be booked again
 
-If calendar delete fails (e.g. event already removed manually), the booking is still marked cancelled in Supabase.
+If calendar delete or email fails, the booking is still marked cancelled in Supabase. The inbox shows what succeeded (e.g. “cancellation email sent, calendar event removed”).
 
 ## Booking emails
 

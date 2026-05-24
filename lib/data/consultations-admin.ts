@@ -1,3 +1,5 @@
+import { sendConsultationCancellationEmail } from '@/lib/email/consultation-cancellation'
+import { getSiteSettings } from '@/lib/data/site-settings'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { deleteConsultationCalendarEvent } from '@/lib/google/calendar'
 import type { Client, ConsultationBooking, ConsultationStatus } from '@/types/database'
@@ -40,6 +42,7 @@ export async function listConsultations(filters?: {
 export interface UpdateConsultationResult {
   consultation: ConsultationWithClient
   calendarEventRemoved: boolean
+  cancellationEmailSent: boolean
 }
 
 export async function updateConsultation(
@@ -54,16 +57,23 @@ export async function updateConsultation(
 
   const { data: existing, error: fetchError } = await supabase
     .from('consultation_bookings')
-    .select('id, status, google_event_id, google_calendar_synced')
+    .select(
+      `
+      id,
+      status,
+      starts_at,
+      google_event_id,
+      google_calendar_synced,
+      client:clients (full_name, email)
+    `,
+    )
     .eq('id', id)
     .single()
 
   if (fetchError) throw new Error(`updateConsultation: ${fetchError.message}`)
 
   const isNewCancellation =
-    patch.status === 'cancelled' &&
-    existing.status !== 'cancelled' &&
-    Boolean(existing.google_event_id)
+    patch.status === 'cancelled' && existing.status !== 'cancelled'
 
   let calendarEventRemoved = false
 
@@ -94,9 +104,22 @@ export async function updateConsultation(
     .single()
 
   if (error) throw new Error(`updateConsultation: ${error.message}`)
+
+  let cancellationEmailSent = false
+  if (isNewCancellation && existing.client?.email) {
+    const settings = await getSiteSettings()
+    cancellationEmailSent = await sendConsultationCancellationEmail({
+      clientName: existing.client.full_name,
+      clientEmail: existing.client.email,
+      startsAt: new Date(existing.starts_at),
+      clinicPhone: settings.phone,
+    })
+  }
+
   return {
     consultation: data as ConsultationWithClient,
     calendarEventRemoved,
+    cancellationEmailSent,
   }
 }
 

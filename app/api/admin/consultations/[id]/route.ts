@@ -31,11 +31,12 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   }
 
   try {
-    const { consultation, calendarEventRemoved } = await updateConsultation(id, {
-      status: result.data.status as ConsultationStatus | undefined,
-      internal_notes: result.data.internal_notes,
-    })
-    return NextResponse.json({ consultation, calendarEventRemoved })
+    const { consultation, calendarEventRemoved, cancellationEmailSent } =
+      await updateConsultation(id, {
+        status: result.data.status as ConsultationStatus | undefined,
+        internal_notes: result.data.internal_notes,
+      })
+    return NextResponse.json({ consultation, calendarEventRemoved, cancellationEmailSent })
   } catch (err) {
     console.error('[admin/consultations PATCH]', err)
     return NextResponse.json({ error: 'Update failed' }, { status: 500 })
