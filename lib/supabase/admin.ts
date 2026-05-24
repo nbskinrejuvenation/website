@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database.generated'
-import { getPublicSupabaseEnv } from '@/lib/supabase/env'
+import { getPublicSupabaseEnv, getServiceRoleKey } from '@/lib/supabase/env'
 
 /**
  * Service-role Supabase client — bypasses ALL RLS policies.
@@ -22,16 +22,12 @@ let adminClient: ReturnType<typeof createClient<Database>> | null = null
 export function createAdminClient() {
   if (adminClient) return adminClient
 
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    throw new Error(
-      'SUPABASE_SERVICE_ROLE_KEY is not set. Admin client cannot be created.',
-    )
-  }
-
   const { url } = getPublicSupabaseEnv()
+  const serviceRoleKey = getServiceRoleKey()
+
   adminClient = createClient<Database>(
     url,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    serviceRoleKey,
     {
       auth: {
         autoRefreshToken: false,

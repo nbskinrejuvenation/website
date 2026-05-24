@@ -44,3 +44,32 @@ export function getPublicSupabaseEnv(): { url: string; anonKey: string } {
 
   return { url, anonKey }
 }
+
+/**
+ * Service role secret — must differ from the anon key.
+ * Booking and other server writes use this to bypass RLS.
+ */
+export function getServiceRoleKey(): string {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+  const { anonKey } = getPublicSupabaseEnv()
+
+  if (!serviceKey) {
+    throw new Error(
+      'SUPABASE_SERVICE_ROLE_KEY is not set. Use the service_role secret from Supabase Dashboard → Project Settings → API. ' +
+        'Add it to .env.local and Vercel (never expose as NEXT_PUBLIC_).',
+    )
+  }
+
+  if (serviceKey === anonKey) {
+    throw new Error(
+      'SUPABASE_SERVICE_ROLE_KEY must be the service_role secret, not the anon/public key. ' +
+        'Supabase Dashboard → Project Settings → API → service_role (secret).',
+    )
+  }
+
+  if (PLACEHOLDER_RE.test(serviceKey)) {
+    throw new Error('Invalid SUPABASE_SERVICE_ROLE_KEY — replace placeholder values.')
+  }
+
+  return serviceKey
+}

@@ -77,22 +77,11 @@ select 5, '09:00'::time, '17:00'::time, true where not exists (select 1 from ava
 insert into availability_rules (day_of_week, start_time, end_time, is_active)
 select 6, '09:00'::time, '13:00'::time, true where not exists (select 1 from availability_rules where day_of_week = 6);
 
--- RLS: no public access — bookings only via server (service role)
+-- RLS: clients/bookings have no public policies — only service_role (API) can write.
+-- Do not add deny-all policies; they block inserts if the wrong API key is used.
 alter table clients enable row level security;
 alter table consultation_bookings enable row level security;
 alter table availability_rules enable row level security;
-
-drop policy if exists "service role only clients" on clients;
-create policy "service role only clients"
-  on clients for all
-  using (false)
-  with check (false);
-
-drop policy if exists "service role only consultation_bookings" on consultation_bookings;
-create policy "service role only consultation_bookings"
-  on consultation_bookings for all
-  using (false)
-  with check (false);
 
 drop policy if exists "public read availability_rules" on availability_rules;
 create policy "public read availability_rules"
