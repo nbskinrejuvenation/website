@@ -54,8 +54,11 @@ When you set a consultation to **Cancelled**, the app:
 
 If calendar delete fails (e.g. event already removed manually), the booking is still marked cancelled in Supabase.
 
+## Booking emails
+
+New bookings trigger Resend emails to the client and `CLINIC_NOTIFICATION_EMAIL`. See **`docs/EMAIL_SETUP.md`**.
+
 ## Next phases
 
-- Booking confirmation emails (Resend)
 - Paid treatment booking + Stripe
-- Email reminders to clients
+- Reminder emails (24h before consultation)

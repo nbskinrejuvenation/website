@@ -30,6 +30,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.52.0",
+    "resend": "^6.12.3",
     "schema-dts": "^1.1.2",
     "tailwind-merge": "^2.3.0",
     "zod": "^3.23.0"

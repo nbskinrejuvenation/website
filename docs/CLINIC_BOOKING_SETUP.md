@@ -78,9 +78,17 @@ See **`docs/ADMIN_SETUP.md`**
 - Sign in at `/admin/login`
 - Manage consultations at `/admin/consultations`
 
+## Email confirmations (Resend)
+
+See **`docs/EMAIL_SETUP.md`**
+
+- Client confirmation + clinic alert on every new booking
+- Optional — booking works without it
+
 ## Phase 3 — In progress
 
 - ✅ **Cancel in admin → removes Google Calendar event** (see `docs/ADMIN_SETUP.md`)
+- ✅ **Booking confirmation emails** (Resend — `docs/EMAIL_SETUP.md`)
 - Paid treatment appointments + Stripe
-- Email confirmations and reminders (Resend)
+- Reminder emails (24h before)
 - AI intake summary (optional)

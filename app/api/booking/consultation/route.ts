@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
         bookingId: booking.booking.id,
         startsAt: booking.booking.starts_at,
         calendarSynced: booking.calendarSynced,
+        confirmationEmailSent: booking.emailsSent.client,
       },
       { status: 201 },
     )

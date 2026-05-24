@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getAvailableSlotsForDate, resolveSlotTimes } from '@/lib/booking/slots'
+import { sendConsultationBookingEmails } from '@/lib/email/consultation-booking'
 import { createConsultationCalendarEvent } from '@/lib/google/calendar'
 import type { Client, ConsultationBooking } from '@/types/database'
 
@@ -18,6 +19,7 @@ export interface BookConsultationResult {
   booking: ConsultationBooking
   client: Client
   calendarSynced: boolean
+  emailsSent: { client: boolean; clinic: boolean }
 }
 
 async function upsertClient(input: BookConsultationInput): Promise<Client> {
@@ -126,6 +128,17 @@ export async function bookConsultation(
     console.error('[bookConsultation] Google Calendar:', err)
   }
 
+  const emailsSent = await sendConsultationBookingEmails({
+    clientName: client.full_name,
+    clientEmail: client.email,
+    clientPhone: client.phone,
+    treatmentInterest: input.treatment_interest,
+    message: input.message,
+    startsAt,
+    calendarSynced,
+    bookingId: booking.id,
+  })
+
   return {
     booking: {
       ...(booking as ConsultationBooking),
@@ -134,5 +147,6 @@ export async function bookConsultation(
     },
     client,
     calendarSynced,
+    emailsSent: { client: emailsSent.clientSent, clinic: emailsSent.clinicSent },
   }
 }

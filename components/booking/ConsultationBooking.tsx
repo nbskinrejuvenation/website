@@ -42,6 +42,8 @@ export function ConsultationBooking({ phone }: Props) {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [confirmedStart, setConfirmedStart] = useState<string | null>(null)
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
+  const [calendarSynced, setCalendarSynced] = useState(false)
 
   const {
     register,
@@ -94,9 +96,16 @@ export function ConsultationBooking({ phone }: Props) {
           source_page: window.location.pathname,
         }),
       })
-      const json = (await res.json()) as { error?: string; startsAt?: string }
+      const json = (await res.json()) as {
+        error?: string
+        startsAt?: string
+        confirmationEmailSent?: boolean
+        calendarSynced?: boolean
+      }
       if (!res.ok) throw new Error(json.error ?? 'Booking failed')
       setConfirmedStart(json.startsAt ?? null)
+      setConfirmationEmailSent(json.confirmationEmailSent ?? false)
+      setCalendarSynced(json.calendarSynced ?? false)
       setStep('done')
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Something went wrong'
@@ -127,9 +136,10 @@ export function ConsultationBooking({ phone }: Props) {
         <h2 className="font-display text-2xl font-light text-ink">You&apos;re booked</h2>
         {when && <p className="mt-3 text-ink-muted">{when}</p>}
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
-          We&apos;ve saved your details and added your free 30-minute consultation to our
-          calendar. You&apos;ll receive a confirmation email if Google Calendar invites are
-          enabled.
+          {confirmationEmailSent
+            ? 'A confirmation email is on its way to your inbox.'
+            : 'We\u2019ve saved your booking. If you don\u2019t receive a confirmation email shortly, check your spam folder or call us.'}
+          {calendarSynced && ' You\u2019ll also receive a Google Calendar invitation.'}
         </p>
         <Link href="/" className="btn-outline mt-8 inline-flex">
           Back to home
