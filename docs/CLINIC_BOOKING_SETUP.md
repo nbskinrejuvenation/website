@@ -90,5 +90,5 @@ See **`docs/EMAIL_SETUP.md`**
 - ✅ **Cancel in admin → removes Google Calendar event** (see `docs/ADMIN_SETUP.md`)
 - ✅ **Booking confirmation emails** (Resend — `docs/EMAIL_SETUP.md`)
 - Paid treatment appointments + Stripe
-- Reminder emails (24h before)
+- ✅ **Reminder emails** (24h before — `docs/EMAIL_SETUP.md` + migration `20260527_consultation_reminder_sent.sql`)
 - AI intake summary (optional)

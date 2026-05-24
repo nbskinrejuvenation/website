@@ -61,4 +61,4 @@ New bookings trigger Resend emails to the client and `CLINIC_NOTIFICATION_EMAIL`
 ## Next phases
 
 - Paid treatment booking + Stripe
-- Reminder emails (24h before consultation)
+- ✅ Reminder emails (24h before — see `docs/EMAIL_SETUP.md`)

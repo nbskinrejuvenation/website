@@ -118,6 +118,7 @@ export interface ConsultationBooking {
   google_event_id: string | null
   google_calendar_synced: boolean
   internal_notes: string | null
+  reminder_sent_at: string | null
   created_at: string
   updated_at: string
 }

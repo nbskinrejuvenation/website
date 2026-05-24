@@ -17,7 +17,8 @@ npm run dev
 3. **Booking (Phase 1):** `supabase/migrations/20260524_clinic_booking.sql` — see `docs/CLINIC_BOOKING_SETUP.md`
 4. **Admin (Phase 2):** `supabase/migrations/20260526_consultation_internal_notes.sql` — see `docs/ADMIN_SETUP.md`
 5. **Email (optional):** Resend — see `docs/EMAIL_SETUP.md`
-6. Verify: `supabase/verify-seed.sql` and `supabase/verify-booking.sql`
+6. **Reminders:** `supabase/migrations/20260527_consultation_reminder_sent.sql` + `CRON_SECRET` on Vercel
+7. Verify: `supabase/verify-seed.sql` and `supabase/verify-booking.sql`
 
 Refresh TypeScript types after schema changes:
 

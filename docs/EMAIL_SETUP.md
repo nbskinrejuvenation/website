@@ -59,7 +59,58 @@ Restart `npm run dev` after changing `.env.local`.
 
 ---
 
+## 24-hour reminder emails
+
+A Vercel Cron job runs **every hour** and emails clients whose consultation starts in about **24 hours** (23–25h window).
+
+### Database migration
+
+Run in Supabase SQL Editor:
+
+`supabase/migrations/20260527_consultation_reminder_sent.sql`
+
+Adds `reminder_sent_at` so each booking only gets one reminder.
+
+### Cron secret
+
+Add to `.env.local` and Vercel:
+
+```env
+CRON_SECRET=<openssl rand -hex 32>
+```
+
+Vercel sends `Authorization: Bearer <CRON_SECRET>` when invoking cron routes.
+
+`vercel.json` schedules: `GET /api/cron/consultation-reminders` every hour (`0 * * * *` UTC).
+
+### Test locally
+
+1. Run the migration in Supabase  
+2. Create a **confirmed** booking with `starts_at` ~24 hours from now (or adjust in Supabase for testing)  
+3. Trigger the job:
+
+```bash
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  http://localhost:3000/api/cron/consultation-reminders | jq
+```
+
+Response example:
+
+```json
+{
+  "ok": true,
+  "configured": true,
+  "candidates": 1,
+  "sent": 1,
+  "failed": 0,
+  "skipped": 0
+}
+```
+
+Reminders are **not** sent for cancelled, completed, or no-show bookings.
+
+---
+
 ## Next
 
-- Reminder email 24h before appointment (Vercel Cron + Resend)
 - Cancellation email when admin marks booking cancelled (in addition to Google Calendar)
