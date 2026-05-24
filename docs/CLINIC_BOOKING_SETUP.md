@@ -78,8 +78,9 @@ See **`docs/ADMIN_SETUP.md`**
 - Sign in at `/admin/login`
 - Manage consultations at `/admin/consultations`
 
-## Phase 3 (later)
+## Phase 3 — In progress
 
-- Paid treatment appointments
-- Stripe, reminders, client portal
+- ✅ **Cancel in admin → removes Google Calendar event** (see `docs/ADMIN_SETUP.md`)
+- Paid treatment appointments + Stripe
+- Email confirmations and reminders (Resend)
 - AI intake summary (optional)

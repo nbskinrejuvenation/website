@@ -97,6 +97,32 @@ export async function createConsultationCalendarEvent(
   return data.id
 }
 
+/** Deletes a calendar event and notifies attendees (when configured). */
+export async function deleteConsultationCalendarEvent(eventId: string): Promise<void> {
+  if (!isGoogleCalendarConfigured()) {
+    console.warn('[google-calendar] Not configured — skipping event deletion')
+    return
+  }
+
+  const accessToken = await getAccessToken()
+  const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID!)
+  const encodedEventId = encodeURIComponent(eventId)
+
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${encodedEventId}?sendUpdates=all`,
+    {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  )
+
+  // 404 = already deleted — treat as success
+  if (!res.ok && res.status !== 404) {
+    const text = await res.text()
+    throw new Error(`Google Calendar delete failed: ${text}`)
+  }
+}
+
 /** Returns busy intervals as UTC Date pairs */
 export async function getGoogleBusyIntervals(
   rangeStart: Date,
