@@ -1,8 +1,23 @@
 import { Resend } from 'resend'
 
+export function getEmailFrom(): string {
+  const from = process.env.EMAIL_FROM?.trim()
+  if (!from) throw new Error('EMAIL_FROM is not set')
+  if (!from.includes('@')) {
+    throw new Error(
+      `EMAIL_FROM looks truncated (got "${from}"). In .env.local use quotes: EMAIL_FROM="Naturally Beautiful <bookings@yourdomain.com.au>"`,
+    )
+  }
+  return from
+}
+
 /** Minimum config to email clients (confirmations, reminders, cancellations). */
 export function isClientEmailConfigured(): boolean {
-  return Boolean(process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim())
+  try {
+    return Boolean(process.env.RESEND_API_KEY?.trim() && getEmailFrom())
+  } catch {
+    return false
+  }
 }
 
 /** Full config including clinic inbox alerts on new bookings. */
@@ -29,8 +44,7 @@ export async function sendEmail(input: {
   subject: string
   html: string
 }): Promise<void> {
-  const from = process.env.EMAIL_FROM?.trim()
-  if (!from) throw new Error('EMAIL_FROM is not set')
+  const from = getEmailFrom()
 
   const resend = getResendClient()
   const { error } = await resend.emails.send({

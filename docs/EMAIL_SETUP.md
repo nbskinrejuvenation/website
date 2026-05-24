@@ -24,8 +24,20 @@ Add to `.env.local` and **Vercel → Project → Settings → Environment Variab
 
 ```env
 RESEND_API_KEY=re_xxxxxxxxxxxx
-EMAIL_FROM=Naturally Beautiful <bookings@nbskinrejuvenation.com.au>
+EMAIL_FROM="Naturally Beautiful <bookings@nbskinrejuvenation.com.au>"
 CLINIC_NOTIFICATION_EMAIL=nbskinrejuvenation@gmail.com
+```
+
+**Important:** Wrap `EMAIL_FROM` in **double quotes** in `.env.local` because of the spaces in the display name. Without quotes, Node may only read `Naturally` and emails will fail silently.
+
+On **Vercel**, paste the full value in the env var field (no quotes needed in the UI):
+
+`Naturally Beautiful <bookings@nbskinrejuvenation.com.au>`
+
+Or use the simple form (no quotes anywhere):
+
+```env
+EMAIL_FROM=bookings@nbskinrejuvenation.com.au
 ```
 
 | Variable | Purpose |
@@ -53,6 +65,7 @@ Restart `npm run dev` after changing `.env.local`.
 | Issue | Fix |
 |-------|-----|
 | No emails sent | All three env vars must be set; check server logs for `[email]` |
+| `EMAIL_FROM looks truncated` | Quote the value in `.env.local` (see above) |
 | `Domain not verified` | Finish DNS setup in Resend for your sending domain |
 | Emails in spam | Complete domain verification; avoid free `@gmail.com` as `EMAIL_FROM` |
 | Client email fails, clinic works | Check client address; view error in Resend logs |
