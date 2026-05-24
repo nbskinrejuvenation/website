@@ -53,7 +53,7 @@ export default async function SpecialsPage() {
         heading="Book your free consultation"
         body="Ready to treat yourself? Book a free consultation and discover which treatment is right for you."
         ctaLabel="Book Now"
-        ctaHref="/contact"
+        ctaHref="/book"
         phone={settings.phone ?? undefined}
       />
     </>

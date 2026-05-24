@@ -23,7 +23,7 @@ const DEFAULT_COPY = {
 /** Reusable Instagram + weekly specials CTA block */
 export function InstagramSection({
   instagramUrl,
-  bookHref = '/contact',
+  bookHref = '/book',
   bookLabel = DEFAULT_COPY.bookLabel,
   eyebrow = DEFAULT_COPY.eyebrow,
   heading = DEFAULT_COPY.heading,
@@ -97,7 +97,7 @@ export function instagramSectionFromSettings(
 ): InstagramSectionProps {
   return {
     instagramUrl: settings.instagram_url ?? DEFAULT_INSTAGRAM_URL,
-    bookHref: settings.booking_url ?? '/contact',
+    bookHref: settings.booking_url ?? '/book',
     ...overrides,
   }
 }

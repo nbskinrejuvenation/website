@@ -44,7 +44,7 @@ export default async function HomePage() {
         }
         subheading="Personalised face and body treatments in a calm, boutique clinic — where expertise meets care."
         ctaLabel="Book Free Consultation"
-        ctaHref="/contact"
+        ctaHref="/book"
         secondaryCtaLabel="See all treatments"
         secondaryCtaHref="/services"
         heroImageUrl="/images/hero-home.png"
@@ -88,7 +88,7 @@ export default async function HomePage() {
           heading="Book your free consultation"
           body={`Call us to arrange a complimentary 30-minute skin assessment at ${fullAddress}. We'll recommend the most effective treatment for you.`}
           ctaLabel="Contact us"
-          ctaHref="/contact"
+          ctaHref="/book"
           phone={settings.phone ?? undefined}
           phonePrimary
         />

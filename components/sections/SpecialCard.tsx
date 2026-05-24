@@ -26,7 +26,7 @@ export function SpecialCard({ special }: Props) {
           <p className="flex-1 text-sm text-neutral-600">{special.description}</p>
         )}
         <div className="mt-6">
-          <Link href="/contact" className="btn-primary text-xs">
+          <Link href="/book" className="btn-primary text-xs">
             Book Now
           </Link>
         </div>

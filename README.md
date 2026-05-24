@@ -14,7 +14,8 @@ npm run dev
 
 1. Apply RLS policies: `supabase/migrations/20260523_treatments_rls.sql`
 2. Seed treatments: `supabase/seed-treatments.sql`
-3. Verify: `supabase/verify-seed.sql`
+3. **Booking (Phase 1):** `supabase/migrations/20260524_clinic_booking.sql` — see `docs/CLINIC_BOOKING_SETUP.md`
+4. Verify: `supabase/verify-seed.sql` and `supabase/verify-booking.sql`
 
 Refresh TypeScript types after schema changes:
 

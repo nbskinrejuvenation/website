@@ -57,7 +57,7 @@ export function TreatmentHero({ title, subtitle, heroImageUrl }: Props) {
           <p className="mt-3 max-w-xl text-lg text-cream/75">{subtitle}</p>
         )}
         <div className="mt-8">
-          <Link href="/contact" className="btn-primary">
+          <Link href="/book" className="btn-primary">
             Book free consultation
           </Link>
         </div>

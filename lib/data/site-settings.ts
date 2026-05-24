@@ -17,7 +17,7 @@ const FALLBACK: SiteSettings = {
   lng: 151.2863,
   facebook_url: null,
   instagram_url: DEFAULT_INSTAGRAM_URL,
-  booking_url: null,
+  booking_url: '/book',
   updated_at: null,
 }
 

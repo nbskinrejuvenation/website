@@ -92,7 +92,7 @@ export default async function ServicePage({ params }: Props) {
         heading="Book your free consultation"
         body="Ready to get started? Book a FREE 30-minute consultation and we'll recommend the most effective treatment for your skin."
         ctaLabel="Book Now"
-        ctaHref="/contact"
+        ctaHref="/book"
         phone={settings.phone ?? undefined}
       />
     </>

@@ -1,0 +1,14 @@
+/** Clinic booking configuration */
+export const CLINIC_TIMEZONE = 'Australia/Sydney'
+
+/** Free consultation length */
+export const CONSULTATION_DURATION_MINUTES = 30
+
+/** Gap between appointments */
+export const BOOKING_BUFFER_MINUTES = 15
+
+/** How far ahead clients can book */
+export const BOOKING_HORIZON_DAYS = 21
+
+/** Earliest bookable time from now (hours) */
+export const BOOKING_MIN_NOTICE_HOURS = 4

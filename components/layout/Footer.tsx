@@ -74,7 +74,7 @@ export function Footer({ settings }: Props) {
                 { href: '/about', label: 'About us' },
                 { href: '/services', label: 'Treatments' },
                 { href: '/specials', label: 'Specials' },
-                { href: '/contact', label: 'Book consultation' },
+                { href: '/book', label: 'Book consultation' },
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-cream/70 transition-colors hover:text-cream">

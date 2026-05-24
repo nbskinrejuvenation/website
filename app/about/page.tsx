@@ -93,7 +93,7 @@ export default async function AboutPage() {
         heading="Book your free consultation"
         body="We'd love to meet you. Book a FREE 30-minute consultation and let us help you be the best version of yourself."
         ctaLabel="Contact Us"
-        ctaHref="/contact"
+        ctaHref="/book"
         phone={settings.phone ?? undefined}
       />
     </>

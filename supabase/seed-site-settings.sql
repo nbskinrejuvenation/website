@@ -12,6 +12,7 @@ SET
   lat = -33.7509,
   lng = 151.2863,
   instagram_url = 'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
+  booking_url = '/book',
   updated_at = NOW()
 WHERE id IS NOT NULL;
 
@@ -26,6 +27,7 @@ INSERT INTO site_settings (
   lat,
   lng,
   instagram_url,
+  booking_url,
   updated_at
 )
 SELECT
@@ -38,5 +40,6 @@ SELECT
   -33.7509,
   151.2863,
   'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
+  '/book',
   NOW()
 WHERE NOT EXISTS (SELECT 1 FROM site_settings LIMIT 1);

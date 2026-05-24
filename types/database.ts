@@ -91,6 +91,44 @@ export interface Testimonial {
   status: ContentStatus | null
 }
 
+// ─── Clinic booking (Phase 1) ────────────────────────────────────────────────
+
+export type ConsultationStatus = 'confirmed' | 'cancelled' | 'completed' | 'no_show'
+
+export interface Client {
+  id: string
+  full_name: string
+  email: string
+  phone: string | null
+  notes: string | null
+  marketing_opt_in: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ConsultationBooking {
+  id: string
+  client_id: string
+  starts_at: string
+  ends_at: string
+  status: ConsultationStatus
+  treatment_interest: string | null
+  message: string | null
+  source_page: string | null
+  google_event_id: string | null
+  google_calendar_synced: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AvailabilityRule {
+  id: string
+  day_of_week: number
+  start_time: string
+  end_time: string
+  is_active: boolean
+}
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
 export interface NavItem {
