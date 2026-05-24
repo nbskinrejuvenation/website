@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
     const isPublicAdminPath =
       isAdminLoginRoute(pathname) || isAdminApiLoginRoute(pathname)
 
-    if (!isPublicAdminPath && !requestHasValidAdminSession(request)) {
+    if (!isPublicAdminPath && !(await requestHasValidAdminSession(request))) {
       if (pathname.startsWith('/api/admin/')) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }

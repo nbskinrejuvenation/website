@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
 export function AdminLoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const next = searchParams.get('next') ?? '/admin/consultations'
 
@@ -20,12 +19,13 @@ export function AdminLoginForm() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ password }),
       })
       const data = (await res.json()) as { error?: string }
       if (!res.ok) throw new Error(data.error ?? 'Login failed')
-      router.push(next)
-      router.refresh()
+      // Full navigation so the new httpOnly cookie is sent on the next request
+      window.location.assign(next)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {

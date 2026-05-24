@@ -42,6 +42,6 @@ export async function POST(request: NextRequest) {
   }
 
   const response = NextResponse.json({ success: true })
-  setAdminSessionCookie(response)
+  await setAdminSessionCookie(response)
   return response
 }
