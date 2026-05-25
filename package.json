@@ -13,6 +13,8 @@
     "db:types": "supabase gen types typescript --project-id mgmdqbltkkddluyotprx > types/database.generated.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.79",
+    "@ai-sdk/react": "^3.0.193",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-dialog": "^1.1.0",
     "@radix-ui/react-dropdown-menu": "^2.1.0",
@@ -21,6 +23,7 @@
     "@sentry/nextjs": "^9.0.0",
     "@supabase/ssr": "^0.5.0",
     "@supabase/supabase-js": "^2.45.0",
+    "ai": "^6.0.191",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.0.0",

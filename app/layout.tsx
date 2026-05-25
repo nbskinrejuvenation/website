@@ -6,6 +6,7 @@ import '@/styles/globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PreviewBanner } from '@/components/layout/PreviewBanner'
+import { ChatWidget } from '@/components/chat/ChatWidget'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { getServicesByCategory } from '@/lib/data/services'
 import { buildOpenGraphImages, SITE_URL } from '@/lib/seo/metadata'
@@ -91,6 +92,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Header settings={settings} servicesByCategory={servicesByCategory} />
             <main id="main-content">{children}</main>
             <Footer settings={settings} />
+            <ChatWidget />
           </>
         )}
       </body>
