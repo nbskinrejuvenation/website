@@ -14,6 +14,9 @@ interface Props {
   ctaHref: string
   secondaryCtaLabel?: string
   secondaryCtaHref?: string
+  /** Background video (e.g. /videos/hero.mp4) */
+  heroVideoUrl?: string
+  /** Poster / fallback image when video is loading or motion is reduced */
   heroImageUrl?: string
   heroImageAlt?: string
   /** Full clinic address shown under CTAs */
@@ -28,16 +31,35 @@ export function HeroSection({
   ctaHref,
   secondaryCtaLabel,
   secondaryCtaHref,
+  heroVideoUrl,
   heroImageUrl,
   heroImageAlt,
   locationLine,
 }: Props) {
   const reduceMotion = useReducedMotion()
+  const showVideo = Boolean(heroVideoUrl) && !reduceMotion
+  const showImage = Boolean(heroImageUrl) && (!showVideo || reduceMotion)
 
   return (
     <section className="relative min-h-[88vh] overflow-hidden">
       <div className="absolute inset-0">
-        {heroImageUrl ? (
+        {showVideo ? (
+          <>
+            <video
+              className="absolute inset-0 h-full w-full object-cover object-center"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={heroImageUrl}
+              aria-hidden="true"
+            >
+              <source src={heroVideoUrl} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/80 to-cream/30" />
+          </>
+        ) : showImage ? (
           <>
             <motion.div
               className="absolute inset-0"
@@ -46,7 +68,7 @@ export function HeroSection({
               transition={reduceMotion ? undefined : kenBurns.transition}
             >
               <Image
-                src={heroImageUrl}
+                src={heroImageUrl!}
                 alt={heroImageAlt ?? ''}
                 fill
                 className="object-cover object-center"
