@@ -54,6 +54,7 @@ export interface Treatment {
   status: ContentStatus | null
   sort_order: number | null
   price_from: number | null       // Lowest single-session price in AUD (whole dollars)
+  what_to_expect: string[] | null // Outcome/benefit strings for the "What To Expect" grid
   seo_title: string | null
   seo_description: string | null
   schema_faq: Array<{ question: string; answer: string }> | null

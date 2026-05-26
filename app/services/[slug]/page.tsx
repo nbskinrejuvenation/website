@@ -4,7 +4,19 @@ import { getAllServiceSlugs, getServiceBySlug } from '@/lib/data/services'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 import { TreatmentBody } from '@/components/treatment/TreatmentBody'
+import { TreatmentPricing } from '@/components/treatment/TreatmentPricing'
 import { TreatmentFAQ } from '@/components/treatment/TreatmentFAQ'
+import { TreatmentIntro } from '@/components/treatment/TreatmentIntro'
+import { TreatmentRecommendedFor } from '@/components/treatment/TreatmentRecommendedFor'
+import { TreatmentWhatToExpect } from '@/components/treatment/TreatmentWhatToExpect'
+import {
+  parsePricing,
+  parseRecommendedFor,
+  stripPricingSection,
+  stripRecommendedForSection,
+  stripLeadParagraph,
+  stripFaqSection,
+} from '@/lib/treatment/parse-pricing'
 import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
@@ -56,6 +68,22 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
+  const pricingGroups = service.body_html ? parsePricing(service.body_html) : null
+  const recommendedFor = service.body_html ? parseRecommendedFor(service.body_html) : null
+
+  // Strip all sections that are rendered as dedicated components, then
+  // only keep remaining body content if something meaningful is left.
+  const strippedHtml = service.body_html
+    ? stripFaqSection(
+        stripLeadParagraph(
+          stripRecommendedForSection(
+            stripPricingSection(service.body_html),
+          ),
+        ),
+      )
+    : null
+  const bodyHtml = strippedHtml && strippedHtml.length > 20 ? strippedHtml : null
+
   const allFaqs = service.schema_faq ?? []
   const hasFaqs = allFaqs.length > 0
   const indexableFaqs = getIndexableFaqs(allFaqs)
@@ -78,9 +106,22 @@ export default async function ServicePage({ params }: Props) {
         heroImageUrl={service.hero_image ?? undefined}
       />
 
-      {service.body_html && (
-        <TreatmentBody bodyHtml={service.body_html} />
+      <TreatmentIntro
+        title={service.title}
+        subtitle={service.subtitle ?? service.title}
+        summary={service.summary ?? service.subtitle ?? service.title}
+        heroImageUrl={service.hero_image ?? undefined}
+      />
+
+      {bodyHtml && <TreatmentBody bodyHtml={bodyHtml} />}
+
+      {recommendedFor && <TreatmentRecommendedFor conditions={recommendedFor} />}
+
+      {service.what_to_expect && service.what_to_expect.length > 0 && (
+        <TreatmentWhatToExpect items={service.what_to_expect as string[]} />
       )}
+
+      {pricingGroups && <TreatmentPricing groups={pricingGroups} />}
 
       {hasFaqs && (
         <TreatmentFAQ faqs={service.schema_faq!} serviceName={service.title} />

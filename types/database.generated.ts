@@ -202,6 +202,7 @@ export type Database = {
           id: string
           og_image_url: string | null
           price_from: number | null
+          what_to_expect: Json | null
           schema_faq: Json | null
           seo_description: string | null
           seo_title: string | null
@@ -221,6 +222,7 @@ export type Database = {
           id?: string
           og_image_url?: string | null
           price_from?: number | null
+          what_to_expect?: Json | null
           schema_faq?: Json | null
           seo_description?: string | null
           seo_title?: string | null
@@ -240,6 +242,7 @@ export type Database = {
           id?: string
           og_image_url?: string | null
           price_from?: number | null
+          what_to_expect?: Json | null
           schema_faq?: Json | null
           seo_description?: string | null
           seo_title?: string | null
