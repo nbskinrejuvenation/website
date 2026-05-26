@@ -11,7 +11,7 @@ SET
   postcode = '2099',
   lat = -33.7509,
   lng = 151.2863,
-  instagram_url = 'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
+  instagram_url = 'https://www.instagram.com/nb_skin_rejuv/',
   booking_url = '/book',
   updated_at = NOW()
 WHERE id IS NOT NULL;
@@ -39,7 +39,7 @@ SELECT
   '2099',
   -33.7509,
   151.2863,
-  'https://www.instagram.com/naturally_beautiful_skin_rejuv/',
+  'https://www.instagram.com/nb_skin_rejuv/',
   '/book',
   NOW()
 WHERE NOT EXISTS (SELECT 1 FROM site_settings LIMIT 1);

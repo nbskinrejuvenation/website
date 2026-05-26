@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Instagram } from 'lucide-react'
 import type { SiteSettings } from '@/types/database'
-import { DEFAULT_INSTAGRAM_URL } from '@/lib/site/social'
+import { DEFAULT_INSTAGRAM_URL, formatInstagramHandle } from '@/lib/site/social'
 
 export interface InstagramSectionProps {
   instagramUrl: string
@@ -79,7 +79,7 @@ export function InstagramSection({
               <div className="absolute inset-0 flex items-center justify-center rounded-sm bg-ink/0 transition-colors group-hover:bg-ink/10">
                 <span className="flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-ink shadow-soft opacity-0 transition-opacity group-hover:opacity-100">
                   <Instagram className="h-4 w-4 text-[#E1306C]" aria-hidden="true" />
-                  @naturally_beautiful_skin_rejuv
+                  {formatInstagramHandle()}
                 </span>
               </div>
             </div>
