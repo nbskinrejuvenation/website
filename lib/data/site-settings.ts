@@ -1,6 +1,6 @@
 import { createPublicClient } from '@/lib/supabase/public'
 import { CLINIC_ADDRESS_PARTS } from '@/lib/site/address'
-import { DEFAULT_INSTAGRAM_URL } from '@/lib/site/social'
+import { DEFAULT_INSTAGRAM_URL, resolveInstagramUrl } from '@/lib/site/social'
 import { unstable_cache } from 'next/cache'
 import type { SiteSettings } from '@/types/database'
 
@@ -35,8 +35,12 @@ export const getSiteSettings = unstable_cache(
       return FALLBACK
     }
 
-    return (data as SiteSettings) ?? FALLBACK
+    const settings = (data as SiteSettings) ?? FALLBACK
+    return {
+      ...settings,
+      instagram_url: resolveInstagramUrl(settings.instagram_url),
+    }
   },
-  ['site-settings'],
-  { tags: ['site-settings'], revalidate: false },
+  ['site-settings-v2'],
+  { tags: ['site-settings'], revalidate: 3600 },
 )

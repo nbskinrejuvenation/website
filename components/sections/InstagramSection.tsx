@@ -1,7 +1,12 @@
 import Link from 'next/link'
 import { Instagram } from 'lucide-react'
 import type { SiteSettings } from '@/types/database'
-import { DEFAULT_INSTAGRAM_URL, formatInstagramHandle } from '@/lib/site/social'
+import {
+  DEFAULT_INSTAGRAM_URL,
+  formatInstagramHandle,
+  instagramHandleFromUrl,
+  resolveInstagramUrl,
+} from '@/lib/site/social'
 
 export interface InstagramSectionProps {
   instagramUrl: string
@@ -30,6 +35,9 @@ export function InstagramSection({
   body = DEFAULT_COPY.body,
   className = '',
 }: InstagramSectionProps) {
+  const resolvedUrl = resolveInstagramUrl(instagramUrl)
+  const handleLabel = formatInstagramHandle(instagramHandleFromUrl(resolvedUrl))
+
   return (
     <section
       className={`border-y border-sand-dark/50 bg-gradient-to-br from-brand-50 via-cream to-brand-100/80 py-16 md:py-20 ${className}`}
@@ -49,7 +57,7 @@ export function InstagramSection({
                 {bookLabel}
               </Link>
               <a
-                href={instagramUrl}
+                href={resolvedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline inline-flex items-center justify-center gap-2"
@@ -61,7 +69,7 @@ export function InstagramSection({
           </div>
 
           <a
-            href={instagramUrl}
+            href={resolvedUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative mx-auto w-full max-w-md lg:max-w-none"
@@ -79,7 +87,7 @@ export function InstagramSection({
               <div className="absolute inset-0 flex items-center justify-center rounded-sm bg-ink/0 transition-colors group-hover:bg-ink/10">
                 <span className="flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-ink shadow-soft opacity-0 transition-opacity group-hover:opacity-100">
                   <Instagram className="h-4 w-4 text-[#E1306C]" aria-hidden="true" />
-                  {formatInstagramHandle()}
+                  {handleLabel}
                 </span>
               </div>
             </div>
@@ -96,7 +104,7 @@ export function instagramSectionFromSettings(
   overrides?: Partial<InstagramSectionProps>,
 ): InstagramSectionProps {
   return {
-    instagramUrl: settings.instagram_url ?? DEFAULT_INSTAGRAM_URL,
+    instagramUrl: resolveInstagramUrl(settings.instagram_url ?? DEFAULT_INSTAGRAM_URL),
     bookHref: settings.booking_url ?? '/book',
     ...overrides,
   }
