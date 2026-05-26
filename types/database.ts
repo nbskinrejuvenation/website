@@ -53,6 +53,7 @@ export interface Treatment {
   category: TreatmentCategory
   status: ContentStatus | null
   sort_order: number | null
+  price_from: number | null       // Lowest single-session price in AUD (whole dollars)
   seo_title: string | null
   seo_description: string | null
   schema_faq: Array<{ question: string; answer: string }> | null
@@ -63,7 +64,7 @@ export interface Treatment {
 /** Lightweight version for cards/listings */
 export type TreatmentCard = Pick<
   Treatment,
-  'id' | 'slug' | 'title' | 'subtitle' | 'hero_image' | 'category' | 'sort_order'
+  'id' | 'slug' | 'title' | 'subtitle' | 'hero_image' | 'category' | 'sort_order' | 'price_from'
 >
 
 // ─── Specials ─────────────────────────────────────────────────────────────────

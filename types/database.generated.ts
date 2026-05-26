@@ -201,6 +201,7 @@ export type Database = {
           hero_image: string | null
           id: string
           og_image_url: string | null
+          price_from: number | null
           schema_faq: Json | null
           seo_description: string | null
           seo_title: string | null
@@ -219,6 +220,7 @@ export type Database = {
           hero_image?: string | null
           id?: string
           og_image_url?: string | null
+          price_from?: number | null
           schema_faq?: Json | null
           seo_description?: string | null
           seo_title?: string | null
@@ -237,6 +239,7 @@ export type Database = {
           hero_image?: string | null
           id?: string
           og_image_url?: string | null
+          price_from?: number | null
           schema_faq?: Json | null
           seo_description?: string | null
           seo_title?: string | null

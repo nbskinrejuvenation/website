@@ -26,9 +26,16 @@ export function ServiceCard({ service }: Props) {
         )}
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-800 group-hover:text-brand-500 transition-colors">
-          {service.title}
-        </h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-800 group-hover:text-brand-500 transition-colors">
+            {service.title}
+          </h3>
+          {service.price_from != null && (
+            <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-600 ring-1 ring-brand-200">
+              from ${service.price_from}
+            </span>
+          )}
+        </div>
         {service.subtitle && (
           <p className="mt-1 text-sm text-neutral-500 line-clamp-2">
             {service.subtitle}

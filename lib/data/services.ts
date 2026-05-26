@@ -10,7 +10,7 @@ export const getAllServices = unstable_cache(
 
     const { data, error } = await supabase
       .from('treatments')
-      .select('id, slug, title, subtitle, hero_image, category, sort_order')
+      .select('id, slug, title, subtitle, hero_image, category, sort_order, price_from')
       .eq('status', 'published')
       .order('sort_order', { ascending: true })
 
