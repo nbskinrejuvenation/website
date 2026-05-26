@@ -57,9 +57,7 @@ export default async function HomePage() {
       </Reveal>
 
       <Reveal delay={0.05}>
-        <IntroStrip
-          body="Our mission is to help you look and feel your best with advanced skin rejuvenation — delivered with warmth, precision, and respect for what makes you uniquely beautiful."
-        />
+        <IntroStrip />
       </Reveal>
 
       <Reveal delay={0.05}>
