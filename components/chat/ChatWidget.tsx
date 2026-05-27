@@ -69,6 +69,8 @@ const SUGGESTIONS = [
   'Book a free consultation',
 ]
 
+const DEFAULT_PHONE = '0404 203 800'
+
 // ── Tool name → human-readable status label ───────────────────────────────────
 
 function toolStatusLabel(name: string): string {
@@ -88,7 +90,13 @@ function getTextParts(parts: { type: string; text?: string }[]): string {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function ChatWidget() {
+interface ChatWidgetProps {
+  clinicPhone?: string | null
+}
+
+export function ChatWidget({ clinicPhone = DEFAULT_PHONE }: ChatWidgetProps) {
+  const phone = clinicPhone?.trim() || DEFAULT_PHONE
+  const phoneHref = `tel:${phone.replace(/\s/g, '')}`
   const [isOpen, setIsOpen] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const [input, setInput] = useState('')
@@ -142,7 +150,7 @@ export function ChatWidget() {
       {/* ── Chat panel ──────────────────────────────────────────────────── */}
       <div
         role="dialog"
-        aria-label="Chat with us"
+        aria-label="Chat helper — ask questions or book a consultation"
         aria-modal="true"
         className={cn(
           'fixed bottom-24 right-4 z-50 flex w-[calc(100vw-2rem)] max-w-sm flex-col',
@@ -161,8 +169,8 @@ export function ChatWidget() {
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight text-white">Naturally Beautiful</p>
-              <p className="text-[11px] leading-tight text-brand-100">
-                Ask me anything — or book a consultation
+              <p className="text-xs leading-snug text-brand-100">
+                Online helper — ask about treatments or book a free visit
               </p>
             </div>
           </div>
@@ -179,18 +187,37 @@ export function ChatWidget() {
             <div className="h-7 w-7 shrink-0 rounded-full bg-brand-100 flex items-center justify-center text-xs font-medium text-brand-700 select-none">
               NB
             </div>
-            <div className="max-w-[82%] rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-card text-sm text-ink leading-relaxed">
-              Hi! I can answer questions about our treatments, share pricing, or book
-              you a <strong>free consultation</strong> right here. What can I help with? ✨
+            <div className="max-w-[92%] space-y-3 rounded-2xl rounded-bl-sm bg-white px-4 py-3.5 shadow-card text-sm text-ink leading-relaxed">
+              <p className="font-medium text-ink">Hello — welcome to our website chat.</p>
+              <p>
+                This is a <strong>helpful assistant</strong> (not a person at the clinic).
+                You can ask about treatments, prices, or book a{' '}
+                <strong>free 30-minute consultation</strong> — the same as calling us, but
+                right here on the page.
+              </p>
+              <p className="text-ink-muted">
+                <strong>How to use it:</strong> tap a suggestion below, or type your question
+                in the box at the bottom and press Send.
+              </p>
             </div>
           </div>
+
+          {showSuggestions && (
+            <p className="pl-9 text-xs leading-relaxed text-ink-muted">
+              Prefer to speak to someone? Call{' '}
+              <a href={phoneHref} className="font-medium text-brand-600 underline hover:no-underline">
+                {phone}
+              </a>
+              .
+            </p>
+          )}
 
           {/* Suggestions */}
           {showSuggestions && (
             <div className="flex flex-wrap gap-2 pl-9">
               {SUGGESTIONS.map(s => (
                 <button key={s} onClick={() => submit(s)}
-                  className="rounded-full border border-brand-200 bg-white px-3 py-1.5 text-xs text-brand-600 transition-colors hover:bg-brand-50 hover:border-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+                  className="rounded-full border border-brand-200 bg-white px-3.5 py-2 text-sm text-brand-600 transition-colors hover:bg-brand-50 hover:border-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
                   {s}
                 </button>
               ))}
@@ -248,10 +275,10 @@ export function ChatWidget() {
             ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder="Type a message…"
+            placeholder="Type your question here…"
             disabled={isLoading}
-            aria-label="Chat message"
-            className="flex-1 rounded-xl bg-cream px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint outline-none focus:ring-2 focus:ring-brand-300 disabled:opacity-60 transition-shadow"
+            aria-label="Type your question"
+            className="flex-1 rounded-xl bg-cream px-3.5 py-3 text-base text-ink placeholder:text-ink-faint outline-none focus:ring-2 focus:ring-brand-300 disabled:opacity-60 transition-shadow"
           />
           <button type="submit" disabled={isLoading || !input.trim()} aria-label="Send message"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white transition-colors hover:bg-brand-600 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
@@ -261,26 +288,44 @@ export function ChatWidget() {
       </div>
 
       {/* ── Floating trigger ──────────────────────────────────────────────── */}
-      <button
-        onClick={isOpen ? close : open}
-        aria-label={isOpen ? 'Close chat' : 'Open chat'}
-        aria-expanded={isOpen}
-        className={cn(
-          'fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-soft',
-          'bg-brand-500 text-white transition-all duration-300 hover:bg-brand-600 hover:scale-105',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2',
+      <div className="fixed bottom-5 right-4 z-50 flex flex-col items-end gap-2">
+        {!isOpen && (
+          <p
+            className="max-w-[220px] rounded-sm bg-white px-3 py-2 text-right text-sm leading-snug text-ink shadow-card ring-1 ring-sand-dark/40 sm:max-w-[260px]"
+            aria-hidden
+          >
+            <span className="font-medium text-brand-700">Questions?</span> Chat here for
+            treatments, prices, or a free consultation.
+          </p>
         )}
-      >
-        <span className={cn('absolute transition-all duration-200', isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-75')}>
-          <CloseIcon className="h-5 w-5" />
-        </span>
-        <span className={cn('absolute transition-all duration-200', isOpen ? 'opacity-0 scale-75' : 'opacity-100 scale-100')}>
-          <ChatIcon className="h-5 w-5" />
-        </span>
-        {!hasOpened && (
-          <span className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full bg-rose-400 ring-2 ring-white animate-pulse" />
-        )}
-      </button>
+        <button
+          onClick={isOpen ? close : open}
+          aria-label={
+            isOpen
+              ? 'Close chat'
+              : 'Open chat — ask about treatments, prices, or book a free consultation'
+          }
+          aria-expanded={isOpen}
+          className={cn(
+            'relative flex items-center justify-center rounded-full shadow-soft',
+            'bg-brand-500 text-white transition-all duration-300 hover:bg-brand-600',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2',
+            isOpen ? 'h-14 w-14' : 'h-14 gap-2 pl-4 pr-5',
+          )}
+        >
+          {isOpen ? (
+            <CloseIcon className="h-5 w-5" />
+          ) : (
+            <>
+              <ChatIcon className="h-5 w-5 shrink-0" />
+              <span className="text-sm font-medium leading-tight">Open chat</span>
+            </>
+          )}
+          {!hasOpened && !isOpen && (
+            <span className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full bg-rose-400 ring-2 ring-white animate-pulse" />
+          )}
+        </button>
+      </div>
     </>
   )
 }

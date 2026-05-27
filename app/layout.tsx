@@ -92,7 +92,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Header settings={settings} servicesByCategory={servicesByCategory} />
             <main id="main-content">{children}</main>
             <Footer settings={settings} />
-            <ChatWidget />
+            <ChatWidget clinicPhone={settings.phone} />
           </>
         )}
       </body>
