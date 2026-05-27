@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const outcome = await rescheduleAppointment(result.data)
+    const outcome = await rescheduleAppointment(result.data, { adminOverride: true })
     return NextResponse.json({ success: true, ...outcome })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Reschedule failed'

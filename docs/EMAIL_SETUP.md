@@ -2,8 +2,10 @@
 
 When a client books at `/book`, the site sends:
 
-1. **Client** — confirmation with date, time, and clinic address  
-2. **Clinic** — new booking alert with client details + link to `/admin/consultations`
+1. **Client** — confirmation with date, time, and clinic address, plus a **Reschedule or cancel** button (`/manage/{token}`)
+2. **Clinic** — new booking alert with client details + link to `/admin/appointments`
+
+Paid treatment confirmations and 24h consultation reminders use the same manage link when `management_token` is set (migration `20260602_booking_management_tokens.sql`).
 
 Booking still succeeds if email is not configured (same pattern as Google Calendar).
 

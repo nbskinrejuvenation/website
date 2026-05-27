@@ -31,13 +31,19 @@ export interface RescheduleAppointmentResult {
   calendarSynced: boolean
 }
 
+export interface RescheduleOptions {
+  /** When true, skips minimum notice rules (admin). Default false for clients. */
+  adminOverride?: boolean
+}
+
 export async function getRescheduleCalendar(
   kind: RescheduleKind,
   id: string,
+  options: RescheduleOptions = {},
 ): Promise<{ durationMinutes: number; calendar: Array<{ date: string; slots: string[] }> }> {
   const { durationMinutes, exclude } = await getBookingContext(kind, id)
   const calendar = await getBookingCalendarForDuration(durationMinutes, {
-    adminOverride: true,
+    adminOverride: options.adminOverride ?? false,
     exclude,
   })
   return { durationMinutes, calendar }
@@ -69,11 +75,13 @@ async function getBookingContext(
 
 export async function rescheduleAppointment(
   input: RescheduleAppointmentInput,
+  options: RescheduleOptions = {},
 ): Promise<RescheduleAppointmentResult> {
   const { durationMinutes, exclude } = await getBookingContext(input.kind, input.id)
+  const adminOverride = options.adminOverride ?? false
 
   const available = await isSlotAvailable(input.date, input.time, durationMinutes, {
-    adminOverride: true,
+    adminOverride,
     exclude,
   })
   if (!available) {
@@ -171,6 +179,7 @@ async function rescheduleConsultation(
     previousStartsAt,
     newStartsAt: startsAt,
     clinicPhone: settings.phone,
+    managementToken: existing.management_token as string | undefined,
   })
 
   return {
@@ -267,6 +276,7 @@ async function rescheduleTreatment(
     previousStartsAt,
     newStartsAt: startsAt,
     clinicPhone: settings.phone,
+    managementToken: existing.management_token as string | undefined,
   })
 
   return {

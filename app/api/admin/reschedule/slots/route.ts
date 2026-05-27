@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await getRescheduleCalendar(kind, id)
+    const data = await getRescheduleCalendar(kind, id, { adminOverride: true })
     return NextResponse.json(data)
   } catch (err) {
     console.error('[admin/reschedule/slots]', err)

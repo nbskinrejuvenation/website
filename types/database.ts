@@ -114,6 +114,7 @@ export interface Client {
 export interface ConsultationBooking {
   id: string
   client_id: string
+  management_token: string
   starts_at: string
   ends_at: string
   status: ConsultationStatus
@@ -147,6 +148,7 @@ export interface TreatmentBooking {
   id: string
   client_id: string
   treatment_id: string
+  management_token: string
   starts_at: string
   ends_at: string
   status: TreatmentBookingStatus

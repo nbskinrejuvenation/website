@@ -1,6 +1,7 @@
 import { CONSULTATION_DURATION_MINUTES } from '@/lib/booking/constants'
+import { getManageBookingUrl } from '@/lib/booking/management-url'
 import { emailLayout, formatConsultationWhen } from '@/lib/email/layout'
-import { escapeHtml, getSiteUrl, isEmailConfigured, sendEmail } from '@/lib/email/resend'
+import { emailButton, escapeHtml, getSiteUrl, isEmailConfigured, sendEmail } from '@/lib/email/resend'
 
 export interface ConsultationBookingEmailInput {
   clientName: string
@@ -11,6 +12,7 @@ export interface ConsultationBookingEmailInput {
   startsAt: Date
   calendarSynced: boolean
   bookingId: string
+  managementToken?: string | null
 }
 
 function clientConfirmationHtml(input: ConsultationBookingEmailInput, when: string): string {
@@ -24,7 +26,16 @@ function clientConfirmationHtml(input: ConsultationBookingEmailInput, when: stri
     <p style="margin:0 0 20px;">Thank you for booking a complimentary ${CONSULTATION_DURATION_MINUTES}-minute skin consultation with us.</p>
     <p style="margin:0;padding:16px 20px;background:#f0e6e8;border-radius:2px;text-align:center;font-size:16px;color:#2c2420;"><strong>${escapeHtml(when)}</strong></p>
     ${calendarNote}
-    <p style="margin:24px 0 0;">We look forward to meeting you at our Dee Why clinic. If you need to change your appointment, please call us or reply to this email.</p>
+    ${
+      input.managementToken
+        ? emailButton(getManageBookingUrl(input.managementToken), 'Reschedule or cancel')
+        : ''
+    }
+    <p style="margin:24px 0 0;">We look forward to meeting you at our Dee Why clinic.${
+      input.managementToken
+        ? ' Use the button above to change your appointment online.'
+        : ' If you need to change your appointment, please call us or reply to this email.'
+    }</p>
   `)
 }
 

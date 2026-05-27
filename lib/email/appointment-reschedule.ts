@@ -1,7 +1,8 @@
 import { emailLayout, formatConsultationWhen } from '@/lib/email/layout'
 import type { EmailSendResult } from '@/lib/email/send-result'
 import { emailSent, emailSkipped } from '@/lib/email/send-result'
-import { escapeHtml, getSiteUrl, isClientEmailConfigured, sendEmail } from '@/lib/email/resend'
+import { getManageBookingUrl } from '@/lib/booking/management-url'
+import { emailButton, escapeHtml, getSiteUrl, isClientEmailConfigured, sendEmail } from '@/lib/email/resend'
 
 export interface AppointmentRescheduleEmailInput {
   clientName: string
@@ -10,6 +11,7 @@ export interface AppointmentRescheduleEmailInput {
   previousStartsAt: Date
   newStartsAt: Date
   clinicPhone?: string | null
+  managementToken?: string | null
 }
 
 function rescheduleHtml(input: AppointmentRescheduleEmailInput, was: string, now: string): string {
@@ -27,6 +29,11 @@ function rescheduleHtml(input: AppointmentRescheduleEmailInput, was: string, now
     <p style="margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:#6b5f58;">Now</p>
     <p style="margin:0;padding:16px 20px;background:#f0e6e8;border-radius:2px;text-align:center;font-size:16px;color:#2c2420;"><strong>${escapeHtml(now)}</strong></p>
     <p style="margin:24px 0 0;text-align:center;color:#6b5f58;">A calendar update has been sent if you use Google Calendar invitations.</p>
+    ${
+      input.managementToken
+        ? emailButton(getManageBookingUrl(input.managementToken), 'Manage appointment')
+        : ''
+    }
     ${phoneLine}
     <p style="margin:20px 0 0;text-align:center;font-size:14px;">
       <a href="${contactUrl}" style="color:#9a6b73;text-decoration:underline;">Contact us</a> if this time does not suit

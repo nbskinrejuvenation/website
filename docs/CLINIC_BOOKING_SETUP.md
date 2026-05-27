@@ -12,6 +12,7 @@ Replace Fresha with your own system: client database, Google Calendar, and (opti
 | `clients`, `consultation_bookings`, `treatment_bookings` | Run SQL migrations |
 | Google Calendar on confirmed bookings | After OAuth setup |
 | Admin portal: `/admin`, `/admin/appointments`, `/admin/clients` | After admin env vars |
+| Client self-service `/manage/[token]` — cancel & reschedule from email links | After `20260602` migration |
 
 **Paid treatments:** see [STRIPE_SETUP.md](./STRIPE_SETUP.md).
 
@@ -80,6 +81,15 @@ See **`docs/ADMIN_SETUP.md`**
 
 - Sign in at `/admin/login`
 - Manage all bookings at `/admin/appointments`
+
+## Client self-service (cancel / reschedule)
+
+After migration **`20260602_booking_management_tokens.sql`**:
+
+- Each booking gets a unique `management_token`
+- Confirmation and reminder emails include a **Reschedule or cancel** button → `/manage/{token}`
+- Clients must change appointments at least **4 hours** before the start time (same as booking notice)
+- Paid treatment cancellations trigger an automatic **Stripe refund** when payment is on file
 
 ## Email confirmations (Resend)
 

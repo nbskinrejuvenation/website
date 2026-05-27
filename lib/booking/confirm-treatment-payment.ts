@@ -131,6 +131,7 @@ export async function confirmTreatmentPayment(
     amountCents: booking.amount_cents,
     calendarSynced,
     bookingId: booking.id,
+    managementToken: (booking as TreatmentBooking).management_token,
   })
 
   return {

@@ -97,6 +97,7 @@ export async function bookConsultation(
     startsAt,
     calendarSynced,
     bookingId: booking.id,
+    managementToken: (booking as ConsultationBooking).management_token,
   })
 
   return {

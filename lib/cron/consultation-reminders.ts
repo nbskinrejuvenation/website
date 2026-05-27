@@ -80,6 +80,7 @@ export async function processConsultationReminders(
         clientEmail: booking.client.email,
         startsAt: new Date(booking.starts_at),
         clinicPhone,
+        managementToken: booking.management_token,
       })
 
       const { error: updateError } = await supabase
