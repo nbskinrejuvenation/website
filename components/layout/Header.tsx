@@ -18,7 +18,7 @@ export function Header({ settings, servicesByCategory }: Props) {
         className="section-container flex h-[4.5rem] items-center justify-between gap-4"
         aria-label="Main navigation"
       >
-        <Logo variant="light" />
+        <Logo variant="default" size="sm" />
 
         <ul className="hidden items-center gap-0.5 md:flex" role="list">
           <li>

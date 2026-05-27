@@ -1,35 +1,44 @@
+import Image from 'next/image'
 import Link from 'next/link'
+import { LOGO_DEFAULT, LOGO_LIGHT } from '@/lib/brand/logo'
+import { cn } from '@/lib/utils/cn'
 
 interface Props {
   businessName?: string
-  /** Light text for dark header; default for footer and light backgrounds. */
+  /** `light` = cream logo for dark backgrounds (footer). `default` for header on rose. */
   variant?: 'default' | 'light'
+  size?: 'sm' | 'md'
+  className?: string
 }
 
-/** Wordmark — drop your existing logo into public/logo.png when ready. */
-export function Logo({ businessName: _businessName, variant = 'default' }: Props) {
-  const isLight = variant === 'light'
+const SIZES = {
+  sm: { width: 48, height: 48, className: 'h-12 w-12' },
+  md: { width: 56, height: 56, className: 'h-14 w-14' },
+} as const
+
+export function Logo({
+  businessName: _businessName,
+  variant = 'default',
+  size = 'sm',
+  className,
+}: Props) {
+  const src = variant === 'light' ? LOGO_LIGHT : LOGO_DEFAULT
+  const dims = SIZES[size]
 
   return (
-    <Link href="/" className="group flex flex-col leading-tight" aria-label="Naturally Beautiful — home">
-      <span
-        className={
-          isLight
-            ? 'font-display text-xl font-light tracking-tight text-cream transition-colors group-hover:text-brand-200 md:text-[1.35rem]'
-            : 'font-display text-xl font-light tracking-tight text-ink transition-colors group-hover:text-brand-600 md:text-[1.35rem]'
-        }
-      >
-        Naturally Beautiful
-      </span>
-      <span
-        className={
-          isLight
-            ? 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-200'
-            : 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-700'
-        }
-      >
-        Skin Rejuvenation
-      </span>
+    <Link
+      href="/"
+      className={cn('inline-flex shrink-0 items-center', className)}
+      aria-label="Naturally Beautiful Skin Rejuvenation — home"
+    >
+      <Image
+        src={src}
+        alt=""
+        width={dims.width}
+        height={dims.height}
+        className={cn(dims.className, 'object-contain')}
+        priority={size === 'sm'}
+      />
     </Link>
   )
 }
