@@ -169,6 +169,16 @@ export type BookableTreatment = Pick<
   'id' | 'slug' | 'title' | 'duration_minutes' | 'price_cents' | 'bookable_online' | 'price_from'
 >
 
+// ─── Schedule blocks (agenda time off) ────────────────────────────────────────
+
+export interface ScheduleBlock {
+  id: string
+  starts_at: string
+  ends_at: string
+  title: string | null
+  created_at: string
+}
+
 // ─── Contact form ─────────────────────────────────────────────────────────────
 
 export interface ContactSubmission {

@@ -28,6 +28,7 @@ Default redirect: **`/admin`** (dashboard)
 | `/admin` | Dashboard — today’s stats, next appointment, schedule |
 | `/admin/appointments` | All bookings — consultations + paid treatments |
 | `/admin/calendar` | Week view of confirmed appointments |
+| `/admin/blocks` | Block time off (holidays, lunch, closures) — removes slots from online booking |
 | `/admin/clients` | Client directory, notes, booking history |
 | `/admin/messages` | Contact form submissions |
 | `/admin/treatments` | Online booking price, duration, enable/disable per treatment |

@@ -60,7 +60,12 @@ export function AvailabilityEditor({ initialRules }: Props) {
   return (
     <div className="rounded-sm bg-white shadow-card ring-1 ring-sand-dark/40">
       <p className="border-b border-sand-dark/40 px-6 py-4 text-sm text-ink-muted">
-        Times are in <strong>Australia/Sydney</strong>. Closed days have no online slots.
+        Times are in <strong>Australia/Sydney</strong>. Closed days have no online slots. To block
+        specific dates or hours (holidays, lunch), use{' '}
+        <a href="/admin/blocks" className="text-brand-600 hover:underline">
+          Time off
+        </a>
+        .
       </p>
       <ul className="divide-y divide-sand-dark/40">
         {days.map(day => (

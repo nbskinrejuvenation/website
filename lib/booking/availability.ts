@@ -124,19 +124,36 @@ async function getTreatmentBusyBetween(
     }))
 }
 
+async function getScheduleBlocksBetween(from: Date, to: Date): Promise<BusyInterval[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { data, error } = await supabase
+    .from('schedule_blocks')
+    .select('starts_at, ends_at')
+    .lt('starts_at', to.toISOString())
+    .gt('ends_at', from.toISOString())
+
+  if (error) throw new Error(`schedule_blocks: ${error.message}`)
+  return (data ?? []).map((b: { starts_at: string; ends_at: string }) => ({
+    start: new Date(b.starts_at),
+    end: new Date(b.ends_at),
+  }))
+}
+
 export async function getBusyIntervals(
   from: Date,
   to: Date,
   exclude?: BusyExclusion,
 ): Promise<BusyInterval[]> {
-  const [consultations, treatments, googleBusy] = await Promise.all([
+  const [consultations, treatments, blocks, googleBusy] = await Promise.all([
     getConsultationBusyBetween(from, to, exclude),
     getTreatmentBusyBetween(from, to, exclude),
+    getScheduleBlocksBetween(from, to),
     isGoogleCalendarConfigured()
       ? getGoogleBusyIntervals(from, to)
       : Promise.resolve([]),
   ])
-  return [...consultations, ...treatments, ...googleBusy]
+  return [...consultations, ...treatments, ...blocks, ...googleBusy]
 }
 
 export interface SlotQueryOptions {

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { AppointmentListItem } from '@/lib/data/appointments-admin'
+import type { ScheduleBlock } from '@/types/database'
 import {
   addDaysToDateKey,
   formatAdminDayHeading,
@@ -13,19 +14,33 @@ import { cn } from '@/lib/utils/cn'
 interface Props {
   weekStart: string
   appointments: AppointmentListItem[]
+  blocks: ScheduleBlock[]
 }
 
-export function CalendarView({ weekStart, appointments }: Props) {
+export function CalendarView({ weekStart, appointments, blocks }: Props) {
   const days = Array.from({ length: 7 }, (_, i) => addDaysToDateKey(weekStart, i))
   const todayKey = getSydneyDateKey()
 
   const byDay = new Map<string, AppointmentListItem[]>()
   for (const day of days) byDay.set(day, [])
+  const blocksByDay = new Map<string, ScheduleBlock[]>()
+  for (const day of days) blocksByDay.set(day, [])
+
   for (const a of appointments) {
     for (const day of days) {
       if (isOnSydneyDate(a.starts_at, day)) {
         byDay.get(day)!.push(a)
         break
+      }
+    }
+  }
+
+  for (const block of blocks) {
+    const blockStartKey = getSydneyDateKey(new Date(block.starts_at))
+    const blockEndKey = getSydneyDateKey(new Date(block.ends_at))
+    for (const day of days) {
+      if (day >= blockStartKey && day <= blockEndKey) {
+        blocksByDay.get(day)!.push(block)
       }
     }
   }
@@ -50,6 +65,7 @@ export function CalendarView({ weekStart, appointments }: Props) {
       <div className="grid gap-3 lg:grid-cols-7">
         {days.map(day => {
           const items = byDay.get(day) ?? []
+          const dayBlocks = blocksByDay.get(day) ?? []
           return (
             <div
               key={day}
@@ -70,7 +86,34 @@ export function CalendarView({ weekStart, appointments }: Props) {
                 {day.slice(8)}/{day.slice(5, 7)}
               </p>
               <ul className="mt-2 space-y-2">
-                {items.length === 0 ? (
+                {dayBlocks.map(block => {
+                  const blockStartKey = getSydneyDateKey(new Date(block.starts_at))
+                  const blockEndKey = getSydneyDateKey(new Date(block.ends_at))
+                  const multiDay = blockStartKey !== blockEndKey
+                  const allDay =
+                    new Date(block.ends_at).getTime() - new Date(block.starts_at).getTime() >=
+                    23 * 60 * 60 * 1000
+                  return (
+                    <li key={block.id}>
+                      <div
+                        className="rounded-sm border border-dashed border-ink/25 bg-ink/5 px-2 py-1.5 text-[10px] leading-tight text-ink-muted"
+                        title="Blocked from online booking"
+                      >
+                        <span className="font-medium text-ink">{block.title || 'Blocked'}</span>
+                        <span className="mt-0.5 block">
+                          {multiDay && !isOnSydneyDate(block.starts_at, day)
+                            ? 'Continues'
+                            : multiDay && !isOnSydneyDate(block.ends_at, day)
+                              ? 'Continues'
+                              : allDay
+                                ? 'All day'
+                                : `${formatAdminTime(block.starts_at)} – ${formatAdminTime(block.ends_at)}`}
+                        </span>
+                      </div>
+                    </li>
+                  )
+                })}
+                {items.length === 0 && dayBlocks.length === 0 ? (
                   <li className="text-[10px] text-ink-faint">—</li>
                 ) : (
                   items.map(a => (

@@ -2,6 +2,7 @@ export type AdminNavId =
   | 'dashboard'
   | 'appointments'
   | 'calendar'
+  | 'blocks'
   | 'clients'
   | 'messages'
   | 'treatments'
@@ -24,6 +25,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
     description: 'Consultations & paid treatments',
   },
   { id: 'calendar', label: 'Calendar', href: '/admin/calendar', description: 'Week view' },
+  { id: 'blocks', label: 'Time off', href: '/admin/blocks', description: 'Block agenda slots' },
   { id: 'clients', label: 'Clients', href: '/admin/clients', description: 'Client directory' },
   { id: 'messages', label: 'Messages', href: '/admin/messages', description: 'Contact form inbox' },
   {
