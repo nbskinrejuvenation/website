@@ -103,7 +103,8 @@ export function ScheduleBlocksPanel({ initialBlocks }: Props) {
       <section className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40">
         <h2 className="font-display text-lg font-light text-ink">Block time on the agenda</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Blocked periods are hidden from online booking (consultations and paid treatments). Existing
+          Blocked periods are hidden from online booking (consultations and paid treatments). When
+          Google Calendar is connected, blocks also appear on your clinic calendar. Existing
           appointments are not cancelled.
         </p>
 

@@ -1,5 +1,8 @@
 import { sendConsultationReminderEmail } from '@/lib/email/consultation-reminder'
 import { isClientEmailConfigured } from '@/lib/email/resend'
+import { buildConsultationReminderSms } from '@/lib/sms/consultation-reminder'
+import { normalizeAuPhone, isSmsConfigured } from '@/lib/sms/config'
+import { sendSms } from '@/lib/sms/twilio'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { Client, ConsultationBooking } from '@/types/database'
 
@@ -16,10 +19,12 @@ type BookingWithClient = ConsultationBooking & { client: Client }
 
 export interface ReminderRunResult {
   configured: boolean
+  smsConfigured: boolean
   windowStart: string
   windowEnd: string
   candidates: number
   sent: number
+  smsSent: number
   failed: number
   skipped: number
 }
@@ -35,18 +40,23 @@ export async function processConsultationReminders(
     now.getTime() + (REMINDER_HOURS_BEFORE + REMINDER_WINDOW_HOURS / 2) * 60 * 60 * 1000,
   )
 
+  const emailConfigured = isClientEmailConfigured()
+  const smsConfigured = isSmsConfigured()
+
   const baseResult: ReminderRunResult = {
-    configured: isClientEmailConfigured(),
+    configured: emailConfigured,
+    smsConfigured,
     windowStart: windowStart.toISOString(),
     windowEnd: windowEnd.toISOString(),
     candidates: 0,
     sent: 0,
+    smsSent: 0,
     failed: 0,
     skipped: 0,
   }
 
-  if (!isClientEmailConfigured()) {
-    console.warn('[consultation-reminders] Email not configured — skipping')
+  if (!emailConfigured && !smsConfigured) {
+    console.warn('[consultation-reminders] Email and SMS not configured — skipping')
     return baseResult
   }
 
@@ -57,7 +67,7 @@ export async function processConsultationReminders(
     .from('consultation_bookings')
     .select('*, client:clients (*)')
     .eq('status', 'confirmed')
-    .is('reminder_sent_at', null)
+    .or('reminder_sent_at.is.null,sms_reminder_sent_at.is.null')
     .gte('starts_at', windowStart.toISOString())
     .lt('starts_at', windowEnd.toISOString())
 
@@ -69,36 +79,64 @@ export async function processConsultationReminders(
   const result = { ...baseResult, candidates: bookings.length }
 
   for (const booking of bookings) {
-    if (!booking.client?.email) {
+    const hasEmail = Boolean(booking.client?.email)
+    const phone = normalizeAuPhone(booking.client?.phone)
+    const canSms = smsConfigured && phone && !booking.sms_reminder_sent_at
+
+    if (!hasEmail && !canSms) {
       result.skipped++
       continue
     }
 
     try {
-      await sendConsultationReminderEmail({
-        clientName: booking.client.full_name,
-        clientEmail: booking.client.email,
-        startsAt: new Date(booking.starts_at),
-        clinicPhone,
-        managementToken: booking.management_token,
-      })
-
-      const { error: updateError } = await supabase
-        .from('consultation_bookings')
-        .update({
-          reminder_sent_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+      let emailOk = false
+      if (hasEmail && emailConfigured && !booking.reminder_sent_at) {
+        await sendConsultationReminderEmail({
+          clientName: booking.client.full_name,
+          clientEmail: booking.client.email,
+          startsAt: new Date(booking.starts_at),
+          clinicPhone,
+          managementToken: booking.management_token,
         })
-        .eq('id', booking.id)
-        .is('reminder_sent_at', null)
+        emailOk = true
+        result.sent++
+      }
 
-      if (updateError) {
-        console.error(`[consultation-reminders] mark sent ${booking.id}:`, updateError)
+      let smsOk = false
+      if (canSms) {
+        const body = buildConsultationReminderSms({
+          clientName: booking.client.full_name,
+          startsAt: new Date(booking.starts_at),
+          managementToken: booking.management_token,
+          clinicPhone,
+        })
+        const smsResult = await sendSms(phone!, body)
+        if (smsResult.sent) {
+          smsOk = true
+          result.smsSent++
+        } else {
+          console.error(`[consultation-reminders] SMS ${booking.id}:`, smsResult.error)
+        }
+      }
+
+      if (!emailOk && !smsOk) {
         result.failed++
         continue
       }
 
-      result.sent++
+      const patch: Record<string, string> = { updated_at: new Date().toISOString() }
+      if (emailOk) patch.reminder_sent_at = new Date().toISOString()
+      if (smsOk) patch.sms_reminder_sent_at = new Date().toISOString()
+
+      const { error: updateError } = await supabase
+        .from('consultation_bookings')
+        .update(patch)
+        .eq('id', booking.id)
+
+      if (updateError) {
+        console.error(`[consultation-reminders] mark sent ${booking.id}:`, updateError)
+        result.failed++
+      }
     } catch (err) {
       console.error(`[consultation-reminders] send ${booking.id}:`, err)
       result.failed++

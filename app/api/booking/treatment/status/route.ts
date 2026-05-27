@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { confirmTreatmentPayment } from '@/lib/booking/confirm-treatment-payment'
+import { getManageBookingUrl } from '@/lib/booking/management-url'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getStripe } from '@/lib/stripe/client'
 import { isStripeConfigured } from '@/lib/stripe/config'
@@ -39,6 +40,9 @@ export async function GET(request: Request) {
         status: result.confirmed ? 'confirmed' : 'pending',
         treatmentTitle: result.treatmentTitle,
         startsAt: result.booking?.starts_at ?? null,
+        manageUrl: result.booking?.management_token
+          ? getManageBookingUrl(result.booking.management_token)
+          : null,
       })
     }
 
@@ -46,13 +50,16 @@ export async function GET(request: Request) {
     const supabase = createAdminClient() as any
     const { data: booking } = await supabase
       .from('treatment_bookings')
-      .select('status, starts_at')
+      .select('status, starts_at, management_token')
       .eq('id', bookingId)
       .maybeSingle()
 
     return NextResponse.json({
       status: booking?.status ?? 'pending',
       startsAt: booking?.starts_at ?? null,
+      manageUrl: booking?.management_token
+        ? getManageBookingUrl(booking.management_token)
+        : null,
       paymentStatus: session.payment_status,
     })
   } catch (err) {

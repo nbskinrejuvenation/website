@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import type Stripe from 'stripe'
-import {
-  cancelPendingTreatmentBooking,
-  confirmTreatmentPayment,
-} from '@/lib/booking/confirm-treatment-payment'
+import { handleAbandonedTreatmentCheckout } from '@/lib/booking/abandoned-checkout'
+import { confirmTreatmentPayment } from '@/lib/booking/confirm-treatment-payment'
 import { getStripe } from '@/lib/stripe/client'
 import { isStripeConfigured } from '@/lib/stripe/config'
 
@@ -54,7 +52,7 @@ export async function POST(request: Request) {
     if (event.type === 'checkout.session.expired') {
       const session = event.data.object as Stripe.Checkout.Session
       if (session.metadata?.booking_type === 'treatment' && session.metadata.booking_id) {
-        await cancelPendingTreatmentBooking(session.metadata.booking_id)
+        await handleAbandonedTreatmentCheckout(session.metadata.booking_id)
       }
     }
   } catch (err) {

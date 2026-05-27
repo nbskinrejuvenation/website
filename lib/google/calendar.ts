@@ -1,3 +1,4 @@
+import { addDaysToDateKey, getSydneyDateKey } from '@/lib/admin/datetime'
 import { CLINIC_TIMEZONE } from '@/lib/booking/constants'
 
 export function isGoogleCalendarConfigured(): boolean {
@@ -210,6 +211,63 @@ export async function updateCalendarEventTimes(
     const text = await res.text()
     throw new Error(`Google Calendar update failed: ${text}`)
   }
+}
+
+export interface CreateScheduleBlockEventInput {
+  title?: string | null
+  startsAt: Date
+  endsAt: Date
+  allDay: boolean
+}
+
+/** Creates a blocked-time event on the clinic calendar (no attendees). */
+export async function createScheduleBlockCalendarEvent(
+  input: CreateScheduleBlockEventInput,
+): Promise<string | null> {
+  if (!isGoogleCalendarConfigured()) {
+    console.warn('[google-calendar] Not configured — skipping block event')
+    return null
+  }
+
+  const accessToken = await getAccessToken()
+  const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID!)
+  const label = input.title?.trim() || 'Blocked — clinic closed'
+
+  const body: Record<string, unknown> = {
+    summary: label,
+    description: 'Blocked via clinic admin — not available for online booking.',
+    reminders: { useDefault: true },
+  }
+
+  if (input.allDay) {
+    const startDate = getSydneyDateKey(input.startsAt)
+    const endDate = addDaysToDateKey(getSydneyDateKey(input.endsAt), 1)
+    body.start = { date: startDate }
+    body.end = { date: endDate }
+  } else {
+    body.start = { dateTime: input.startsAt.toISOString(), timeZone: CLINIC_TIMEZONE }
+    body.end = { dateTime: input.endsAt.toISOString(), timeZone: CLINIC_TIMEZONE }
+  }
+
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    },
+  )
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Google Calendar block event failed: ${text}`)
+  }
+
+  const data = (await res.json()) as { id: string }
+  return data.id
 }
 
 /** Deletes a calendar event and notifies attendees (when configured). */

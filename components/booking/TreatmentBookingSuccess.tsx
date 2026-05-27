@@ -12,6 +12,7 @@ interface Props {
 export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
   const [status, setStatus] = useState<'loading' | 'confirmed' | 'pending' | 'error'>('loading')
   const [when, setWhen] = useState<string | null>(null)
+  const [manageUrl, setManageUrl] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -24,6 +25,7 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
         const json = (await res.json()) as {
           status?: string
           startsAt?: string
+          manageUrl?: string | null
           error?: string
         }
         if (cancelled) return
@@ -35,6 +37,7 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
 
         if (json.status === 'confirmed' && json.startsAt) {
           setStatus('confirmed')
+          setManageUrl(json.manageUrl ?? null)
           setWhen(
             new Date(json.startsAt).toLocaleString('en-AU', {
               weekday: 'long',
@@ -98,7 +101,12 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
       <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
         A confirmation email is on its way. You may also receive a Google Calendar invitation.
       </p>
-      <Link href="/" className="btn-outline mt-8 inline-flex">
+      {manageUrl && (
+        <Link href={manageUrl} className="btn-primary mt-6 inline-flex">
+          Manage appointment
+        </Link>
+      )}
+      <Link href="/" className="btn-outline mt-4 inline-flex">
         Back to home
       </Link>
     </div>

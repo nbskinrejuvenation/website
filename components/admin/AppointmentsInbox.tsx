@@ -8,6 +8,7 @@ import type { TreatmentBookingWithRelations } from '@/lib/data/treatment-booking
 import { formatAdminWhen, formatAdminWhenLong } from '@/lib/admin/datetime'
 import type { ConsultationStatus, TreatmentBookingStatus } from '@/types/database'
 import { formatAudFromCents } from '@/lib/stripe/config'
+import { ManageLinkActions } from '@/components/admin/ManageLinkActions'
 import { ReschedulePanel } from '@/components/admin/ReschedulePanel'
 import { cn } from '@/lib/utils/cn'
 
@@ -397,6 +398,9 @@ function ConsultationDetailPanel({
       </div>
 
       <ClientContact client={c.client} />
+      {c.management_token && c.status === 'confirmed' && (
+        <ManageLinkActions managementToken={c.management_token} clientPhone={c.client.phone} />
+      )}
       {c.treatment_interest && (
         <Field label="Interest" value={c.treatment_interest} />
       )}
@@ -475,6 +479,9 @@ function TreatmentDetailPanel({
       </div>
 
       <ClientContact client={b.client} />
+      {b.management_token && b.status === 'confirmed' && (
+        <ManageLinkActions managementToken={b.management_token} clientPhone={b.client.phone} />
+      )}
       {b.message && <Field label="Client message" value={b.message} multiline />}
 
       {b.status === 'confirmed' && (

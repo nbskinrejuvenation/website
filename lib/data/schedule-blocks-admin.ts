@@ -1,5 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { buildScheduleBlockTimes } from '@/lib/booking/schedule-block-times'
+import {
+  createScheduleBlockCalendarEvent,
+  deleteConsultationCalendarEvent,
+} from '@/lib/google/calendar'
 import type { ScheduleBlock } from '@/types/database'
 
 export async function listScheduleBlocksBetween(
@@ -57,12 +61,52 @@ export async function createScheduleBlock(input: {
     .single()
 
   if (error) throw new Error(`createScheduleBlock: ${error.message}`)
-  return data as ScheduleBlock
+
+  const block = data as ScheduleBlock
+  const durationMs = endsAt.getTime() - startsAt.getTime()
+  const allDay = durationMs >= 23 * 60 * 60 * 1000
+
+  try {
+    const eventId = await createScheduleBlockCalendarEvent({
+      title: input.title,
+      startsAt,
+      endsAt,
+      allDay,
+    })
+    if (eventId) {
+      const { data: synced, error: syncError } = await supabase
+        .from('schedule_blocks')
+        .update({ google_event_id: eventId })
+        .eq('id', block.id)
+        .select('*')
+        .single()
+      if (!syncError && synced) return synced as ScheduleBlock
+    }
+  } catch (err) {
+    console.error('[createScheduleBlock] Google Calendar:', err)
+  }
+
+  return block
 }
 
 export async function deleteScheduleBlock(id: string): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
+
+  const { data: existing } = await supabase
+    .from('schedule_blocks')
+    .select('google_event_id')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (existing?.google_event_id) {
+    try {
+      await deleteConsultationCalendarEvent(existing.google_event_id)
+    } catch (err) {
+      console.error('[deleteScheduleBlock] Google Calendar:', err)
+    }
+  }
+
   const { error } = await supabase.from('schedule_blocks').delete().eq('id', id)
   if (error) throw new Error(`deleteScheduleBlock: ${error.message}`)
 }

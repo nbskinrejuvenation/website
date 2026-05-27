@@ -42,6 +42,7 @@ export function ConsultationBooking({ phone }: Props) {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [confirmedStart, setConfirmedStart] = useState<string | null>(null)
+  const [manageUrl, setManageUrl] = useState<string | null>(null)
   const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
   const [calendarSynced, setCalendarSynced] = useState(false)
 
@@ -99,11 +100,13 @@ export function ConsultationBooking({ phone }: Props) {
       const json = (await res.json()) as {
         error?: string
         startsAt?: string
+        manageUrl?: string
         confirmationEmailSent?: boolean
         calendarSynced?: boolean
       }
       if (!res.ok) throw new Error(json.error ?? 'Booking failed')
       setConfirmedStart(json.startsAt ?? null)
+      setManageUrl(json.manageUrl ?? null)
       setConfirmationEmailSent(json.confirmationEmailSent ?? false)
       setCalendarSynced(json.calendarSynced ?? false)
       setStep('done')
@@ -141,7 +144,12 @@ export function ConsultationBooking({ phone }: Props) {
             : 'We\u2019ve saved your booking. If you don\u2019t receive a confirmation email shortly, check your spam folder or call us.'}
           {calendarSynced && ' You\u2019ll also receive a Google Calendar invitation.'}
         </p>
-        <Link href="/" className="btn-outline mt-8 inline-flex">
+        {manageUrl && (
+          <Link href={manageUrl} className="btn-primary mt-6 inline-flex">
+            Manage appointment
+          </Link>
+        )}
+        <Link href="/" className="btn-outline mt-4 inline-flex">
           Back to home
         </Link>
       </div>

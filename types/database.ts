@@ -125,6 +125,7 @@ export interface ConsultationBooking {
   google_calendar_synced: boolean
   internal_notes: string | null
   reminder_sent_at: string | null
+  sms_reminder_sent_at: string | null
   created_at: string
   updated_at: string
 }
@@ -161,6 +162,7 @@ export interface TreatmentBooking {
   google_event_id: string | null
   google_calendar_synced: boolean
   internal_notes: string | null
+  abandoned_checkout_email_sent_at: string | null
   created_at: string
   updated_at: string
 }
@@ -178,6 +180,7 @@ export interface ScheduleBlock {
   starts_at: string
   ends_at: string
   title: string | null
+  google_event_id: string | null
   created_at: string
 }
 

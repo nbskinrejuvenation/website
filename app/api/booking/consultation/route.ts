@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { bookConsultation } from '@/lib/booking/create-consultation'
+import { getManageBookingUrl } from '@/lib/booking/management-url'
 
 const schema = z.object({
   full_name: z.string().min(2).max(100),
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
         success: true,
         bookingId: booking.booking.id,
         startsAt: booking.booking.starts_at,
+        manageUrl: getManageBookingUrl(booking.booking.management_token),
         calendarSynced: booking.calendarSynced,
         confirmationEmailSent: booking.emailsSent.client,
       },
