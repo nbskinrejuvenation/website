@@ -81,6 +81,12 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
             Choose a time and pay {chargeLabel} to secure your appointment ({treatment.duration_minutes}{' '}
             minutes).
           </p>
+          {depositPercent < 100 && (
+            <p className="mx-auto mt-3 max-w-lg text-sm text-ink-muted">
+              A {depositPercent}% deposit ({formatAudFromCents(chargeCents)}) is charged now. The
+              remaining balance is due at your appointment.
+            </p>
+          )}
         </div>
       </section>
 

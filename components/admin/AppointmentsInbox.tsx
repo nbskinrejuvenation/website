@@ -83,7 +83,11 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
 
   const patchConsultation = async (
     id: string,
-    body: { status?: ConsultationStatus; internal_notes?: string | null },
+    body: {
+      status?: ConsultationStatus
+      internal_notes?: string | null
+      no_show_notes?: string | null
+    },
   ) => {
     setSaving(true)
     setMessage(null)
@@ -117,6 +121,7 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
     body: {
       status?: TreatmentBookingStatus
       internal_notes?: string | null
+      no_show_notes?: string | null
       refund?: boolean
     },
   ) => {
@@ -383,11 +388,19 @@ function ConsultationDetailPanel({
   saving: boolean
   resendingEmail: boolean
   message: string | null
-  onPatch: (id: string, body: { status?: ConsultationStatus; internal_notes?: string | null }) => void
+  onPatch: (
+    id: string,
+    body: {
+      status?: ConsultationStatus
+      internal_notes?: string | null
+      no_show_notes?: string | null
+    },
+  ) => void
   onResendCancellationEmail: (id: string) => void
   onRescheduled: () => void
 }) {
   const [notes, setNotes] = useState(c.internal_notes ?? '')
+  const [noShowNotes, setNoShowNotes] = useState(c.no_show_notes ?? '')
 
   return (
     <div className="space-y-8">
@@ -436,6 +449,15 @@ function ConsultationDetailPanel({
         </div>
       )}
 
+      {c.status === 'no_show' && (
+        <NoShowNotesField
+          notes={noShowNotes}
+          setNotes={setNoShowNotes}
+          saving={saving}
+          onSave={() => onPatch(c.id, { no_show_notes: noShowNotes || null })}
+        />
+      )}
+
       <NotesField notes={notes} setNotes={setNotes} saving={saving} onSave={() => onPatch(c.id, { internal_notes: notes || null })} />
 
       {c.google_calendar_synced && (
@@ -459,12 +481,18 @@ function TreatmentDetailPanel({
   message: string | null
   onPatch: (
     id: string,
-    body: { status?: TreatmentBookingStatus; internal_notes?: string | null; refund?: boolean },
+    body: {
+      status?: TreatmentBookingStatus
+      internal_notes?: string | null
+      no_show_notes?: string | null
+      refund?: boolean
+    },
   ) => void
   onRefund: (id: string) => void
   onRescheduled: () => void
 }) {
   const [notes, setNotes] = useState(b.internal_notes ?? '')
+  const [noShowNotes, setNoShowNotes] = useState(b.no_show_notes ?? '')
   const [refundOnCancel, setRefundOnCancel] = useState(true)
   const canRefund = Boolean(b.stripe_payment_intent_id)
 
@@ -535,6 +563,15 @@ function TreatmentDetailPanel({
         </button>
       )}
 
+      {b.status === 'no_show' && (
+        <NoShowNotesField
+          notes={noShowNotes}
+          setNotes={setNoShowNotes}
+          saving={saving}
+          onSave={() => onPatch(b.id, { no_show_notes: noShowNotes || null })}
+        />
+      )}
+
       {b.status !== 'pending_payment' && (
         <NotesField notes={notes} setNotes={setNotes} saving={saving} onSave={() => onPatch(b.id, { internal_notes: notes || null })} />
       )}
@@ -543,6 +580,37 @@ function TreatmentDetailPanel({
         <p className="text-xs text-ink-faint">Synced to Google Calendar</p>
       )}
       {message && <MessageLine message={message} />}
+    </div>
+  )
+}
+
+function NoShowNotesField({
+  notes,
+  setNotes,
+  saving,
+  onSave,
+}: {
+  notes: string
+  setNotes: (v: string) => void
+  saving: boolean
+  onSave: () => void
+}) {
+  return (
+    <div className="rounded-sm border border-amber-200/80 bg-amber-50/50 p-4">
+      <label htmlFor="no_show_notes" className="mb-2 block text-xs font-medium uppercase tracking-widest text-amber-900">
+        No-show notes
+      </label>
+      <textarea
+        id="no_show_notes"
+        rows={3}
+        value={notes}
+        onChange={e => setNotes(e.target.value)}
+        placeholder="e.g. did not answer phone, no reply to SMS"
+        className="w-full rounded-sm border border-sand-dark px-4 py-2.5 text-sm"
+      />
+      <button type="button" disabled={saving} onClick={onSave} className="btn-outline mt-3 disabled:opacity-50">
+        Save no-show notes
+      </button>
     </div>
   )
 }

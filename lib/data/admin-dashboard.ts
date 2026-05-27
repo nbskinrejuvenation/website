@@ -10,6 +10,8 @@ export interface AdminDashboardStats {
   pendingPayments: number
   weekRevenueCents: number
   unreadMessages: number
+  monthCompleted: number
+  monthNoShows: number
   nextAppointment: {
     id: string
     kind: 'consultation' | 'treatment'
@@ -105,6 +107,31 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
 
   const weekStart = new Date(`${todayKey}T00:00:00`)
   const weekEnd = new Date(`${weekEndKey}T23:59:59`)
+  const monthStartKey = addDaysToDateKey(todayKey, -29)
+  const monthStart = new Date(`${monthStartKey}T00:00:00`)
+
+  const [completedConsults, completedTreats, noShowConsults, noShowTreats] = await Promise.all([
+    supabase
+      .from('consultation_bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'completed')
+      .gte('starts_at', monthStart.toISOString()),
+    supabase
+      .from('treatment_bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'completed')
+      .gte('starts_at', monthStart.toISOString()),
+    supabase
+      .from('consultation_bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'no_show')
+      .gte('starts_at', monthStart.toISOString()),
+    supabase
+      .from('treatment_bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'no_show')
+      .gte('starts_at', monthStart.toISOString()),
+  ])
 
   const { data: paidWeek } = await supabase
     .from('treatment_bookings')
@@ -126,6 +153,8 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
     pendingPayments: pendingRes.count ?? 0,
     weekRevenueCents,
     unreadMessages,
+    monthCompleted: (completedConsults.count ?? 0) + (completedTreats.count ?? 0),
+    monthNoShows: (noShowConsults.count ?? 0) + (noShowTreats.count ?? 0),
     nextAppointment: next
       ? {
           id: next.id,

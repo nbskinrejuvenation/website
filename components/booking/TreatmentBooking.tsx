@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
 import { Calendar, CreditCard, Loader2, Phone } from 'lucide-react'
+import { PrivacyConsentField } from '@/components/booking/PrivacyConsentField'
 import { cn } from '@/lib/utils/cn'
 
 const formSchema = z.object({
@@ -45,6 +46,7 @@ export function TreatmentBooking({
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [privacyConsent, setPrivacyConsent] = useState(false)
 
   const {
     register,
@@ -84,6 +86,10 @@ export function TreatmentBooking({
 
   const onSubmit = async (data: FormData) => {
     if (!selectedDate || !selectedTime) return
+    if (!privacyConsent) {
+      setSubmitError('Please accept the privacy policy to continue.')
+      return
+    }
     setSubmitting(true)
     setSubmitError(null)
     try {
@@ -96,6 +102,7 @@ export function TreatmentBooking({
           date: selectedDate,
           time: selectedTime,
           source_page: window.location.pathname,
+          privacy_consent: true,
         }),
       })
       const json = (await res.json()) as { error?: string; checkoutUrl?: string }
@@ -264,6 +271,10 @@ export function TreatmentBooking({
                   placeholder="Anything we should know before your appointment…"
                 />
               </Field>
+            </div>
+
+            <div className="mt-6">
+              <PrivacyConsentField checked={privacyConsent} onChange={setPrivacyConsent} />
             </div>
 
             {submitError && <p className="mt-4 text-sm text-red-600">{submitError}</p>}

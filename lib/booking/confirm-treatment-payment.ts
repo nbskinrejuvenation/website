@@ -1,6 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getBookableTreatmentById } from '@/lib/booking/get-bookable-treatment'
+import { formatConsultationWhen } from '@/lib/email/layout'
 import { sendTreatmentBookingEmails } from '@/lib/email/treatment-booking'
+import { formatAudFromCents } from '@/lib/stripe/config'
+import { notifyClinicNewBooking } from '@/lib/notifications/clinic-booking-alert'
 import { createTreatmentCalendarEvent } from '@/lib/google/calendar'
 import type { Client, TreatmentBooking } from '@/types/database'
 
@@ -120,6 +123,14 @@ export async function confirmTreatmentPayment(
   } catch (err) {
     console.error('[confirmTreatmentPayment] Google Calendar:', err)
   }
+
+  void notifyClinicNewBooking({
+    kind: 'treatment',
+    clientName: client.full_name,
+    when: formatConsultationWhen(startsAt),
+    label: treatment.title,
+    amountLabel: formatAudFromCents(booking.amount_cents),
+  }).catch(err => console.error('[confirmTreatmentPayment] clinic alert:', err))
 
   await sendTreatmentBookingEmails({
     clientName: client.full_name,

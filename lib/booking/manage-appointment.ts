@@ -4,6 +4,7 @@ import {
   rescheduleAppointment,
   type RescheduleKind,
 } from '@/lib/booking/reschedule-appointment'
+import { getBookingIntake } from '@/lib/data/booking-intake'
 import { updateConsultation } from '@/lib/data/consultations-admin'
 import { updateTreatmentBooking } from '@/lib/data/treatment-bookings-admin'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -21,6 +22,8 @@ export interface ManageBookingView {
   modifyBlockedReason: string | null
   amountCents: number | null
   treatmentSlug: string | null
+  intakeSubmitted: boolean
+  bookingId: string
 }
 
 interface ResolvedBooking {
@@ -148,6 +151,8 @@ function toView(resolved: ResolvedBooking): ManageBookingView {
     modifyBlockedReason: reason,
     amountCents: resolved.amountCents,
     treatmentSlug: resolved.treatmentSlug,
+    intakeSubmitted: false,
+    bookingId: resolved.id,
   }
 }
 
@@ -160,8 +165,12 @@ export async function getManageBookingByToken(token: string): Promise<ManageBook
   const table = resolved.kind === 'consultation' ? 'consultation_bookings' : 'treatment_bookings'
   const { data } = await supabase.from(table).select('ends_at').eq('id', resolved.id).single()
 
+  const intake = await getBookingIntake(resolved.kind, resolved.id).catch(() => null)
+
   const view = toView(resolved)
   if (data?.ends_at) view.endsAt = data.ends_at
+  view.bookingId = resolved.id
+  view.intakeSubmitted = Boolean(intake)
   return view
 }
 

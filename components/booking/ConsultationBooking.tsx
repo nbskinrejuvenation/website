@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
 import { Calendar, Check, Loader2, Phone } from 'lucide-react'
+import { PrivacyConsentField } from '@/components/booking/PrivacyConsentField'
 import { cn } from '@/lib/utils/cn'
 
 const formSchema = z.object({
@@ -45,6 +46,7 @@ export function ConsultationBooking({ phone }: Props) {
   const [manageUrl, setManageUrl] = useState<string | null>(null)
   const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
   const [calendarSynced, setCalendarSynced] = useState(false)
+  const [privacyConsent, setPrivacyConsent] = useState(false)
 
   const {
     register,
@@ -84,6 +86,10 @@ export function ConsultationBooking({ phone }: Props) {
 
   const onSubmit = async (data: FormData) => {
     if (!selectedDate || !selectedTime) return
+    if (!privacyConsent) {
+      setSubmitError('Please accept the privacy policy to continue.')
+      return
+    }
     setSubmitting(true)
     setSubmitError(null)
     try {
@@ -95,6 +101,7 @@ export function ConsultationBooking({ phone }: Props) {
           date: selectedDate,
           time: selectedTime,
           source_page: window.location.pathname,
+          privacy_consent: true,
         }),
       })
       const json = (await res.json()) as {
@@ -314,6 +321,13 @@ export function ConsultationBooking({ phone }: Props) {
                   placeholder="Skin concerns or questions…"
                 />
               </Field>
+            </div>
+
+            <div className="mt-6">
+              <PrivacyConsentField
+                checked={privacyConsent}
+                onChange={setPrivacyConsent}
+              />
             </div>
 
             {submitError && (

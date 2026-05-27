@@ -126,6 +126,8 @@ export interface ConsultationBooking {
   internal_notes: string | null
   reminder_sent_at: string | null
   sms_reminder_sent_at: string | null
+  review_request_sent_at: string | null
+  no_show_notes: string | null
   created_at: string
   updated_at: string
 }
@@ -163,6 +165,10 @@ export interface TreatmentBooking {
   google_calendar_synced: boolean
   internal_notes: string | null
   abandoned_checkout_email_sent_at: string | null
+  reminder_sent_at: string | null
+  sms_reminder_sent_at: string | null
+  review_request_sent_at: string | null
+  no_show_notes: string | null
   created_at: string
   updated_at: string
 }
@@ -182,6 +188,20 @@ export interface ScheduleBlock {
   title: string | null
   google_event_id: string | null
   created_at: string
+}
+
+// ─── Pre-appointment intake ───────────────────────────────────────────────────
+
+export type BookingIntakeKind = 'consultation' | 'treatment'
+
+export interface BookingIntake {
+  booking_kind: BookingIntakeKind
+  booking_id: string
+  skin_concerns: string | null
+  medications: string | null
+  allergies: string | null
+  notes: string | null
+  submitted_at: string
 }
 
 // ─── Contact form ─────────────────────────────────────────────────────────────

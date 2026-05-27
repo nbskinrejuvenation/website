@@ -66,6 +66,19 @@ export function ReportsView({ report, period }: Props) {
           </ul>
         )}
       </section>
+
+      <section className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40">
+        <h2 className="font-display text-lg font-light text-ink">Export data</h2>
+        <p className="mt-2 text-sm text-ink-muted">Download CSV for your accountant or records.</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <a href="/api/admin/export/bookings" className="btn-outline text-sm">
+            Download bookings
+          </a>
+          <a href="/api/admin/export/clients" className="btn-outline text-sm">
+            Download clients
+          </a>
+        </div>
+      </section>
     </div>
   )
 }

@@ -13,7 +13,7 @@ export const REMINDER_HOURS_BEFORE = 24
  * Window width — Vercel Hobby allows one cron run per day, so we use a wide
  * window (~18–30h before) so each booking is still caught once per day.
  */
-const REMINDER_WINDOW_HOURS = 12
+export const REMINDER_WINDOW_HOURS = 12
 
 type BookingWithClient = ConsultationBooking & { client: Client }
 

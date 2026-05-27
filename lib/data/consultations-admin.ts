@@ -1,3 +1,4 @@
+import { sendReviewRequestForBooking } from '@/lib/booking/review-request'
 import { sendConsultationCancellationEmail } from '@/lib/email/consultation-cancellation'
 import { resolveNestedClient } from '@/lib/email/resolve-client'
 import { getSiteSettings } from '@/lib/data/site-settings'
@@ -120,6 +121,7 @@ export async function updateConsultation(
   patch: {
     status?: ConsultationStatus
     internal_notes?: string | null
+    no_show_notes?: string | null
   },
 ): Promise<UpdateConsultationResult> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,6 +146,8 @@ export async function updateConsultation(
 
   const isNewCancellation =
     patch.status === 'cancelled' && existing.status !== 'cancelled'
+  const isNewCompletion =
+    patch.status === 'completed' && existing.status !== 'completed'
 
   let calendarEventRemoved = false
 
@@ -205,6 +209,12 @@ export async function updateConsultation(
         recipient: clientForEmail.email,
       }
     }
+  }
+
+  if (isNewCompletion) {
+    void sendReviewRequestForBooking('consultation', id).catch(err => {
+      console.error('[updateConsultation] review request:', err)
+    })
   }
 
   return {

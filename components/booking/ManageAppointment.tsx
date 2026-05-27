@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatAdminWhen } from '@/lib/admin/datetime'
 import { formatAudFromCents } from '@/lib/stripe/config'
 import type { ManageBookingView } from '@/lib/booking/manage-appointment'
+import { BookingIntakeForm } from '@/components/booking/BookingIntakeForm'
 import { cn } from '@/lib/utils/cn'
 
 type CalendarDay = { date: string; slots: string[] }
@@ -153,6 +154,10 @@ export function ManageAppointment({ token, initialBooking, clinicPhone }: Props)
         <p className="rounded-sm bg-brand-50 px-4 py-3 text-sm text-brand-800">{success}</p>
       )}
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      {!isCancelled && booking.status === 'confirmed' && (
+        <BookingIntakeForm token={token} initialSubmitted={booking.intakeSubmitted} />
+      )}
 
       {!isCancelled && booking.canModify && (
         <div className="space-y-4">

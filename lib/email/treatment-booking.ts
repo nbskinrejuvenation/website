@@ -30,7 +30,10 @@ function clientConfirmationHtml(input: TreatmentBookingEmailInput, when: string)
     ${calendarNote}
     ${
       input.managementToken
-        ? emailButton(getManageBookingUrl(input.managementToken), 'Reschedule or cancel')
+        ? `${emailButton(getManageBookingUrl(input.managementToken), 'Reschedule or cancel')}
+    <p style="margin:12px 0 0;text-align:center;">
+      <a href="${getManageBookingUrl(input.managementToken)}#intake" style="color:#9a6b73;font-size:14px;text-decoration:underline;">Complete pre-visit form</a>
+    </p>`
         : ''
     }
     <p style="margin:24px 0 0;">We look forward to seeing you at our Dee Why clinic.${

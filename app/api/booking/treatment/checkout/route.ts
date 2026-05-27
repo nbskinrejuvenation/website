@@ -11,6 +11,9 @@ const schema = z.object({
   source_page: z.string().max(200).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time: z.string().regex(/^\d{2}:\d{2}$/),
+  privacy_consent: z.literal(true, {
+    errorMap: () => ({ message: 'Privacy consent is required' }),
+  }),
 })
 
 export async function POST(request: NextRequest) {

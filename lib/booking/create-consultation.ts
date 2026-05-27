@@ -1,7 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getAvailableSlotsForDate, resolveSlotTimes } from '@/lib/booking/slots'
 import { upsertClient } from '@/lib/booking/upsert-client'
+import { formatConsultationWhen } from '@/lib/email/layout'
 import { sendConsultationBookingEmails } from '@/lib/email/consultation-booking'
+import { notifyClinicNewBooking } from '@/lib/notifications/clinic-booking-alert'
 import { createConsultationCalendarEvent } from '@/lib/google/calendar'
 import type { Client, ConsultationBooking } from '@/types/database'
 
@@ -87,6 +89,13 @@ export async function bookConsultation(
   } catch (err) {
     console.error('[bookConsultation] Google Calendar:', err)
   }
+
+  void notifyClinicNewBooking({
+    kind: 'consultation',
+    clientName: client.full_name,
+    when: formatConsultationWhen(startsAt),
+    label: 'Free consultation',
+  }).catch(err => console.error('[bookConsultation] clinic alert:', err))
 
   const emailsSent = await sendConsultationBookingEmails({
     clientName: client.full_name,

@@ -10,7 +10,7 @@ interface Props {
 export function DashboardView({ stats }: Props) {
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Today" value={String(stats.todayAppointments)} hint="confirmed appointments" />
         <StatCard label="Next 7 days" value={String(stats.weekAppointments)} hint="confirmed" />
         <StatCard
@@ -23,6 +23,13 @@ export function DashboardView({ stats }: Props) {
           label="Paid this week"
           value={formatAudFromCents(stats.weekRevenueCents)}
           hint="confirmed treatment bookings"
+        />
+        <StatCard label="Completed (30d)" value={String(stats.monthCompleted)} hint="marked completed in admin" />
+        <StatCard
+          label="No-shows (30d)"
+          value={String(stats.monthNoShows)}
+          hint="marked no-show in admin"
+          alert={stats.monthNoShows > 0}
         />
       </div>
 

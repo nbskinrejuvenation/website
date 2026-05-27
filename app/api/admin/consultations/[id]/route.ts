@@ -6,6 +6,7 @@ import type { ConsultationStatus } from '@/types/database'
 const patchSchema = z.object({
   status: z.enum(['confirmed', 'cancelled', 'completed', 'no_show']).optional(),
   internal_notes: z.string().max(5000).nullable().optional(),
+  no_show_notes: z.string().max(2000).nullable().optional(),
 })
 
 interface Props {
@@ -26,7 +27,11 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'Validation failed' }, { status: 422 })
   }
 
-  if (!result.data.status && result.data.internal_notes === undefined) {
+  if (
+    !result.data.status &&
+    result.data.internal_notes === undefined &&
+    result.data.no_show_notes === undefined
+  ) {
     return NextResponse.json({ error: 'No changes provided' }, { status: 400 })
   }
 
@@ -35,6 +40,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       await updateConsultation(id, {
         status: result.data.status as ConsultationStatus | undefined,
         internal_notes: result.data.internal_notes,
+        no_show_notes: result.data.no_show_notes,
       })
     return NextResponse.json({ consultation, calendarEventRemoved, cancellationEmail })
   } catch (err) {

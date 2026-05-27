@@ -1,3 +1,4 @@
+import { sendReviewRequestForBooking } from '@/lib/booking/review-request'
 import { sendTreatmentCancellationEmail } from '@/lib/email/treatment-cancellation'
 import { resolveNestedClient } from '@/lib/email/resolve-client'
 import { getSiteSettings } from '@/lib/data/site-settings'
@@ -56,6 +57,7 @@ export async function updateTreatmentBooking(
   patch: {
     status?: TreatmentBookingStatus
     internal_notes?: string | null
+    no_show_notes?: string | null
     refund?: boolean
   },
 ): Promise<UpdateTreatmentBookingResult> {
@@ -83,6 +85,8 @@ export async function updateTreatmentBooking(
 
   const isNewCancellation =
     patch.status === 'cancelled' && existing.status !== 'cancelled'
+  const isNewCompletion =
+    patch.status === 'completed' && existing.status !== 'completed'
 
   let calendarEventRemoved = false
 
@@ -121,6 +125,7 @@ export async function updateTreatmentBooking(
   }
   if (patch.status !== undefined) dbPatch.status = patch.status
   if (patch.internal_notes !== undefined) dbPatch.internal_notes = patch.internal_notes
+  if (patch.no_show_notes !== undefined) dbPatch.no_show_notes = patch.no_show_notes
 
   if (isNewCancellation) {
     dbPatch.google_event_id = null
@@ -176,6 +181,12 @@ export async function updateTreatmentBooking(
         recipient: clientForEmail.email,
       }
     }
+  }
+
+  if (isNewCompletion) {
+    void sendReviewRequestForBooking('treatment', id).catch(err => {
+      console.error('[updateTreatmentBooking] review request:', err)
+    })
   }
 
   return { booking, calendarEventRemoved, cancellationEmail, refund: refundResult }
