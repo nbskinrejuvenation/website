@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { isAuthorizedCronRequest } from '@/lib/cron/auth'
 import { processAbandonedCheckouts } from '@/lib/cron/abandoned-checkouts'
 
+/** Manual or external scheduler trigger — not in vercel.json (Hobby = once/day only). */
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 

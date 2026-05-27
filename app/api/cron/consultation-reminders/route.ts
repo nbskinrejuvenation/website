@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { isAuthorizedCronRequest } from '@/lib/cron/auth'
+import { processAbandonedCheckouts } from '@/lib/cron/abandoned-checkouts'
 import { processConsultationReminders } from '@/lib/cron/consultation-reminders'
 import { getSiteSettings } from '@/lib/data/site-settings'
 
@@ -13,8 +14,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const settings = await getSiteSettings()
-    const result = await processConsultationReminders(settings.phone)
-    return NextResponse.json({ ok: true, ...result })
+    const reminders = await processConsultationReminders(settings.phone)
+    const abandonedCheckouts = await processAbandonedCheckouts()
+    return NextResponse.json({ ok: true, reminders, abandonedCheckouts })
   } catch (err) {
     console.error('[cron/consultation-reminders]', err)
     return NextResponse.json(
