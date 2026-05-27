@@ -166,6 +166,52 @@ export async function createTreatmentCalendarEvent(
   return data.id
 }
 
+export interface UpdateCalendarEventTimesInput {
+  eventId: string
+  startsAt: Date
+  endsAt: Date
+}
+
+/** Updates start/end on an existing calendar event and notifies attendees. */
+export async function updateCalendarEventTimes(
+  input: UpdateCalendarEventTimesInput,
+): Promise<void> {
+  if (!isGoogleCalendarConfigured()) {
+    console.warn('[google-calendar] Not configured — skipping event update')
+    return
+  }
+
+  const accessToken = await getAccessToken()
+  const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID!)
+  const encodedEventId = encodeURIComponent(input.eventId)
+
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${encodedEventId}?sendUpdates=all`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        start: {
+          dateTime: input.startsAt.toISOString(),
+          timeZone: CLINIC_TIMEZONE,
+        },
+        end: {
+          dateTime: input.endsAt.toISOString(),
+          timeZone: CLINIC_TIMEZONE,
+        },
+      }),
+    },
+  )
+
+  if (!res.ok && res.status !== 404) {
+    const text = await res.text()
+    throw new Error(`Google Calendar update failed: ${text}`)
+  }
+}
+
 /** Deletes a calendar event and notifies attendees (when configured). */
 export async function deleteConsultationCalendarEvent(eventId: string): Promise<void> {
   if (!isGoogleCalendarConfigured()) {

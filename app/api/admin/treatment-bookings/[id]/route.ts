@@ -8,6 +8,7 @@ const patchSchema = z.object({
     .enum(['confirmed', 'cancelled', 'completed', 'no_show', 'pending_payment'])
     .optional(),
   internal_notes: z.string().max(5000).nullable().optional(),
+  refund: z.boolean().optional(),
 })
 
 interface Props {
@@ -33,14 +34,13 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   }
 
   try {
-    const { booking, calendarEventRemoved, cancellationEmail } = await updateTreatmentBooking(
-      id,
-      {
+    const { booking, calendarEventRemoved, cancellationEmail, refund } =
+      await updateTreatmentBooking(id, {
         status: result.data.status as TreatmentBookingStatus | undefined,
         internal_notes: result.data.internal_notes,
-      },
-    )
-    return NextResponse.json({ booking, calendarEventRemoved, cancellationEmail })
+        refund: result.data.refund,
+      })
+    return NextResponse.json({ booking, calendarEventRemoved, cancellationEmail, refund })
   } catch (err) {
     console.error('[admin/treatment-bookings PATCH]', err)
     return NextResponse.json({ error: 'Update failed' }, { status: 500 })

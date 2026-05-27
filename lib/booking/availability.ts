@@ -58,15 +58,29 @@ function isActivePendingPayment(createdAt: string, holdCutoff: Date): boolean {
   return new Date(createdAt).getTime() >= holdCutoff.getTime()
 }
 
-async function getConsultationBusyBetween(from: Date, to: Date): Promise<BusyInterval[]> {
+export type BusyExclusion =
+  | { kind: 'consultation'; id: string }
+  | { kind: 'treatment'; id: string }
+
+async function getConsultationBusyBetween(
+  from: Date,
+  to: Date,
+  exclude?: BusyExclusion,
+): Promise<BusyInterval[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
-  const { data, error } = await supabase
+  let query = supabase
     .from('consultation_bookings')
-    .select('starts_at, ends_at')
+    .select('id, starts_at, ends_at')
     .eq('status', 'confirmed')
     .gte('starts_at', from.toISOString())
     .lte('starts_at', to.toISOString())
+
+  if (exclude?.kind === 'consultation') {
+    query = query.neq('id', exclude.id)
+  }
+
+  const { data, error } = await query
 
   if (error) throw new Error(`consultation_bookings: ${error.message}`)
   return (data ?? []).map((b: { starts_at: string; ends_at: string }) => ({
@@ -75,16 +89,26 @@ async function getConsultationBusyBetween(from: Date, to: Date): Promise<BusyInt
   }))
 }
 
-async function getTreatmentBusyBetween(from: Date, to: Date): Promise<BusyInterval[]> {
+async function getTreatmentBusyBetween(
+  from: Date,
+  to: Date,
+  exclude?: BusyExclusion,
+): Promise<BusyInterval[]> {
   const holdCutoff = addMinutes(new Date(), -PENDING_PAYMENT_HOLD_MINUTES)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
-  const { data, error } = await supabase
+  let query = supabase
     .from('treatment_bookings')
-    .select('starts_at, ends_at, status, created_at')
+    .select('id, starts_at, ends_at, status, created_at')
     .in('status', ['confirmed', 'pending_payment'])
     .gte('starts_at', from.toISOString())
     .lte('starts_at', to.toISOString())
+
+  if (exclude?.kind === 'treatment') {
+    query = query.neq('id', exclude.id)
+  }
+
+  const { data, error } = await query
 
   if (error) throw new Error(`treatment_bookings: ${error.message}`)
 
@@ -100,10 +124,14 @@ async function getTreatmentBusyBetween(from: Date, to: Date): Promise<BusyInterv
     }))
 }
 
-export async function getBusyIntervals(from: Date, to: Date): Promise<BusyInterval[]> {
+export async function getBusyIntervals(
+  from: Date,
+  to: Date,
+  exclude?: BusyExclusion,
+): Promise<BusyInterval[]> {
   const [consultations, treatments, googleBusy] = await Promise.all([
-    getConsultationBusyBetween(from, to),
-    getTreatmentBusyBetween(from, to),
+    getConsultationBusyBetween(from, to, exclude),
+    getTreatmentBusyBetween(from, to, exclude),
     isGoogleCalendarConfigured()
       ? getGoogleBusyIntervals(from, to)
       : Promise.resolve([]),
@@ -111,9 +139,17 @@ export async function getBusyIntervals(from: Date, to: Date): Promise<BusyInterv
   return [...consultations, ...treatments, ...googleBusy]
 }
 
+export interface SlotQueryOptions {
+  /** Skip min-notice check (admin reschedule) */
+  adminOverride?: boolean
+  /** Exclude this booking from busy conflicts */
+  exclude?: BusyExclusion
+}
+
 export async function getAvailableSlotsForDuration(
   dateKey: string,
   durationMinutes: number,
+  options?: SlotQueryOptions,
 ): Promise<string[]> {
   const rules = await getAvailabilityRules()
   const dayRule = rules.find(r => r.day_of_week === getDayOfWeek(dateKey))
@@ -122,8 +158,10 @@ export async function getAvailableSlotsForDuration(
   const dayStart = clinicLocalToUtc(dateKey, dayRule.start_time.slice(0, 5))
   const dayEnd = clinicLocalToUtc(dateKey, dayRule.end_time.slice(0, 5))
 
-  const busy = await getBusyIntervals(dayStart, dayEnd)
-  const minStart = addMinutes(new Date(), BOOKING_MIN_NOTICE_HOURS * 60)
+  const busy = await getBusyIntervals(dayStart, dayEnd, options?.exclude)
+  const minStart = options?.adminOverride
+    ? new Date(0)
+    : addMinutes(new Date(), BOOKING_MIN_NOTICE_HOURS * 60)
 
   const startMin = parseTimeToMinutes(dayRule.start_time.slice(0, 5))
   const endMin = parseTimeToMinutes(dayRule.end_time.slice(0, 5))
@@ -148,6 +186,7 @@ export async function getAvailableSlotsForDuration(
 
 export async function getBookingCalendarForDuration(
   durationMinutes: number,
+  options?: SlotQueryOptions,
 ): Promise<Array<{ date: string; slots: string[] }>> {
   const days: Array<{ date: string; slots: string[] }> = []
   const now = new Date()
@@ -156,7 +195,7 @@ export async function getBookingCalendarForDuration(
     const d = new Date(now)
     d.setUTCDate(d.getUTCDate() + i)
     const dateKey = formatDateKey(d)
-    const slots = await getAvailableSlotsForDuration(dateKey, durationMinutes)
+    const slots = await getAvailableSlotsForDuration(dateKey, durationMinutes, options)
     if (slots.length > 0) days.push({ date: dateKey, slots })
   }
 
@@ -177,7 +216,8 @@ export async function isSlotAvailable(
   dateKey: string,
   timeHHmm: string,
   durationMinutes: number,
+  options?: SlotQueryOptions,
 ): Promise<boolean> {
-  const slots = await getAvailableSlotsForDuration(dateKey, durationMinutes)
+  const slots = await getAvailableSlotsForDuration(dateKey, durationMinutes, options)
   return slots.includes(timeHHmm)
 }

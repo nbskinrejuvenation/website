@@ -1,4 +1,10 @@
-export type AdminNavId = 'dashboard' | 'appointments' | 'calendar' | 'clients'
+export type AdminNavId =
+  | 'dashboard'
+  | 'appointments'
+  | 'calendar'
+  | 'clients'
+  | 'messages'
+  | 'availability'
 
 export interface AdminNavItem {
   id: AdminNavId
@@ -17,6 +23,13 @@ export const ADMIN_NAV: AdminNavItem[] = [
   },
   { id: 'calendar', label: 'Calendar', href: '/admin/calendar', description: 'Week view' },
   { id: 'clients', label: 'Clients', href: '/admin/clients', description: 'Client directory' },
+  { id: 'messages', label: 'Messages', href: '/admin/messages', description: 'Contact form inbox' },
+  {
+    id: 'availability',
+    label: 'Hours',
+    href: '/admin/availability',
+    description: 'Clinic opening times',
+  },
 ]
 
 export function getAdminNavItem(pathname: string): AdminNavItem | undefined {

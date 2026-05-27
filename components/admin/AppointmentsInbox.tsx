@@ -8,6 +8,7 @@ import type { TreatmentBookingWithRelations } from '@/lib/data/treatment-booking
 import { formatAdminWhen, formatAdminWhenLong } from '@/lib/admin/datetime'
 import type { ConsultationStatus, TreatmentBookingStatus } from '@/types/database'
 import { formatAudFromCents } from '@/lib/stripe/config'
+import { ReschedulePanel } from '@/components/admin/ReschedulePanel'
 import { cn } from '@/lib/utils/cn'
 
 const CONSULT_STATUS: Record<ConsultationStatus, string> = {
@@ -112,7 +113,11 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
 
   const patchTreatment = async (
     id: string,
-    body: { status?: TreatmentBookingStatus; internal_notes?: string | null },
+    body: {
+      status?: TreatmentBookingStatus
+      internal_notes?: string | null
+      refund?: boolean
+    },
   ) => {
     setSaving(true)
     setMessage(null)
@@ -126,12 +131,13 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
         booking?: TreatmentBookingWithRelations
         error?: string
         cancellationEmail?: { sent: boolean; error: string | null }
+        refund?: { issued: boolean; error: string | null; amountCents: number | null }
       }
       if (!res.ok) throw new Error(json.error ?? 'Update failed')
       if (json.booking) {
         updateItemFromTreatment(json.booking)
       }
-      setCancelMessage(json.booking?.status === 'cancelled', json)
+      setCancelMessage(json.booking?.status === 'cancelled', json, body.refund)
       router.refresh()
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Save failed')
@@ -145,7 +151,9 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
     json: {
       cancellationEmail?: { sent: boolean; error: string | null; recipient?: string | null }
       calendarEventRemoved?: boolean
+      refund?: { issued: boolean; error: string | null; amountCents: number | null }
     },
+    requestedRefund?: boolean,
   ) => {
     if (!cancelled) {
       setMessage('Saved')
@@ -158,6 +166,11 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
       parts.push(`email failed: ${json.cancellationEmail.error ?? 'unknown'}`)
     }
     if (json.calendarEventRemoved) parts.push('calendar event removed')
+    if (json.refund?.issued) {
+      parts.push(`refund issued (${formatAudFromCents(json.refund.amountCents ?? 0)})`)
+    } else if (json.refund && requestedRefund) {
+      parts.push(`refund failed: ${json.refund.error ?? 'unknown'}`)
+    }
     setMessage(parts.join('. '))
   }
 
@@ -309,6 +322,7 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
               message={message}
               onPatch={patchConsultation}
               onResendCancellationEmail={resendCancellationEmail}
+              onRescheduled={() => router.refresh()}
             />
           ) : selected.kind === 'treatment' && selected.treatment ? (
             <TreatmentDetailPanel
@@ -316,6 +330,29 @@ export function AppointmentsInbox({ initialAppointments, filter, kind }: Props) 
               saving={saving}
               message={message}
               onPatch={patchTreatment}
+              onRefund={async id => {
+                setSaving(true)
+                setMessage(null)
+                try {
+                  const res = await fetch(`/api/admin/treatment-bookings/${id}/refund`, {
+                    method: 'POST',
+                  })
+                  const json = (await res.json()) as {
+                    error?: string
+                    refund?: { issued: boolean; amountCents: number | null }
+                  }
+                  if (!res.ok) throw new Error(json.error ?? 'Refund failed')
+                  setMessage(
+                    `Refund issued (${formatAudFromCents(json.refund?.amountCents ?? 0)})`,
+                  )
+                  router.refresh()
+                } catch (err) {
+                  setMessage(err instanceof Error ? err.message : 'Refund failed')
+                } finally {
+                  setSaving(false)
+                }
+              }}
+              onRescheduled={() => router.refresh()}
             />
           ) : null}
         </main>
@@ -339,6 +376,7 @@ function ConsultationDetailPanel({
   message,
   onPatch,
   onResendCancellationEmail,
+  onRescheduled,
 }: {
   consultation: ConsultationWithClient
   saving: boolean
@@ -346,6 +384,7 @@ function ConsultationDetailPanel({
   message: string | null
   onPatch: (id: string, body: { status?: ConsultationStatus; internal_notes?: string | null }) => void
   onResendCancellationEmail: (id: string) => void
+  onRescheduled: () => void
 }) {
   const [notes, setNotes] = useState(c.internal_notes ?? '')
 
@@ -362,6 +401,15 @@ function ConsultationDetailPanel({
         <Field label="Interest" value={c.treatment_interest} />
       )}
       {c.message && <Field label="Client message" value={c.message} multiline />}
+
+      {c.status === 'confirmed' && (
+        <ReschedulePanel
+          kind="consultation"
+          bookingId={c.id}
+          currentStartsAt={c.starts_at}
+          onRescheduled={() => onRescheduled()}
+        />
+      )}
 
       <StatusButtons
         statuses={['confirmed', 'completed', 'cancelled', 'no_show'] as const}
@@ -399,13 +447,22 @@ function TreatmentDetailPanel({
   saving,
   message,
   onPatch,
+  onRefund,
+  onRescheduled,
 }: {
   booking: TreatmentBookingWithRelations
   saving: boolean
   message: string | null
-  onPatch: (id: string, body: { status?: TreatmentBookingStatus; internal_notes?: string | null }) => void
+  onPatch: (
+    id: string,
+    body: { status?: TreatmentBookingStatus; internal_notes?: string | null; refund?: boolean },
+  ) => void
+  onRefund: (id: string) => void
+  onRescheduled: () => void
 }) {
   const [notes, setNotes] = useState(b.internal_notes ?? '')
+  const [refundOnCancel, setRefundOnCancel] = useState(true)
+  const canRefund = Boolean(b.stripe_payment_intent_id)
 
   return (
     <div className="space-y-8">
@@ -420,18 +477,56 @@ function TreatmentDetailPanel({
       <ClientContact client={b.client} />
       {b.message && <Field label="Client message" value={b.message} multiline />}
 
+      {b.status === 'confirmed' && (
+        <ReschedulePanel
+          kind="treatment"
+          bookingId={b.id}
+          currentStartsAt={b.starts_at}
+          onRescheduled={() => onRescheduled()}
+        />
+      )}
+
       <StatusButtons
         statuses={['confirmed', 'completed', 'cancelled', 'no_show'] as const}
         current={b.status === 'pending_payment' ? 'confirmed' : b.status}
         labels={TREAT_STATUS}
         saving={saving || b.status === 'pending_payment'}
-        onSelect={status => onPatch(b.id, { status })}
+        onSelect={status => {
+          if (status === 'cancelled' && b.status === 'confirmed') {
+            onPatch(b.id, { status, refund: canRefund && refundOnCancel })
+          } else {
+            onPatch(b.id, { status })
+          }
+        }}
         disabledNote={
           b.status === 'pending_payment'
             ? 'Awaiting Stripe payment — slot held for 30 minutes.'
             : undefined
         }
       />
+
+      {b.status === 'confirmed' && canRefund && (
+        <label className="flex items-center gap-2 text-sm text-ink-muted">
+          <input
+            type="checkbox"
+            checked={refundOnCancel}
+            onChange={e => setRefundOnCancel(e.target.checked)}
+            className="h-4 w-4 rounded border-sand-dark"
+          />
+          Refund {formatAudFromCents(b.amount_cents)} when cancelling
+        </label>
+      )}
+
+      {b.status === 'confirmed' && canRefund && (
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() => onRefund(b.id)}
+          className="btn-outline text-sm disabled:opacity-50"
+        >
+          Issue refund (keep appointment confirmed)
+        </button>
+      )}
 
       {b.status !== 'pending_payment' && (
         <NotesField notes={notes} setNotes={setNotes} saving={saving} onSave={() => onPatch(b.id, { internal_notes: notes || null })} />

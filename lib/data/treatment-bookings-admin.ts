@@ -1,8 +1,10 @@
-import { sendConsultationCancellationEmail } from '@/lib/email/consultation-cancellation'
+import { sendTreatmentCancellationEmail } from '@/lib/email/treatment-cancellation'
 import { resolveNestedClient } from '@/lib/email/resolve-client'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { deleteConsultationCalendarEvent } from '@/lib/google/calendar'
+import { refundPaymentIntent } from '@/lib/stripe/refund'
+import { isStripeConfigured } from '@/lib/stripe/config'
 import type { Client, TreatmentBooking, TreatmentBookingStatus } from '@/types/database'
 
 export type TreatmentBookingWithRelations = TreatmentBooking & {
@@ -46,6 +48,7 @@ export interface UpdateTreatmentBookingResult {
   booking: TreatmentBookingWithRelations
   calendarEventRemoved: boolean
   cancellationEmail: { sent: boolean; error: string | null; recipient: string | null } | null
+  refund: { issued: boolean; error: string | null; amountCents: number | null } | null
 }
 
 export async function updateTreatmentBooking(
@@ -53,6 +56,7 @@ export async function updateTreatmentBooking(
   patch: {
     status?: TreatmentBookingStatus
     internal_notes?: string | null
+    refund?: boolean
   },
 ): Promise<UpdateTreatmentBookingResult> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,8 +69,11 @@ export async function updateTreatmentBooking(
       id,
       status,
       starts_at,
+      amount_cents,
+      stripe_payment_intent_id,
       google_event_id,
-      client:clients (full_name, email)
+      client:clients (full_name, email),
+      treatment:treatments (title)
     `,
     )
     .eq('id', id)
@@ -88,10 +95,32 @@ export async function updateTreatmentBooking(
     }
   }
 
+  let refundResult: UpdateTreatmentBookingResult['refund'] = null
+
+  if (isNewCancellation && patch.refund && existing.stripe_payment_intent_id) {
+    if (!isStripeConfigured()) {
+      refundResult = { issued: false, error: 'Stripe not configured', amountCents: null }
+    } else {
+      try {
+        const result = await refundPaymentIntent(existing.stripe_payment_intent_id)
+        refundResult = { issued: true, error: null, amountCents: result.amountCents }
+      } catch (err) {
+        refundResult = {
+          issued: false,
+          error: err instanceof Error ? err.message : 'Refund failed',
+          amountCents: null,
+        }
+      }
+    }
+  } else if (isNewCancellation && patch.refund && !existing.stripe_payment_intent_id) {
+    refundResult = { issued: false, error: 'No payment on file to refund', amountCents: null }
+  }
+
   const dbPatch: Record<string, unknown> = {
-    ...patch,
     updated_at: new Date().toISOString(),
   }
+  if (patch.status !== undefined) dbPatch.status = patch.status
+  if (patch.internal_notes !== undefined) dbPatch.internal_notes = patch.internal_notes
 
   if (isNewCancellation) {
     dbPatch.google_event_id = null
@@ -119,6 +148,11 @@ export async function updateTreatmentBooking(
 
   if (isNewCancellation) {
     const clientForEmail = resolveNestedClient(existing.client)
+    const treatmentRaw = existing.treatment
+    const treatmentTitle = Array.isArray(treatmentRaw)
+      ? treatmentRaw[0]?.title
+      : treatmentRaw?.title
+
     if (!clientForEmail?.email) {
       cancellationEmail = {
         sent: false,
@@ -127,11 +161,14 @@ export async function updateTreatmentBooking(
       }
     } else {
       const settings = await getSiteSettings()
-      const emailResult = await sendConsultationCancellationEmail({
+      const emailResult = await sendTreatmentCancellationEmail({
         clientName: clientForEmail.full_name,
         clientEmail: clientForEmail.email,
+        treatmentTitle: treatmentTitle ?? 'Treatment',
         startsAt: new Date(booking.starts_at),
+        amountCents: booking.amount_cents,
         clinicPhone: settings.phone,
+        refunded: refundResult?.issued ?? false,
       })
       cancellationEmail = {
         sent: emailResult.sent,
@@ -141,5 +178,42 @@ export async function updateTreatmentBooking(
     }
   }
 
-  return { booking, calendarEventRemoved, cancellationEmail }
+  return { booking, calendarEventRemoved, cancellationEmail, refund: refundResult }
+}
+
+export async function refundTreatmentBooking(id: string): Promise<{
+  booking: TreatmentBookingWithRelations
+  refund: { issued: boolean; error: string | null; amountCents: number | null }
+}> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+
+  const { data: existing, error: fetchError } = await supabase
+    .from('treatment_bookings')
+    .select('id, status, stripe_payment_intent_id, amount_cents')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) throw new Error(`refundTreatmentBooking: ${fetchError.message}`)
+  if (existing.status !== 'confirmed' && existing.status !== 'cancelled') {
+    throw new Error('Refunds apply to confirmed or cancelled paid bookings only.')
+  }
+  if (!existing.stripe_payment_intent_id) {
+    throw new Error('No Stripe payment found for this booking.')
+  }
+
+  const refund = await refundPaymentIntent(existing.stripe_payment_intent_id)
+
+  const { data, error } = await supabase
+    .from('treatment_bookings')
+    .select(`*, client:clients (*), treatment:treatments (id, slug, title)`)
+    .eq('id', id)
+    .single()
+
+  if (error) throw new Error(`refundTreatmentBooking: ${error.message}`)
+
+  return {
+    booking: data as TreatmentBookingWithRelations,
+    refund: { issued: true, error: null, amountCents: refund.amountCents },
+  }
 }

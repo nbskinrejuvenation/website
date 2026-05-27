@@ -26,6 +26,18 @@ export function DashboardView({ stats }: Props) {
         />
       </div>
 
+      {stats.unreadMessages > 0 && (
+        <section className="rounded-sm bg-amber-50 p-5 ring-1 ring-amber-200">
+          <p className="text-sm text-amber-900">
+            <strong>{stats.unreadMessages}</strong> unread contact{' '}
+            {stats.unreadMessages === 1 ? 'message' : 'messages'}.
+          </p>
+          <Link href="/admin/messages?filter=unread" className="btn-outline mt-3 inline-flex text-sm">
+            View messages
+          </Link>
+        </section>
+      )}
+
       {stats.nextAppointment && (
         <section className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40">
           <h2 className="text-xs font-medium uppercase tracking-widest text-ink-faint">Next up</h2>

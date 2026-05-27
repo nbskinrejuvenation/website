@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { addDaysToDateKey, getSydneyDateKey, isOnSydneyDate } from '@/lib/admin/datetime'
+import { getUnreadContactCount } from '@/lib/data/contact-submissions-admin'
 import type { ConsultationWithClient } from '@/lib/data/consultations-admin'
 import type { TreatmentBookingWithRelations } from '@/lib/data/treatment-bookings-admin'
 
@@ -8,6 +9,7 @@ export interface AdminDashboardStats {
   weekAppointments: number
   pendingPayments: number
   weekRevenueCents: number
+  unreadMessages: number
   nextAppointment: {
     id: string
     kind: 'consultation' | 'treatment'
@@ -37,7 +39,7 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
 
-  const [consultationsRes, treatmentsRes, pendingRes] = await Promise.all([
+  const [consultationsRes, treatmentsRes, pendingRes, unreadMessages] = await Promise.all([
     supabase
       .from('consultation_bookings')
       .select(`*, client:clients (*)`)
@@ -56,6 +58,7 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
       .from('treatment_bookings')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'pending_payment'),
+    getUnreadContactCount().catch(() => 0),
   ])
 
   if (consultationsRes.error) {
@@ -122,6 +125,7 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
     weekAppointments: weekItems.length,
     pendingPayments: pendingRes.count ?? 0,
     weekRevenueCents,
+    unreadMessages,
     nextAppointment: next
       ? {
           id: next.id,

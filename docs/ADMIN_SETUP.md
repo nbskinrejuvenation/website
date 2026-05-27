@@ -29,6 +29,8 @@ Default redirect: **`/admin`** (dashboard)
 | `/admin/appointments` | All bookings — consultations + paid treatments |
 | `/admin/calendar` | Week view of confirmed appointments |
 | `/admin/clients` | Client directory, notes, booking history |
+| `/admin/messages` | Contact form submissions |
+| `/admin/availability` | Edit clinic opening hours (no SQL) |
 
 Legacy URLs redirect automatically:
 
@@ -40,7 +42,9 @@ Legacy URLs redirect automatically:
 - Filter by **type**: All, Consultations, Paid treatments
 - Filter by **status**: Upcoming, Awaiting payment, All, Cancelled
 - Update status, internal notes, resend cancellation emails (consultations)
+- **Reschedule** confirmed appointments (new time, client email, calendar update)
 - Cancelling removes Google Calendar events and emails the client (when configured)
+- Paid treatments: treatment-specific cancellation email; optional **Stripe refund** on cancel
 
 ## Clients
 

@@ -169,6 +169,23 @@ export type BookableTreatment = Pick<
   'id' | 'slug' | 'title' | 'duration_minutes' | 'price_cents' | 'bookable_online' | 'price_from'
 >
 
+// ─── Contact form ─────────────────────────────────────────────────────────────
+
+export interface ContactSubmission {
+  id: string
+  full_name: string
+  email: string
+  phone: string | null
+  treatment_interest: string | null
+  message: string | null
+  source_page: string | null
+  ip_hash: string | null
+  user_agent: string | null
+  is_read: boolean
+  admin_notes: string | null
+  created_at: string
+}
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
 export interface NavItem {
