@@ -85,6 +85,12 @@ export function DashboardView({ stats }: Props) {
         <Link href="/admin/appointments" className="btn-primary">
           All appointments
         </Link>
+        <Link href="/admin/reports" className="btn-outline">
+          Reports
+        </Link>
+        <Link href="/admin/treatments" className="btn-outline">
+          Treatment pricing
+        </Link>
         <Link href="/admin/clients" className="btn-outline">
           Client directory
         </Link>

@@ -30,6 +30,8 @@ Default redirect: **`/admin`** (dashboard)
 | `/admin/calendar` | Week view of confirmed appointments |
 | `/admin/clients` | Client directory, notes, booking history |
 | `/admin/messages` | Contact form submissions |
+| `/admin/treatments` | Online booking price, duration, enable/disable per treatment |
+| `/admin/reports` | Revenue and booking counts (7 / 30 days, this month) |
 | `/admin/availability` | Edit clinic opening hours (no SQL) |
 
 Legacy URLs redirect automatically:
