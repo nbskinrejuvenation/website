@@ -14,7 +14,9 @@ export function Footer({ settings }: Props) {
       <div className="section-container py-14 md:py-16">
         <div className="grid gap-12 md:grid-cols-3">
           <div>
-            <Logo variant="light" size="md" />
+            <div className="[&_span]:text-cream [&_span:last-child]:text-cream/50">
+              <Logo />
+            </div>
             <div className="mt-6 flex gap-3">
               {settings.facebook_url && (
                 <a
