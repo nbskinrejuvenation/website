@@ -8,9 +8,28 @@ import { isStripeConfigured } from '@/lib/stripe/config'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const sessionId = searchParams.get('session_id')
+  const bookingId = searchParams.get('booking_id')
+
+  if (bookingId) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = createAdminClient() as any
+    const { data: booking } = await supabase
+      .from('treatment_bookings')
+      .select('status, starts_at, management_token')
+      .eq('id', bookingId)
+      .maybeSingle()
+
+    return NextResponse.json({
+      status: booking?.status === 'confirmed' ? 'confirmed' : 'pending',
+      startsAt: booking?.starts_at ?? null,
+      manageUrl: booking?.management_token
+        ? getManageBookingUrl(booking.management_token)
+        : null,
+    })
+  }
 
   if (!sessionId) {
-    return NextResponse.json({ error: 'session_id is required' }, { status: 400 })
+    return NextResponse.json({ error: 'session_id or booking_id is required' }, { status: 400 })
   }
 
   if (!isStripeConfigured()) {
@@ -34,6 +53,11 @@ export async function GET(request: Request) {
           typeof session.payment_intent === 'string'
             ? session.payment_intent
             : session.payment_intent?.id ?? null,
+        packageId: session.metadata?.package_id ?? null,
+        packageSessionCount: session.metadata?.package_session_count
+          ? Number.parseInt(session.metadata.package_session_count, 10)
+          : null,
+        promoCodeId: session.metadata?.promo_code_id ?? null,
       })
 
       return NextResponse.json({

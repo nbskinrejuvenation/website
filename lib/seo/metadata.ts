@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/site/url'
 
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nbskinrejuvenation.com.au'
+export { SITE_URL }
 
 /** Default social share image (homepage hero) */
 export const DEFAULT_OG_IMAGE = '/images/hero-home.png'

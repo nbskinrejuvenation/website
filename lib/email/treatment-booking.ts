@@ -14,10 +14,20 @@ export interface TreatmentBookingEmailInput {
   calendarSynced: boolean
   bookingId: string
   managementToken?: string | null
+  packageSessionsRemaining?: number | null
+}
+
+function paymentSummaryHtml(input: TreatmentBookingEmailInput): string {
+  if (input.amountCents > 0) {
+    return `We have received your payment of <strong>${escapeHtml(formatAudFromCents(input.amountCents))}</strong>.`
+  }
+  if (input.packageSessionsRemaining != null) {
+    return `Your appointment is confirmed using your prepaid package. You have <strong>${input.packageSessionsRemaining}</strong> session${input.packageSessionsRemaining === 1 ? '' : 's'} remaining after this visit.`
+  }
+  return 'Your appointment is confirmed — no payment was required for this booking.'
 }
 
 function clientConfirmationHtml(input: TreatmentBookingEmailInput, when: string): string {
-  const paid = formatAudFromCents(input.amountCents)
   const calendarNote = input.calendarSynced
     ? '<p style="margin:16px 0 0;color:#6b5f58;font-size:14px;">A calendar invitation has also been sent to this email address.</p>'
     : ''
@@ -25,7 +35,7 @@ function clientConfirmationHtml(input: TreatmentBookingEmailInput, when: string)
   return emailLayout(`
     <h1 style="margin:0 0 16px;font-size:22px;font-weight:400;text-align:center;color:#2c2420;">Your appointment is confirmed</h1>
     <p style="margin:0 0 8px;">Hi ${escapeHtml(input.clientName)},</p>
-    <p style="margin:0 0 20px;">Thank you for booking <strong>${escapeHtml(input.treatmentTitle)}</strong> with us. We have received your payment of <strong>${escapeHtml(paid)}</strong>.</p>
+    <p style="margin:0 0 20px;">Thank you for booking <strong>${escapeHtml(input.treatmentTitle)}</strong> with us. ${paymentSummaryHtml(input)}</p>
     <p style="margin:0;padding:16px 20px;background:#f0e6e8;border-radius:2px;text-align:center;font-size:16px;color:#2c2420;"><strong>${escapeHtml(when)}</strong></p>
     ${calendarNote}
     ${
@@ -46,11 +56,16 @@ function clientConfirmationHtml(input: TreatmentBookingEmailInput, when: string)
 
 function clinicNotificationHtml(input: TreatmentBookingEmailInput, when: string): string {
   const adminUrl = `${getSiteUrl()}/admin/appointments?kind=treatment`
-  const paid = formatAudFromCents(input.amountCents)
+  const paid =
+    input.amountCents > 0
+      ? formatAudFromCents(input.amountCents)
+      : input.packageSessionsRemaining != null
+        ? `Package session (${input.packageSessionsRemaining} remaining)`
+        : 'No charge'
   const rows = [
     ['Treatment', input.treatmentTitle],
     ['When', when],
-    ['Paid', paid],
+    ['Payment', paid],
     ['Name', input.clientName],
     ['Email', input.clientEmail],
     input.clientPhone ? ['Phone', input.clientPhone] : null,

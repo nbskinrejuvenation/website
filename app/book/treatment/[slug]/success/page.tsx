@@ -4,20 +4,24 @@ import { getBookableTreatmentBySlug } from '@/lib/booking/get-bookable-treatment
 
 interface Props {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ session_id?: string }>
+  searchParams: Promise<{ session_id?: string; booking_id?: string }>
 }
 
 export default async function BookTreatmentSuccessPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { session_id: sessionId } = await searchParams
+  const { session_id: sessionId, booking_id: bookingId } = await searchParams
 
   const treatment = await getBookableTreatmentBySlug(slug)
   if (!treatment) notFound()
-  if (!sessionId) notFound()
+  if (!sessionId && !bookingId) notFound()
 
   return (
     <section className="section-container py-16 md:py-20">
-      <TreatmentBookingSuccess sessionId={sessionId} treatmentTitle={treatment.title} />
+      <TreatmentBookingSuccess
+        treatmentTitle={treatment.title}
+        sessionId={sessionId}
+        bookingId={bookingId}
+      />
     </section>
   )
 }

@@ -32,6 +32,7 @@ Default redirect: **`/admin`** (dashboard)
 | `/admin/clients` | Client directory, notes, booking history |
 | `/admin/messages` | Contact form submissions |
 | `/admin/treatments` | Online booking price, duration, enable/disable per treatment |
+| `/admin/promotions` | Promo codes & multi-session packages |
 | `/admin/reports` | Revenue and booking counts (7 / 30 days, this month) |
 | `/admin/availability` | Edit clinic opening hours (no SQL) |
 

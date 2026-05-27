@@ -62,12 +62,7 @@ export async function sendEmail(input: {
   }
 }
 
-export function getSiteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nbskinrejuvenation.com.au').replace(
-    /\/$/,
-    '',
-  )
-}
+export { getSiteUrl, SITE_URL } from '@/lib/site/url'
 
 export function escapeHtml(value: string): string {
   return value

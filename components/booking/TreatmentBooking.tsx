@@ -5,8 +5,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
-import { Calendar, CreditCard, Loader2, Phone } from 'lucide-react'
+import { Calendar, CreditCard, Loader2, Phone, Tag } from 'lucide-react'
 import { PrivacyConsentField } from '@/components/booking/PrivacyConsentField'
+import { formatAudFromCents } from '@/lib/stripe/config'
 import { cn } from '@/lib/utils/cn'
 
 const formSchema = z.object({
@@ -20,22 +21,39 @@ type FormData = z.infer<typeof formSchema>
 
 type CalendarDay = { date: string; slots: string[] }
 
+export interface PackageOption {
+  id: string
+  label: string
+  sessionCount: number
+  chargeLabel: string
+  savingsCents: number | null
+}
+
+interface CreditOption {
+  id: string
+  label: string
+  sessionsRemaining: number
+}
+
 interface Props {
   slug: string
   treatmentTitle: string
   durationMinutes: number
-  chargeLabel: string
+  singleChargeLabel: string
+  packages: PackageOption[]
   phone?: string
   cancelled?: boolean
 }
 
 type Step = 'datetime' | 'details'
+type PurchaseKind = 'single' | 'package'
 
 export function TreatmentBooking({
   slug,
   treatmentTitle,
   durationMinutes,
-  chargeLabel,
+  singleChargeLabel,
+  packages,
   phone,
   cancelled,
 }: Props) {
@@ -48,11 +66,40 @@ export function TreatmentBooking({
   const [submitting, setSubmitting] = useState(false)
   const [privacyConsent, setPrivacyConsent] = useState(false)
 
+  const [purchaseKind, setPurchaseKind] = useState<PurchaseKind>('single')
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
+    packages[0]?.id ?? null,
+  )
+  const [selectedCreditId, setSelectedCreditId] = useState<string | null>(null)
+  const [credits, setCredits] = useState<CreditOption[]>([])
+  const [loadingCredits, setLoadingCredits] = useState(false)
+
+  const [promoInput, setPromoInput] = useState('')
+  const [promoCode, setPromoCode] = useState<string | null>(null)
+  const [promoLabel, setPromoLabel] = useState<string | null>(null)
+  const [promoError, setPromoError] = useState<string | null>(null)
+  const [applyingPromo, setApplyingPromo] = useState(false)
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(formSchema) })
+
+  const emailValue = watch('email')
+
+  const selectedPackage = packages.find(p => p.id === selectedPackageId)
+  const usingCredit = Boolean(selectedCreditId)
+  const usingPackage = purchaseKind === 'package' && selectedPackage && !usingCredit
+
+  const payLabel = usingCredit
+    ? 'prepaid session'
+    : usingPackage
+      ? selectedPackage.chargeLabel
+      : promoLabel
+        ? `${singleChargeLabel} (promo applied)`
+        : singleChargeLabel
 
   const loadCalendar = useCallback(async () => {
     setLoadingCalendar(true)
@@ -71,6 +118,40 @@ export function TreatmentBooking({
     void loadCalendar()
   }, [loadCalendar])
 
+  const loadCredits = useCallback(
+    async (email: string) => {
+      if (!email.includes('@')) {
+        setCredits([])
+        return
+      }
+      setLoadingCredits(true)
+      try {
+        const res = await fetch(
+          `/api/booking/treatment/credits?slug=${encodeURIComponent(slug)}&email=${encodeURIComponent(email)}`,
+        )
+        const data = (await res.json()) as { credits?: CreditOption[] }
+        setCredits(data.credits ?? [])
+        if (data.credits?.length === 1 && !selectedCreditId) {
+          setSelectedCreditId(data.credits[0].id)
+          setPurchaseKind('single')
+          setPromoCode(null)
+          setPromoLabel(null)
+        }
+      } catch {
+        setCredits([])
+      } finally {
+        setLoadingCredits(false)
+      }
+    },
+    [slug, selectedCreditId],
+  )
+
+  useEffect(() => {
+    if (step !== 'details' || !emailValue) return
+    const timer = setTimeout(() => void loadCredits(emailValue), 400)
+    return () => clearTimeout(timer)
+  }, [emailValue, step, loadCredits])
+
   const selectedDay = calendar.find(d => d.date === selectedDate)
   const slots = selectedDay?.slots ?? []
 
@@ -82,6 +163,45 @@ export function TreatmentBooking({
       month: 'short',
       timeZone: 'Australia/Sydney',
     })
+  }
+
+  const applyPromo = async () => {
+    if (!promoInput.trim() || usingPackage || usingCredit) return
+    setApplyingPromo(true)
+    setPromoError(null)
+    try {
+      const res = await fetch('/api/booking/treatment/validate-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, code: promoInput }),
+      })
+      const json = (await res.json()) as {
+        valid?: boolean
+        error?: string
+        code?: string
+        discountLabel?: string
+      }
+      if (!json.valid) {
+        setPromoCode(null)
+        setPromoLabel(null)
+        setPromoError(json.error ?? 'Invalid promo code')
+        return
+      }
+      setPromoCode(json.code ?? promoInput.trim().toUpperCase())
+      setPromoLabel(json.discountLabel ?? null)
+      setPromoError(null)
+    } catch {
+      setPromoError('Could not validate promo code')
+    } finally {
+      setApplyingPromo(false)
+    }
+  }
+
+  const clearPromo = () => {
+    setPromoInput('')
+    setPromoCode(null)
+    setPromoLabel(null)
+    setPromoError(null)
   }
 
   const onSubmit = async (data: FormData) => {
@@ -103,6 +223,11 @@ export function TreatmentBooking({
           time: selectedTime,
           source_page: window.location.pathname,
           privacy_consent: true,
+          ...(usingCredit && selectedCreditId
+            ? { client_package_credit_id: selectedCreditId }
+            : {}),
+          ...(usingPackage && selectedPackageId ? { package_id: selectedPackageId } : {}),
+          ...(promoCode && !usingPackage && !usingCredit ? { promo_code: promoCode } : {}),
         }),
       })
       const json = (await res.json()) as { error?: string; checkoutUrl?: string }
@@ -118,6 +243,12 @@ export function TreatmentBooking({
     }
   }
 
+  const submitCta = usingCredit
+    ? 'Confirm appointment'
+    : submitting
+      ? 'Redirecting…'
+      : `Pay ${payLabel}`
+
   return (
     <div className="grid gap-10 lg:grid-cols-5">
       <div className="lg:col-span-2">
@@ -126,7 +257,13 @@ export function TreatmentBooking({
           {step === 'datetime' ? 'Choose a time' : 'Your details'}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-          {treatmentTitle} · {durationMinutes} min · Pay {chargeLabel} to confirm
+          {treatmentTitle} · {durationMinutes} min
+          {step === 'details' && (
+            <>
+              {' '}
+              · {usingCredit ? 'Prepaid package session' : `Pay ${payLabel}`}
+            </>
+          )}
         </p>
         {cancelled && (
           <p className="mt-4 rounded-sm bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200">
@@ -146,78 +283,117 @@ export function TreatmentBooking({
 
       <div className="lg:col-span-3">
         {step === 'datetime' && (
-          <div className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40 md:p-8">
-            {loadingCalendar ? (
-              <div className="flex items-center justify-center gap-2 py-16 text-ink-muted">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Loading available times…
-              </div>
-            ) : calendar.length === 0 ? (
-              <p className="py-8 text-center text-sm text-ink-muted">
-                No online slots available right now. Please call us to book this treatment.
-              </p>
-            ) : (
-              <>
-                <p className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-ink-faint">
-                  <Calendar className="h-4 w-4" />
-                  Select a day
+          <div className="space-y-6">
+            {packages.length > 0 && (
+              <div className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40 md:p-8">
+                <p className="mb-3 text-xs font-medium uppercase tracking-widest text-ink-faint">
+                  Booking type
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {calendar.map(day => (
-                    <button
-                      key={day.date}
-                      type="button"
-                      onClick={() => {
-                        setSelectedDate(day.date)
-                        setSelectedTime(null)
+                <div className="space-y-2">
+                  <PurchaseOption
+                    selected={purchaseKind === 'single' && !usingCredit}
+                    onSelect={() => {
+                      setPurchaseKind('single')
+                      setSelectedCreditId(null)
+                    }}
+                    title="Single session"
+                    subtitle={`Pay ${singleChargeLabel} for this visit`}
+                  />
+                  {packages.map(pkg => (
+                    <PurchaseOption
+                      key={pkg.id}
+                      selected={purchaseKind === 'package' && selectedPackageId === pkg.id}
+                      onSelect={() => {
+                        setPurchaseKind('package')
+                        setSelectedPackageId(pkg.id)
+                        setSelectedCreditId(null)
+                        clearPromo()
                       }}
-                      className={cn(
-                        'rounded-sm border px-3 py-2 text-sm transition-colors',
-                        selectedDate === day.date
-                          ? 'border-brand-500 bg-brand-50 text-brand-700'
-                          : 'border-sand-dark/60 text-ink-muted hover:border-brand-300',
-                      )}
-                    >
-                      {formatDayLabel(day.date)}
-                    </button>
+                      title={pkg.label}
+                      subtitle={`${pkg.sessionCount} sessions · Pay ${pkg.chargeLabel} now${
+                        pkg.savingsCents
+                          ? ` · Save ${formatAudFromCents(pkg.savingsCents)}`
+                          : ''
+                      }`}
+                    />
                   ))}
                 </div>
-
-                {selectedDate && (
-                  <>
-                    <p className="mb-3 mt-8 text-xs font-medium uppercase tracking-widest text-ink-faint">
-                      Select a time
-                    </p>
-                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                      {slots.map(time => (
-                        <button
-                          key={time}
-                          type="button"
-                          onClick={() => setSelectedTime(time)}
-                          className={cn(
-                            'rounded-sm border py-2.5 text-sm transition-colors',
-                            selectedTime === time
-                              ? 'border-brand-500 bg-brand-500 text-cream'
-                              : 'border-sand-dark/60 text-ink hover:border-brand-300',
-                          )}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                <button
-                  type="button"
-                  disabled={!selectedDate || !selectedTime}
-                  onClick={() => setStep('details')}
-                  className="btn-primary mt-8 w-full disabled:opacity-50"
-                >
-                  Continue
-                </button>
-              </>
+              </div>
             )}
+
+            <div className="rounded-sm bg-white p-6 shadow-card ring-1 ring-sand-dark/40 md:p-8">
+              {loadingCalendar ? (
+                <div className="flex items-center justify-center gap-2 py-16 text-ink-muted">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Loading available times…
+                </div>
+              ) : calendar.length === 0 ? (
+                <p className="py-8 text-center text-sm text-ink-muted">
+                  No online slots available right now. Please call us to book this treatment.
+                </p>
+              ) : (
+                <>
+                  <p className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-ink-faint">
+                    <Calendar className="h-4 w-4" />
+                    Select a day
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {calendar.map(day => (
+                      <button
+                        key={day.date}
+                        type="button"
+                        onClick={() => {
+                          setSelectedDate(day.date)
+                          setSelectedTime(null)
+                        }}
+                        className={cn(
+                          'rounded-sm border px-3 py-2 text-sm transition-colors',
+                          selectedDate === day.date
+                            ? 'border-brand-500 bg-brand-50 text-brand-700'
+                            : 'border-sand-dark/60 text-ink-muted hover:border-brand-300',
+                        )}
+                      >
+                        {formatDayLabel(day.date)}
+                      </button>
+                    ))}
+                  </div>
+
+                  {selectedDate && (
+                    <>
+                      <p className="mb-3 mt-8 text-xs font-medium uppercase tracking-widest text-ink-faint">
+                        Select a time
+                      </p>
+                      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                        {slots.map(time => (
+                          <button
+                            key={time}
+                            type="button"
+                            onClick={() => setSelectedTime(time)}
+                            className={cn(
+                              'rounded-sm border py-2.5 text-sm transition-colors',
+                              selectedTime === time
+                                ? 'border-brand-500 bg-brand-500 text-cream'
+                                : 'border-sand-dark/60 text-ink hover:border-brand-300',
+                            )}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  <button
+                    type="button"
+                    disabled={!selectedDate || !selectedTime}
+                    onClick={() => setStep('details')}
+                    className="btn-primary mt-8 w-full disabled:opacity-50"
+                  >
+                    Continue
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         )}
 
@@ -228,7 +404,10 @@ export function TreatmentBooking({
           >
             {selectedDate && selectedTime && (
               <p className="mb-6 rounded-sm bg-brand-50 px-4 py-3 text-sm text-brand-800">
-                {formatDayLabel(selectedDate)} at {selectedTime} · {chargeLabel}
+                {formatDayLabel(selectedDate)} at {selectedTime}
+                {usingPackage && selectedPackage && (
+                  <> · {selectedPackage.label}</>
+                )}
                 <button
                   type="button"
                   className="ml-2 underline hover:no-underline"
@@ -273,17 +452,108 @@ export function TreatmentBooking({
               </Field>
             </div>
 
+            {(loadingCredits || credits.length > 0) && (
+              <div className="mt-6 rounded-sm border border-brand-200 bg-brand-50/50 p-4">
+                <p className="text-sm font-medium text-ink">Prepaid package</p>
+                {loadingCredits ? (
+                  <p className="mt-2 text-sm text-ink-muted">Checking your account…</p>
+                ) : (
+                  <div className="mt-3 space-y-2">
+                    {credits.map(c => (
+                      <label
+                        key={c.id}
+                        className="flex cursor-pointer items-start gap-3 rounded-sm border border-sand-dark/50 bg-white p-3"
+                      >
+                        <input
+                          type="radio"
+                          name="package_credit"
+                          checked={selectedCreditId === c.id}
+                          onChange={() => {
+                            setSelectedCreditId(c.id)
+                            clearPromo()
+                          }}
+                          className="mt-1"
+                        />
+                        <span className="text-sm text-ink">
+                          Use <strong>{c.label}</strong> — {c.sessionsRemaining} session
+                          {c.sessionsRemaining === 1 ? '' : 's'} left (no payment today)
+                        </span>
+                      </label>
+                    ))}
+                    {selectedCreditId && (
+                      <button
+                        type="button"
+                        className="text-sm text-brand-600 underline"
+                        onClick={() => setSelectedCreditId(null)}
+                      >
+                        Pay for a new session instead
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!usingPackage && !usingCredit && (
+              <div className="mt-6">
+                <p className="mb-2 flex items-center gap-2 text-sm font-medium text-ink">
+                  <Tag className="h-4 w-4 text-brand-600" />
+                  Promo code
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    value={promoInput}
+                    onChange={e => setPromoInput(e.target.value.toUpperCase())}
+                    disabled={Boolean(promoCode)}
+                    placeholder="e.g. INSTA20"
+                    className="flex-1 rounded-sm border border-sand-dark px-3 py-2 text-sm uppercase"
+                  />
+                  {promoCode ? (
+                    <button type="button" onClick={clearPromo} className="btn-outline shrink-0">
+                      Remove
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => void applyPromo()}
+                      disabled={applyingPromo || !promoInput.trim()}
+                      className="btn-outline shrink-0 disabled:opacity-50"
+                    >
+                      {applyingPromo ? '…' : 'Apply'}
+                    </button>
+                  )}
+                </div>
+                {promoError && <p className="mt-1 text-xs text-red-600">{promoError}</p>}
+                {promoLabel && (
+                  <p className="mt-1 text-xs text-green-700">
+                    {promoCode} applied — {promoLabel} off
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="mt-6">
               <PrivacyConsentField checked={privacyConsent} onChange={setPrivacyConsent} />
             </div>
 
             {submitError && <p className="mt-4 text-sm text-red-600">{submitError}</p>}
 
-            <p className="mt-6 flex items-start gap-2 text-xs text-ink-muted">
-              <CreditCard className="mt-0.5 h-4 w-4 shrink-0" />
-              You&apos;ll be redirected to Stripe to pay {chargeLabel}. Your appointment is confirmed
-              once payment succeeds.
-            </p>
+            {!usingCredit && (
+              <p className="mt-6 flex items-start gap-2 text-xs text-ink-muted">
+                <CreditCard className="mt-0.5 h-4 w-4 shrink-0" />
+                You&apos;ll be redirected to Stripe to pay {payLabel}. Your appointment is confirmed
+                once payment succeeds.
+                {usingPackage && selectedPackage && (
+                  <> Remaining sessions can be booked later with the same email.</>
+                )}
+              </p>
+            )}
+
+            {usingCredit && (
+              <p className="mt-6 text-xs text-ink-muted">
+                No payment needed — we&apos;ll use one session from your prepaid package.
+              </p>
+            )}
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
@@ -298,7 +568,7 @@ export function TreatmentBooking({
                 disabled={submitting}
                 className="btn-primary flex-1 disabled:opacity-50"
               >
-                {submitting ? 'Redirecting…' : `Pay ${chargeLabel}`}
+                {submitCta}
               </button>
             </div>
 
@@ -312,6 +582,34 @@ export function TreatmentBooking({
         )}
       </div>
     </div>
+  )
+}
+
+function PurchaseOption({
+  selected,
+  onSelect,
+  title,
+  subtitle,
+}: {
+  selected: boolean
+  onSelect: () => void
+  title: string
+  subtitle: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        'w-full rounded-sm border px-4 py-3 text-left transition-colors',
+        selected
+          ? 'border-brand-500 bg-brand-50 ring-1 ring-brand-200'
+          : 'border-sand-dark/60 hover:border-brand-300',
+      )}
+    >
+      <p className="font-medium text-ink">{title}</p>
+      <p className="mt-0.5 text-sm text-ink-muted">{subtitle}</p>
+    </button>
   )
 }
 

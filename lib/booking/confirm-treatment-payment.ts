@@ -1,16 +1,20 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getBookableTreatmentById } from '@/lib/booking/get-bookable-treatment'
-import { formatConsultationWhen } from '@/lib/email/layout'
-import { sendTreatmentBookingEmails } from '@/lib/email/treatment-booking'
-import { formatAudFromCents } from '@/lib/stripe/config'
-import { notifyClinicNewBooking } from '@/lib/notifications/clinic-booking-alert'
-import { createTreatmentCalendarEvent } from '@/lib/google/calendar'
+import {
+  finalizeTreatmentBooking,
+  loadTreatmentBookingWithClient,
+} from '@/lib/booking/finalize-treatment-booking'
+import { createPackageCreditsAfterPurchase } from '@/lib/packages/credits'
+import { incrementPromoRedemption } from '@/lib/promo/validate'
 import type { Client, TreatmentBooking } from '@/types/database'
 
 export interface ConfirmTreatmentPaymentInput {
   bookingId: string
   stripeCheckoutSessionId: string
   stripePaymentIntentId?: string | null
+  packageId?: string | null
+  packageSessionCount?: number | null
+  promoCodeId?: string | null
 }
 
 export interface ConfirmTreatmentPaymentResult {
@@ -72,19 +76,12 @@ export async function confirmTreatmentPayment(
 
   if (error) {
     if (error.code === 'PGRST116') {
-      const { data: raced } = await supabase
-        .from('treatment_bookings')
-        .select(`*, client:clients (*)`)
-        .eq('id', input.bookingId)
-        .single()
-      const client = raced?.client
-        ? (Array.isArray(raced.client) ? raced.client[0] : raced.client)
-        : null
+      const raced = await loadTreatmentBookingWithClient(input.bookingId)
       return {
-        confirmed: raced?.status === 'confirmed',
-        booking: raced as TreatmentBooking,
-        client: client as Client,
-        treatmentTitle: treatment.title,
+        confirmed: raced?.booking.status === 'confirmed',
+        booking: raced?.booking ?? null,
+        client: raced?.client ?? null,
+        treatmentTitle: raced?.treatmentTitle ?? treatment.title,
       }
     }
     throw new Error(`confirmTreatmentPayment update: ${error.message}`)
@@ -92,66 +89,49 @@ export async function confirmTreatmentPayment(
 
   const clientRaw = booking.client
   const client = (Array.isArray(clientRaw) ? clientRaw[0] : clientRaw) as Client
-  const startsAt = new Date(booking.starts_at)
-  const endsAt = new Date(booking.ends_at)
+  let packageSessionsRemaining: number | null = null
 
-  let googleEventId: string | null = null
-  let calendarSynced = false
+  const packageId = input.packageId ?? booking.treatment_package_id
+  const sessionCount =
+    input.packageSessionCount ??
+    (packageId ? await resolvePackageSessionCount(packageId) : null)
 
-  try {
-    googleEventId = await createTreatmentCalendarEvent({
-      treatmentTitle: treatment.title,
-      clientName: client.full_name,
-      clientEmail: client.email,
-      clientPhone: client.phone,
-      message: booking.message,
-      startsAt,
-      endsAt,
-      amountCents: booking.amount_cents,
+  if (packageId && sessionCount && sessionCount >= 2) {
+    const credit = await createPackageCreditsAfterPurchase({
+      clientId: client.id,
+      treatmentId: treatment.id,
+      packageId,
+      sessionCount,
+      purchaseAmountCents: booking.amount_cents,
+      stripeCheckoutSessionId: input.stripeCheckoutSessionId,
+      stripePaymentIntentId: input.stripePaymentIntentId,
+      sessionsUsedOnPurchase: 1,
     })
-    calendarSynced = Boolean(googleEventId)
-    if (googleEventId) {
-      await supabase
-        .from('treatment_bookings')
-        .update({
-          google_event_id: googleEventId,
-          google_calendar_synced: true,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', booking.id)
-    }
-  } catch (err) {
-    console.error('[confirmTreatmentPayment] Google Calendar:', err)
+    packageSessionsRemaining = credit.sessions_total - credit.sessions_used
+    await supabase
+      .from('treatment_bookings')
+      .update({
+        client_package_credit_id: credit.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', booking.id)
   }
 
-  void notifyClinicNewBooking({
-    kind: 'treatment',
-    clientName: client.full_name,
-    when: formatConsultationWhen(startsAt),
-    label: treatment.title,
-    amountLabel: formatAudFromCents(booking.amount_cents),
-  }).catch(err => console.error('[confirmTreatmentPayment] clinic alert:', err))
+  const promoCodeId = input.promoCodeId ?? booking.promo_code_id
+  if (promoCodeId) {
+    await incrementPromoRedemption(promoCodeId)
+  }
 
-  await sendTreatmentBookingEmails({
-    clientName: client.full_name,
-    clientEmail: client.email,
-    clientPhone: client.phone,
+  const finalized = await finalizeTreatmentBooking({
+    booking: booking as TreatmentBooking,
+    client,
     treatmentTitle: treatment.title,
-    message: booking.message,
-    startsAt,
-    amountCents: booking.amount_cents,
-    calendarSynced,
-    bookingId: booking.id,
-    managementToken: (booking as TreatmentBooking).management_token,
+    packageSessionsRemaining,
   })
 
   return {
     confirmed: true,
-    booking: {
-      ...(booking as TreatmentBooking),
-      google_event_id: googleEventId,
-      google_calendar_synced: calendarSynced,
-    },
+    booking: finalized,
     client,
     treatmentTitle: treatment.title,
   }
@@ -165,4 +145,15 @@ export async function cancelPendingTreatmentBooking(bookingId: string): Promise<
     .update({ status: 'cancelled', updated_at: new Date().toISOString() })
     .eq('id', bookingId)
     .eq('status', 'pending_payment')
+}
+
+async function resolvePackageSessionCount(packageId: string): Promise<number | null> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { data } = await supabase
+    .from('treatment_packages')
+    .select('session_count')
+    .eq('id', packageId)
+    .maybeSingle()
+  return data?.session_count ?? null
 }

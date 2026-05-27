@@ -11,6 +11,9 @@ const schema = z.object({
   source_page: z.string().max(200).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time: z.string().regex(/^\d{2}:\d{2}$/),
+  promo_code: z.string().max(50).optional(),
+  package_id: z.string().uuid().optional(),
+  client_package_credit_id: z.string().uuid().optional(),
   privacy_consent: z.literal(true, {
     errorMap: () => ({ message: 'Privacy consent is required' }),
   }),

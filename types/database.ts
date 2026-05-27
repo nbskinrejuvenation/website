@@ -156,6 +156,11 @@ export interface TreatmentBooking {
   ends_at: string
   status: TreatmentBookingStatus
   amount_cents: number
+  original_amount_cents: number | null
+  discount_cents: number
+  promo_code_id: string | null
+  treatment_package_id: string | null
+  client_package_credit_id: string | null
   currency: string
   stripe_checkout_session_id: string | null
   stripe_payment_intent_id: string | null
@@ -169,6 +174,50 @@ export interface TreatmentBooking {
   sms_reminder_sent_at: string | null
   review_request_sent_at: string | null
   no_show_notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type PromoDiscountType = 'percent' | 'fixed_cents'
+
+export interface PromoCode {
+  id: string
+  code: string
+  description: string | null
+  discount_type: PromoDiscountType
+  discount_value: number
+  treatment_id: string | null
+  valid_from: string | null
+  valid_until: string | null
+  max_redemptions: number | null
+  redemption_count: number
+  active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface TreatmentPackage {
+  id: string
+  treatment_id: string
+  label: string
+  session_count: number
+  price_cents: number
+  active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ClientPackageCredit {
+  id: string
+  client_id: string
+  treatment_id: string
+  package_id: string
+  sessions_total: number
+  sessions_used: number
+  purchase_amount_cents: number
+  stripe_checkout_session_id: string | null
+  stripe_payment_intent_id: string | null
   created_at: string
   updated_at: string
 }

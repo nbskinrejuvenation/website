@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { Check, Loader2 } from 'lucide-react'
 
 interface Props {
-  sessionId: string
+  sessionId?: string
+  bookingId?: string
   treatmentTitle: string
 }
 
-export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
+export function TreatmentBookingSuccess({ sessionId, bookingId, treatmentTitle }: Props) {
   const [status, setStatus] = useState<'loading' | 'confirmed' | 'pending' | 'error'>('loading')
   const [when, setWhen] = useState<string | null>(null)
   const [manageUrl, setManageUrl] = useState<string | null>(null)
@@ -19,9 +20,10 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
 
     async function verify() {
       try {
-        const res = await fetch(
-          `/api/booking/treatment/status?session_id=${encodeURIComponent(sessionId)}`,
-        )
+        const query = sessionId
+          ? `session_id=${encodeURIComponent(sessionId)}`
+          : `booking_id=${encodeURIComponent(bookingId!)}`
+        const res = await fetch(`/api/booking/treatment/status?${query}`)
         const json = (await res.json()) as {
           status?: string
           startsAt?: string
@@ -48,6 +50,21 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
               timeZone: 'Australia/Sydney',
             }),
           )
+        } else if (bookingId && !sessionId) {
+          setStatus('confirmed')
+          setManageUrl(json.manageUrl ?? null)
+          if (json.startsAt) {
+            setWhen(
+              new Date(json.startsAt).toLocaleString('en-AU', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZone: 'Australia/Sydney',
+              }),
+            )
+          }
         } else {
           setStatus('pending')
           setTimeout(verify, 2000)
@@ -61,13 +78,15 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
     return () => {
       cancelled = true
     }
-  }, [sessionId])
+  }, [sessionId, bookingId])
 
   if (status === 'loading' || status === 'pending') {
     return (
       <div className="rounded-sm bg-brand-50 p-10 text-center ring-1 ring-brand-200">
         <Loader2 className="mx-auto h-8 w-8 animate-spin text-brand-600" />
-        <h2 className="mt-4 font-display text-2xl font-light text-ink">Confirming payment…</h2>
+        <h2 className="mt-4 font-display text-2xl font-light text-ink">
+          {sessionId ? 'Confirming payment…' : 'Confirming your booking…'}
+        </h2>
         <p className="mx-auto mt-3 max-w-md text-sm text-ink-muted">
           Please wait while we confirm your {treatmentTitle} appointment.
         </p>
@@ -78,7 +97,7 @@ export function TreatmentBookingSuccess({ sessionId, treatmentTitle }: Props) {
   if (status === 'error') {
     return (
       <div className="rounded-sm bg-white p-10 text-center shadow-card ring-1 ring-sand-dark/40">
-        <h2 className="font-display text-2xl font-light text-ink">Payment received</h2>
+        <h2 className="font-display text-2xl font-light text-ink">Almost there</h2>
         <p className="mx-auto mt-4 max-w-md text-sm text-ink-muted">
           We&apos;re processing your booking. If you don&apos;t receive a confirmation email within a
           few minutes, please call the clinic.

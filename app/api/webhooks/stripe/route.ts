@@ -45,6 +45,11 @@ export async function POST(request: Request) {
             typeof session.payment_intent === 'string'
               ? session.payment_intent
               : session.payment_intent?.id ?? null,
+          packageId: session.metadata.package_id ?? null,
+          packageSessionCount: session.metadata.package_session_count
+            ? Number.parseInt(session.metadata.package_session_count, 10)
+            : null,
+          promoCodeId: session.metadata.promo_code_id ?? null,
         })
       }
     }
