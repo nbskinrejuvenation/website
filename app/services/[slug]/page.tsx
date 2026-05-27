@@ -24,6 +24,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { buildBreadcrumbSchema } from '@/lib/seo/breadcrumbs'
 import { getIndexableFaqs } from '@/lib/seo/faq'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+import { formatAudFromCents, isStripeConfigured } from '@/lib/stripe/config'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -88,6 +89,17 @@ export default async function ServicePage({ params }: Props) {
   const hasFaqs = allFaqs.length > 0
   const indexableFaqs = getIndexableFaqs(allFaqs)
 
+  const canBookOnline =
+    isStripeConfigured() &&
+    service.bookable_online &&
+    service.price_cents != null &&
+    service.price_cents > 0
+  const bookOnlineUrl = canBookOnline ? `/book/treatment/${slug}` : undefined
+  const bookOnlineLabel =
+    service.price_cents != null
+      ? `Book & pay from ${formatAudFromCents(service.price_cents)}`
+      : 'Book & pay online'
+
   return (
     <>
       <StructuredData type="Service" treatment={service} settings={settings} />
@@ -104,6 +116,8 @@ export default async function ServicePage({ params }: Props) {
         title={service.title}
         subtitle={service.subtitle ?? undefined}
         heroImageUrl={service.hero_image ?? undefined}
+        bookOnlineUrl={bookOnlineUrl}
+        bookOnlineLabel={bookOnlineLabel}
       />
 
       <TreatmentIntro
@@ -130,10 +144,14 @@ export default async function ServicePage({ params }: Props) {
       <InstagramSection {...instagramSectionFromSettings(settings)} />
 
       <CTABanner
-        heading="Book your free consultation"
-        body="Ready to get started? Book a FREE 30-minute consultation and we'll recommend the most effective treatment for your skin."
-        ctaLabel="Book Now"
-        ctaHref="/book"
+        heading={canBookOnline ? 'Book your appointment' : 'Book your free consultation'}
+        body={
+          canBookOnline
+            ? `Secure your ${service.title} appointment online, or book a free consultation if you'd like advice first.`
+            : "Ready to get started? Book a FREE 30-minute consultation and we'll recommend the most effective treatment for your skin."
+        }
+        ctaLabel={canBookOnline ? bookOnlineLabel : 'Book Now'}
+        ctaHref={canBookOnline ? bookOnlineUrl! : '/book'}
         phone={settings.phone ?? undefined}
       />
     </>

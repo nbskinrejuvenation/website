@@ -6,9 +6,17 @@ interface Props {
   title: string
   subtitle?: string
   heroImageUrl?: string
+  bookOnlineUrl?: string
+  bookOnlineLabel?: string
 }
 
-export function TreatmentHero({ title, subtitle, heroImageUrl }: Props) {
+export function TreatmentHero({
+  title,
+  subtitle,
+  heroImageUrl,
+  bookOnlineUrl,
+  bookOnlineLabel = 'Book & pay online',
+}: Props) {
   return (
     <section className="relative flex min-h-[50vh] items-end overflow-hidden">
       <div className="absolute inset-0">
@@ -56,8 +64,16 @@ export function TreatmentHero({ title, subtitle, heroImageUrl }: Props) {
         {subtitle && (
           <p className="mt-3 max-w-xl text-lg text-cream/75">{subtitle}</p>
         )}
-        <div className="mt-8">
-          <Link href="/book" className="btn-primary">
+        <div className="mt-8 flex flex-wrap gap-3">
+          {bookOnlineUrl ? (
+            <Link href={bookOnlineUrl} className="btn-primary">
+              {bookOnlineLabel}
+            </Link>
+          ) : null}
+          <Link
+            href="/book"
+            className={bookOnlineUrl ? 'btn-outline border-cream/40 text-cream hover:bg-cream/10' : 'btn-primary'}
+          >
             Book free consultation
           </Link>
         </div>

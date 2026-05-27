@@ -97,6 +97,75 @@ export async function createConsultationCalendarEvent(
   return data.id
 }
 
+export interface CreateTreatmentEventInput {
+  treatmentTitle: string
+  clientName: string
+  clientEmail: string
+  clientPhone?: string | null
+  message?: string | null
+  startsAt: Date
+  endsAt: Date
+  amountCents: number
+}
+
+export async function createTreatmentCalendarEvent(
+  input: CreateTreatmentEventInput,
+): Promise<string | null> {
+  if (!isGoogleCalendarConfigured()) {
+    console.warn('[google-calendar] Not configured — skipping event creation')
+    return null
+  }
+
+  const accessToken = await getAccessToken()
+  const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID!)
+  const paidAud = (input.amountCents / 100).toFixed(0)
+
+  const description = [
+    `Paid treatment booking — ${input.treatmentTitle}`,
+    `Amount paid online: $${paidAud} AUD`,
+    '',
+    `Client: ${input.clientName}`,
+    `Email: ${input.clientEmail}`,
+    input.clientPhone ? `Phone: ${input.clientPhone}` : null,
+    input.message ? `\nNotes:\n${input.message}` : null,
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?sendUpdates=all`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        summary: `${input.treatmentTitle} — ${input.clientName}`,
+        description,
+        start: {
+          dateTime: input.startsAt.toISOString(),
+          timeZone: CLINIC_TIMEZONE,
+        },
+        end: {
+          dateTime: input.endsAt.toISOString(),
+          timeZone: CLINIC_TIMEZONE,
+        },
+        attendees: [{ email: input.clientEmail, displayName: input.clientName }],
+        reminders: { useDefault: true },
+      }),
+    },
+  )
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Google Calendar event failed: ${text}`)
+  }
+
+  const data = (await res.json()) as { id: string }
+  return data.id
+}
+
 /** Deletes a calendar event and notifies attendees (when configured). */
 export async function deleteConsultationCalendarEvent(eventId: string): Promise<void> {
   if (!isGoogleCalendarConfigured()) {

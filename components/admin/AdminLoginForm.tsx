@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 
 export function AdminLoginForm() {
   const searchParams = useSearchParams()
-  const next = searchParams.get('next') ?? '/admin/consultations'
+  const next = searchParams.get('next') ?? '/admin'
 
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)

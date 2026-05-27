@@ -29,7 +29,7 @@ function clientConfirmationHtml(input: ConsultationBookingEmailInput, when: stri
 }
 
 function clinicNotificationHtml(input: ConsultationBookingEmailInput, when: string): string {
-  const adminUrl = `${getSiteUrl()}/admin/consultations`
+  const adminUrl = `${getSiteUrl()}/admin/appointments`
   const rows = [
     ['When', when],
     ['Name', input.clientName],

@@ -1,0 +1,62 @@
+import { NextResponse } from 'next/server'
+import { confirmTreatmentPayment } from '@/lib/booking/confirm-treatment-payment'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getStripe } from '@/lib/stripe/client'
+import { isStripeConfigured } from '@/lib/stripe/config'
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const sessionId = searchParams.get('session_id')
+
+  if (!sessionId) {
+    return NextResponse.json({ error: 'session_id is required' }, { status: 400 })
+  }
+
+  if (!isStripeConfigured()) {
+    return NextResponse.json({ error: 'Payments not configured' }, { status: 503 })
+  }
+
+  try {
+    const stripe = getStripe()
+    const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+    const bookingId = session.metadata?.booking_id
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 400 })
+    }
+
+    if (session.payment_status === 'paid' && session.status === 'complete') {
+      const result = await confirmTreatmentPayment({
+        bookingId,
+        stripeCheckoutSessionId: session.id,
+        stripePaymentIntentId:
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id ?? null,
+      })
+
+      return NextResponse.json({
+        status: result.confirmed ? 'confirmed' : 'pending',
+        treatmentTitle: result.treatmentTitle,
+        startsAt: result.booking?.starts_at ?? null,
+      })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = createAdminClient() as any
+    const { data: booking } = await supabase
+      .from('treatment_bookings')
+      .select('status, starts_at')
+      .eq('id', bookingId)
+      .maybeSingle()
+
+    return NextResponse.json({
+      status: booking?.status ?? 'pending',
+      startsAt: booking?.starts_at ?? null,
+      paymentStatus: session.payment_status,
+    })
+  } catch (err) {
+    console.error('[booking/treatment/status]', err)
+    return NextResponse.json({ error: 'Could not verify payment' }, { status: 500 })
+  }
+}

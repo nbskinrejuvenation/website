@@ -1,16 +1,19 @@
-# Clinic booking — Phase 1 setup
+# Clinic booking setup
 
-Replace Fresha for **free consultations** with your own system: client database + Google Calendar.
+Replace Fresha with your own system: client database, Google Calendar, and (optionally) **paid treatment booking via Stripe**.
 
 ## What you have today
 
 | Piece | Status |
 |-------|--------|
 | Marketing website (Next.js + Supabase) | Live |
-| Contact form → `contact_submissions` (optional) | API exists |
-| **New:** `/book` — pick time + details | After migration + deploy |
-| **New:** `clients` + `consultation_bookings` tables | Run SQL below |
-| **New:** Google Calendar event on each booking | After OAuth setup |
+| `/book` — free 30-min consultation | After migration + deploy |
+| `/book/treatment/[slug]` — pay & book online | After Stripe + `20260530` migration |
+| `clients`, `consultation_bookings`, `treatment_bookings` | Run SQL migrations |
+| Google Calendar on confirmed bookings | After OAuth setup |
+| Admin portal: `/admin`, `/admin/appointments`, `/admin/clients` | After admin env vars |
+
+**Paid treatments:** see [STRIPE_SETUP.md](./STRIPE_SETUP.md).
 
 ## Step-by-step
 
@@ -76,7 +79,7 @@ Edit **`availability_rules`** in Supabase (day 0 = Sunday … 6 = Saturday).
 See **`docs/ADMIN_SETUP.md`**
 
 - Sign in at `/admin/login`
-- Manage consultations at `/admin/consultations`
+- Manage all bookings at `/admin/appointments`
 
 ## Email confirmations (Resend)
 

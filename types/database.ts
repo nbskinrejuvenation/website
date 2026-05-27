@@ -54,6 +54,9 @@ export interface Treatment {
   status: ContentStatus | null
   sort_order: number | null
   price_from: number | null       // Lowest single-session price in AUD (whole dollars)
+  duration_minutes: number        // Appointment length for online booking
+  price_cents: number | null      // Online booking price in cents (AUD)
+  bookable_online: boolean          // Show "Book & pay" on treatment page
   what_to_expect: string[] | null // Outcome/benefit strings for the "What To Expect" grid
   seo_title: string | null
   seo_description: string | null
@@ -132,6 +135,39 @@ export interface AvailabilityRule {
   end_time: string
   is_active: boolean
 }
+
+export type TreatmentBookingStatus =
+  | 'pending_payment'
+  | 'confirmed'
+  | 'cancelled'
+  | 'completed'
+  | 'no_show'
+
+export interface TreatmentBooking {
+  id: string
+  client_id: string
+  treatment_id: string
+  starts_at: string
+  ends_at: string
+  status: TreatmentBookingStatus
+  amount_cents: number
+  currency: string
+  stripe_checkout_session_id: string | null
+  stripe_payment_intent_id: string | null
+  message: string | null
+  source_page: string | null
+  google_event_id: string | null
+  google_calendar_synced: boolean
+  internal_notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+/** Treatment fields required for online booking flow */
+export type BookableTreatment = Pick<
+  Treatment,
+  'id' | 'slug' | 'title' | 'duration_minutes' | 'price_cents' | 'bookable_online' | 'price_from'
+>
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 

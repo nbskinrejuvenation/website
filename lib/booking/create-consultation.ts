@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getAvailableSlotsForDate, resolveSlotTimes } from '@/lib/booking/slots'
+import { upsertClient } from '@/lib/booking/upsert-client'
 import { sendConsultationBookingEmails } from '@/lib/email/consultation-booking'
 import { createConsultationCalendarEvent } from '@/lib/google/calendar'
 import type { Client, ConsultationBooking } from '@/types/database'
@@ -20,47 +21,6 @@ export interface BookConsultationResult {
   client: Client
   calendarSynced: boolean
   emailsSent: { client: boolean; clinic: boolean }
-}
-
-async function upsertClient(input: BookConsultationInput): Promise<Client> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createAdminClient() as any
-  const email = input.email.trim().toLowerCase()
-
-  const { data: existing } = await supabase
-    .from('clients')
-    .select('*')
-    .ilike('email', email)
-    .maybeSingle()
-
-  if (existing) {
-    const { data, error } = await supabase
-      .from('clients')
-      .update({
-        full_name: input.full_name.trim(),
-        phone: input.phone?.trim() || existing.phone,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', existing.id)
-      .select('*')
-      .single()
-
-    if (error) throw new Error(`client update: ${error.message}`)
-    return data as Client
-  }
-
-  const { data, error } = await supabase
-    .from('clients')
-    .insert({
-      full_name: input.full_name.trim(),
-      email,
-      phone: input.phone?.trim() || null,
-    })
-    .select('*')
-    .single()
-
-  if (error) throw new Error(`client insert: ${error.message}`)
-  return data as Client
 }
 
 export async function bookConsultation(

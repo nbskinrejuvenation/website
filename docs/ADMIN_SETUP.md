@@ -1,67 +1,61 @@
-# Clinic admin (Phase 2)
+# Clinic admin portal
 
-Password-protected inbox for free consultation bookings and client records.
+Password-protected portal for consultations, paid treatments, clients, and calendar.
 
 ## Setup
 
-### 1. Run migration
-
-In Supabase SQL Editor:
-
-`supabase/migrations/20260526_consultation_internal_notes.sql`
-
-### 2. Environment variables
+### 1. Environment variables
 
 Add to `.env.local` and **Vercel** (server-only, never `NEXT_PUBLIC_`):
 
 ```env
-# Password you type at /admin/login
 ADMIN_PASSWORD=choose-a-strong-password
-
-# Random secret for session cookie (e.g. openssl rand -hex 32)
 ADMIN_SECRET=your-long-random-string
 ```
 
 Restart dev server or redeploy after adding.
 
-### 3. Sign in
+### 2. Sign in
 
 Open **`/admin/login`** → enter `ADMIN_PASSWORD`.
 
-Default redirect: **`/admin/consultations`**
+Default redirect: **`/admin`** (dashboard)
 
-## What you can do
+## Portal sections
 
-- View **upcoming** consultations (confirmed, future dates)
-- See client **name, email, phone**, treatment interest, message
-- Update **status**: Confirmed, Completed, Cancelled, No show
-- Add **internal notes** (not shown on the public site)
-- Tabs: All, Completed, Cancelled
+| URL | Purpose |
+|-----|---------|
+| `/admin` | Dashboard — today’s stats, next appointment, schedule |
+| `/admin/appointments` | All bookings — consultations + paid treatments |
+| `/admin/calendar` | Week view of confirmed appointments |
+| `/admin/clients` | Client directory, notes, booking history |
+
+Legacy URLs redirect automatically:
+
+- `/admin/consultations` → appointments (consultations only)
+- `/admin/treatment-bookings` → appointments (paid treatments only)
+
+## Appointments inbox
+
+- Filter by **type**: All, Consultations, Paid treatments
+- Filter by **status**: Upcoming, Awaiting payment, All, Cancelled
+- Update status, internal notes, resend cancellation emails (consultations)
+- Cancelling removes Google Calendar events and emails the client (when configured)
+
+## Clients
+
+- Search by name, email, or phone
+- Per-client **notes** (stored on `clients.notes`)
+- Full booking history (consultations + paid treatments)
 
 ## Security notes
 
 - `/admin` is **not indexed** (robots noindex)
 - Use a strong `ADMIN_PASSWORD`; do not share the URL publicly
-- Phase 3 can add Supabase Auth or 2FA if needed
+- Future: Supabase Auth with individual staff accounts + 2FA
 
-## Google Calendar + email on cancel
+## Related docs
 
-When you set a consultation to **Cancelled**, the app:
-
-1. Sends a **cancellation email** to the client (Resend — same setup as booking confirmations)
-2. Deletes the event from your Google Calendar (if one was created at booking time)
-3. Sends calendar cancellation updates to attendees (`sendUpdates=all`)
-4. Clears `google_event_id` in the database so the time slot can be booked again
-
-If calendar delete or email fails, the booking is still marked cancelled in Supabase. The inbox shows the exact result (e.g. “email sent to client@…” or “email failed: …”).
-
-For already-cancelled bookings, use **Resend cancellation email** in the admin detail panel to send again (useful after fixing Resend config).
-
-## Booking emails
-
-New bookings trigger Resend emails to the client and `CLINIC_NOTIFICATION_EMAIL`. See **`docs/EMAIL_SETUP.md`**.
-
-## Next phases
-
-- Paid treatment booking + Stripe
-- ✅ Reminder emails (24h before — see `docs/EMAIL_SETUP.md`)
+- [CLINIC_BOOKING_SETUP.md](./CLINIC_BOOKING_SETUP.md) — booking + availability
+- [STRIPE_SETUP.md](./STRIPE_SETUP.md) — paid treatments
+- [EMAIL_SETUP.md](./EMAIL_SETUP.md) — Resend confirmations
