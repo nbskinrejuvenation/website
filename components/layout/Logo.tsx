@@ -1,46 +1,35 @@
-import Image from 'next/image'
 import Link from 'next/link'
-import { LOGO_LIGHT_SVG, LOGO_SVG } from '@/lib/brand/logo'
-import { cn } from '@/lib/utils/cn'
 
 interface Props {
   businessName?: string
-  /** Light logo for dark backgrounds (header, footer). Default for cream/light pages. */
+  /** Light text for dark header; default for footer and light backgrounds. */
   variant?: 'default' | 'light'
-  /** sm = header; md = footer */
-  size?: 'sm' | 'md'
-  className?: string
 }
 
-const SIZES = {
-  sm: { width: 52, height: 52, className: 'h-[52px] w-[52px]' },
-  md: { width: 64, height: 64, className: 'h-16 w-16' },
-} as const
-
-export function Logo({
-  businessName: _businessName,
-  variant = 'default',
-  size = 'sm',
-  className,
-}: Props) {
+/** Wordmark — drop your existing logo into public/logo.png when ready. */
+export function Logo({ businessName: _businessName, variant = 'default' }: Props) {
   const isLight = variant === 'light'
-  const src = isLight ? LOGO_LIGHT_SVG : LOGO_SVG
-  const dims = SIZES[size]
 
   return (
-    <Link
-      href="/"
-      className={cn('inline-flex shrink-0 items-center', className)}
-      aria-label="Naturally Beautiful Skin Rejuvenation — home"
-    >
-      <Image
-        src={src}
-        alt=""
-        width={dims.width}
-        height={dims.height}
-        className={cn(dims.className, 'object-contain')}
-        priority={size === 'sm'}
-      />
+    <Link href="/" className="group flex flex-col leading-tight" aria-label="Naturally Beautiful — home">
+      <span
+        className={
+          isLight
+            ? 'font-display text-xl font-light tracking-tight text-cream transition-colors group-hover:text-brand-200 md:text-[1.35rem]'
+            : 'font-display text-xl font-light tracking-tight text-ink transition-colors group-hover:text-brand-600 md:text-[1.35rem]'
+        }
+      >
+        Naturally Beautiful
+      </span>
+      <span
+        className={
+          isLight
+            ? 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-200'
+            : 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-700'
+        }
+      >
+        Skin Rejuvenation
+      </span>
     </Link>
   )
 }

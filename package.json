@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:types": "supabase gen types typescript --project-id mgmdqbltkkddluyotprx > types/database.generated.ts",
-    "logo:email": "node scripts/generate-logo-email.mjs"
+    "db:types": "supabase gen types typescript --project-id mgmdqbltkkddluyotprx > types/database.generated.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.79",
@@ -42,7 +41,6 @@
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
