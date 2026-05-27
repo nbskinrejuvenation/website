@@ -291,11 +291,11 @@ export function ChatWidget({ clinicPhone = DEFAULT_PHONE }: ChatWidgetProps) {
       <div className="fixed bottom-5 right-4 z-50 flex flex-col items-end gap-2">
         {!isOpen && (
           <p
-            className="max-w-[220px] rounded-sm bg-white px-3 py-2 text-right text-sm leading-snug text-ink shadow-card ring-1 ring-sand-dark/40 sm:max-w-[260px]"
+            className="w-fit max-w-[11rem] rounded-sm bg-white px-2.5 py-1.5 text-left text-xs leading-snug text-ink shadow-card ring-1 ring-sand-dark/40 sm:max-w-[12rem] sm:text-sm"
             aria-hidden
           >
-            <span className="font-medium text-brand-700">Questions?</span> Chat here for
-            treatments, prices, or a free consultation.
+            <span className="font-medium text-brand-700">Questions?</span> Chat for treatments,
+            prices, or a free visit.
           </p>
         )}
         <button
