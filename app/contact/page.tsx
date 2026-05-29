@@ -4,6 +4,8 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { ConsultationForm } from '@/components/forms/ConsultationForm'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
+import { ClinicMap } from '@/components/contact/ClinicMap'
+import { buildGoogleMapsSearchUrl } from '@/lib/google/maps'
 import { CLINIC_ADDRESS_FULL } from '@/lib/site/address'
 import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 
@@ -16,7 +18,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/contact' },
 }
 
-const INFO_CARDS = [
+function buildInfoCards(mapsUrl: string) {
+  return [
   {
     icon: Phone,
     label: 'Call or SMS',
@@ -32,8 +35,8 @@ const INFO_CARDS = [
   {
     icon: MapPin,
     label: 'Location',
-    lines: ['9 and 10/8-12 Pacific Parade', 'Dee Why, 2099 NSW', 'Northern Beaches'],
-    href: 'https://maps.google.com/?q=8-12+Pacific+Parade+Dee+Why+NSW',
+    lines: ['Shop 9–10, 8–12 Pacific Parade', 'Dee Why, NSW 2099', 'Northern Beaches'],
+    href: mapsUrl,
   },
   {
     icon: Car,
@@ -41,9 +44,13 @@ const INFO_CARDS = [
     lines: ['Enjoy 3-hour FREE parking at the', 'Dee Why Grand, directly across', 'the street from us'],
   },
 ]
+}
+
 
 export default async function ContactPage() {
   const settings = await getSiteSettings()
+  const mapsUrl = buildGoogleMapsSearchUrl(CLINIC_ADDRESS_FULL)
+  const infoCards = buildInfoCards(mapsUrl)
 
   return (
     <>
@@ -56,7 +63,7 @@ export default async function ContactPage() {
       <section className="bg-white py-16">
         <div className="section-container">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {INFO_CARDS.map(({ icon: Icon, label, lines, href }) => (
+            {infoCards.map(({ icon: Icon, label, lines, href }) => (
               <div key={label} className="flex flex-col items-center text-center">
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-500">
                   <Icon className="h-6 w-6" strokeWidth={1.5} />
@@ -110,30 +117,7 @@ export default async function ContactPage() {
                 </p>
               </div>
 
-              {settings.lat && settings.lng ? (
-                <div className="aspect-video overflow-hidden rounded-xl bg-brand-100">
-                  <iframe
-                    title="Map to Naturally Beautiful Skin Rejuvenation"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&q=${settings.lat},${settings.lng}&zoom=15`}
-                  />
-                </div>
-              ) : (
-                <div className="aspect-video overflow-hidden rounded-xl bg-brand-100 flex items-center justify-center">
-                  <a
-                    href="https://maps.google.com/?q=8-12+Pacific+Parade+Dee+Why+NSW"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary"
-                  >
-                    Open in Google Maps
-                  </a>
-                </div>
-              )}
+              <ClinicMap settings={settings} />
             </div>
 
           </div>

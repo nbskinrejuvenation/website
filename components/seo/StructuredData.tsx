@@ -1,4 +1,6 @@
 import type { SiteSettings, Treatment } from '@/types/database'
+import { buildGoogleMapsSearchUrl } from '@/lib/google/maps'
+import { formatFullAddress } from '@/lib/site/address'
 import { absoluteUrl } from '@/lib/seo/metadata'
 
 interface Faq {
@@ -40,6 +42,7 @@ export function StructuredData(props: Props) {
               },
             }
           : {}),
+        hasMap: buildGoogleMapsSearchUrl(formatFullAddress(settings)),
         sameAs: [settings.facebook_url, settings.instagram_url].filter(Boolean),
         priceRange: '$$',
         currenciesAccepted: 'AUD',
