@@ -127,14 +127,13 @@ export function HeroSection({
             </Link>
           </motion.div>
 
-          {locationLine && (
-            <motion.p
-              className="mt-6 text-sm text-ink-faint"
-              variants={reduceMotion ? undefined : heroStagger.item}
-            >
-              Free 30-minute consultation · By appointment · {locationLine}
-            </motion.p>
-          )}
+          <motion.p
+            className="mt-6 text-sm text-ink-faint"
+            variants={reduceMotion ? undefined : heroStagger.item}
+          >
+            Free 30-minute consultation · By appointment
+            {locationLine && <> · {locationLine}</>}
+          </motion.p>
         </motion.div>
       </div>
     </section>
