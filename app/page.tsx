@@ -36,7 +36,6 @@ export default async function HomePage() {
       <StructuredData type="LocalBusiness" settings={settings} />
 
       <HeroSection
-        eyebrow={fullAddress}
         heading={
           <>
             Enhance your{' '}
@@ -51,7 +50,6 @@ export default async function HomePage() {
         heroVideoUrl={HERO_VIDEO_URL}
         heroImageUrl={HERO_POSTER_URL}
         heroImageAlt={`Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, ${fullAddress}`}
-        locationLine={fullAddress}
       />
 
       <Reveal>
