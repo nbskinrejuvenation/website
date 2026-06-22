@@ -47,12 +47,45 @@ export default async function HomePage() {
         heroImageAlt={`Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, ${fullAddress}`}
       />
 
-      <Reveal><TrustPillars fullAddress={fullAddress} /></Reveal>
-      <Reveal delay={0.05}><IntroStrip /></Reveal>
-      <Reveal delay={0.05}><TreatmentsGrid services={featuredServices} heading="Our treatments" subheading="Curated face and body services — each tailored to your skin goals." showViewAll /></Reveal>
-      <Reveal delay={0.05}><InstagramSection {...instagramSectionFromSettings(settings)} /></Reveal>
-      <Reveal delay={0.05}><TestimonialsSection testimonials={testimonials} eyebrow="See what" heading="Our clients say" /></Reveal>
-      <Reveal delay={0.05}><CTABanner heading="Book your free consultation" body={`Call us to arrange a complimentary 30-minute skin assessment at ${fullAddress}. We'll recommend the most effective treatment for you.`} ctaLabel="Contact us" ctaHref="/book" phone={settings.phone ?? undefined} phonePrimary /></Reveal>
+      <Reveal>
+        <TrustPillars fullAddress={fullAddress} />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <IntroStrip />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <TreatmentsGrid
+          services={featuredServices}
+          heading="Our treatments"
+          subheading="Curated face and body services — each tailored to your skin goals."
+          showViewAll
+        />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <InstagramSection {...instagramSectionFromSettings(settings)} />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <TestimonialsSection
+          testimonials={testimonials}
+          eyebrow="See what"
+          heading="Our clients say"
+        />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <CTABanner
+          heading="Book your free consultation"
+          body={`Call us to arrange a complimentary 30-minute skin assessment at ${fullAddress}. We'll recommend the most effective treatment for you.`}
+          ctaLabel="Contact us"
+          ctaHref="/book"
+          phone={settings.phone ?? undefined}
+          phonePrimary
+        />
+      </Reveal>
     </>
   )
 }
