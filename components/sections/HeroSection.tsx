@@ -23,6 +23,12 @@ interface Props {
   locationLine?: string
 }
 
+const TRUST_POINTS = [
+  'Complimentary skin consultation',
+  'Personalised treatment plans',
+  'Natural-looking results',
+]
+
 export function HeroSection({
   eyebrow,
   heading,
@@ -134,6 +140,19 @@ export function HeroSection({
             Free 30-minute consultation · By appointment
             {locationLine && <> · {locationLine}</>}
           </motion.p>
+
+          <motion.ul
+            className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted"
+            variants={reduceMotion ? undefined : heroStagger.item}
+            role="list"
+          >
+            {TRUST_POINTS.map(point => (
+              <li key={point} className="flex items-center gap-2">
+                <span className="text-brand-600" aria-hidden="true">✓</span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </motion.ul>
         </motion.div>
       </div>
     </section>
