@@ -37,7 +37,13 @@ export default async function HomePage() {
 
       <HeroSection
         eyebrow="Boutique skin & laser clinic"
-        heading={<>Healthy Skin. Natural Confidence.</>}
+        heading={
+          <>
+            Healthy Skin.
+            <br />
+            Natural Confidence.
+          </>
+        }
         subheading="Personalised skin and laser treatments designed to help you look refreshed, feel confident, and achieve naturally radiant results."
         ctaLabel="Book Free Consultation"
         ctaHref="/book"
