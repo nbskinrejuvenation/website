@@ -36,6 +36,7 @@ export default async function HomePage() {
       <StructuredData type="LocalBusiness" settings={settings} />
 
       <HeroSection
+        eyebrow="Boutique skin & laser clinic"
         heading={<>Healthy Skin. Natural Confidence.</>}
         subheading="Personalised skin and laser treatments designed to help you look refreshed, feel confident, and achieve naturally radiant results."
         ctaLabel="Book Free Consultation"
