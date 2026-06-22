@@ -12,13 +12,13 @@ export function ServiceCard({ service }: Props) {
       href={`/services/${service.slug}`}
       className="group flex flex-col overflow-hidden bg-white shadow-sm ring-1 ring-neutral-100 transition-shadow hover:shadow-md"
     >
-      <div className="relative aspect-[16/9] overflow-hidden bg-neutral-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
         {service.hero_image ? (
           <Image
             src={service.hero_image}
             alt={service.title}
             fill
-            className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
