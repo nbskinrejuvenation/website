@@ -102,7 +102,7 @@ export function HeroSection({
             </motion.p>
           )}
           <motion.h1
-            className="font-display text-4xl font-light leading-[1.15] tracking-tight text-ink md:text-5xl lg:text-6xl"
+            className="font-display text-4xl font-light leading-[1.15] tracking-tight text-brand-600 md:text-5xl lg:text-6xl"
             variants={reduceMotion ? undefined : heroStagger.item}
           >
             {heading}
