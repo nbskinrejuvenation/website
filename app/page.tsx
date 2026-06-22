@@ -41,7 +41,7 @@ export default async function HomePage() {
           <>
             Healthy Skin.
             <br />
-            <span className="text-brand-600">Natural Confidence.</span>
+            <span className="!text-brand-600">Natural Confidence.</span>
           </>
         }
         subheading="Personalised skin and laser treatments designed to help you look refreshed, feel confident, and achieve naturally radiant results."
