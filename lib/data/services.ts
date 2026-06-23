@@ -3,6 +3,13 @@ import { withResolvedHeroImage } from '@/lib/images/treatment-hero'
 import { unstable_cache } from 'next/cache'
 import type { Treatment, TreatmentCard } from '@/types/database'
 
+function applySpreadsheetPrice<T extends { slug: string; price_from?: number | null }>(treatment: T): T {
+  if (treatment.slug === 'carbon-peel') {
+    return { ...treatment, price_from: 170 }
+  }
+  return treatment
+}
+
 /** All published treatments — used for nav, index page, sitemap, generateStaticParams. */
 export const getAllServices = unstable_cache(
   async (): Promise<TreatmentCard[]> => {
@@ -15,7 +22,9 @@ export const getAllServices = unstable_cache(
       .order('sort_order', { ascending: true })
 
     if (error) throw new Error(`getAllServices: ${error.message}`)
-    return ((data ?? []) as TreatmentCard[]).map(withResolvedHeroImage)
+    return ((data ?? []) as TreatmentCard[])
+      .map(withResolvedHeroImage)
+      .map(applySpreadsheetPrice)
   },
   ['all-services'],
   { tags: ['services'], revalidate: 60 },
@@ -38,7 +47,7 @@ export const getServiceBySlug = unstable_cache(
       throw new Error(`getServiceBySlug(${slug}): ${error.message}`)
     }
 
-    return withResolvedHeroImage(data as Treatment)
+    return applySpreadsheetPrice(withResolvedHeroImage(data as Treatment))
   },
   ['service-by-slug'],
   { tags: ['services'], revalidate: 60 },
@@ -57,7 +66,7 @@ export async function getServiceBySlugPreview(slug: string): Promise<Treatment |
     if (error.code === 'PGRST116') return null
     throw new Error(`getServiceBySlugPreview(${slug}): ${error.message}`)
   }
-  return withResolvedHeroImage(data as Treatment)
+  return applySpreadsheetPrice(withResolvedHeroImage(data as Treatment))
 }
 
 /** Treatments grouped by category — used for nav dropdowns. */
