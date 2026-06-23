@@ -16,6 +16,7 @@ import {
   stripRecommendedForSection,
   stripLeadParagraph,
   stripFaqSection,
+  type PricingGroup,
 } from '@/lib/treatment/parse-pricing'
 import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
@@ -28,6 +29,32 @@ import { formatAudFromCents, isStripeConfigured } from '@/lib/stripe/config'
 
 interface Props {
   params: Promise<{ slug: string }>
+}
+
+const carbonPeelPricing: PricingGroup[] = [
+  {
+    name: 'Single sessions',
+    items: [
+      { label: 'Face only', price: '$170', subtitle: 'One session' },
+      { label: 'Face & Neck', price: '$250', subtitle: 'One session' },
+      { label: 'Face, Neck & Décolletage', price: '$300', subtitle: 'One session' },
+      { label: 'Back', price: '$500', subtitle: 'One session' },
+    ],
+  },
+  {
+    name: 'Pack of 3',
+    items: [
+      { label: 'Face only', price: '$408', subtitle: '$136 per session, Save $102' },
+      { label: 'Face & Neck', price: '$600', subtitle: '$200 per session, Save $150' },
+      { label: 'Face, Neck & Décolletage', price: '$720', subtitle: '$240 per session, Save $180' },
+      { label: 'Back', price: '$1,200', subtitle: '$400 per session, Save $300' },
+    ],
+  },
+]
+
+function getSpreadsheetPricing(slug: string): PricingGroup[] | null {
+  if (slug === 'carbon-peel') return carbonPeelPricing
+  return null
 }
 
 export async function generateStaticParams() {
@@ -69,7 +96,7 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
-  const pricingGroups = service.body_html ? parsePricing(service.body_html) : null
+  const pricingGroups = getSpreadsheetPricing(slug) ?? (service.body_html ? parsePricing(service.body_html) : null)
   const recommendedFor = service.body_html ? parseRecommendedFor(service.body_html) : null
 
   // Strip all sections that are rendered as dedicated components, then
