@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import { getAllServiceSlugs, getServiceBySlug } from '@/lib/data/services'
 import { getSiteSettings } from '@/lib/data/site-settings'
 import { TreatmentHero } from '@/components/treatment/TreatmentHero'
@@ -32,13 +33,15 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-const PRICE_CSV_URL = 'https://website-iota-vert-23.vercel.app/prices.csv'
+const PRICE_B64_URL = 'https://raw.githubusercontent.com/robbenaustralia/BEAUTY-WEBPAGE/main/services/prices.b64'
 
 const PRICE_ALIASES: Record<string, string> = {
   'fibroblast-plasma': 'fibroblast',
-  'fractional-rf': 'rf-needling',
+  'fractional-rf': 'fractional-rf-mude-o-nome-para-rf-needling',
+  'rf-needling': 'fractional-rf-mude-o-nome-para-rf-needling',
   'hydra-facial': 'hydrodermabrasion',
   'micro-needling': 'microneedling',
+  'pico-laser': 'pico-laser-pigmentation',
 }
 
 function normalisePriceKey(value: string): string {
@@ -91,18 +94,23 @@ function parseCSV(text: string): string[][] {
   return rows
 }
 
-function money(value: string): string {
-  const trimmed = value.trim()
+function money(value: string | undefined): string {
+  const trimmed = (value ?? '').trim()
   if (!trimmed) return ''
   if (trimmed.toLowerCase().startsWith('from')) return trimmed.replace(/^from\s*/i, 'From ')
   return trimmed.startsWith('$') ? trimmed : `$${trimmed}`
 }
 
+function isVercelHost(host: string): boolean {
+  return host.includes('website-iota-vert-23.vercel.app')
+}
+
 async function getSpreadsheetPricing(slug: string, title?: string | null): Promise<PricingGroup[] | null> {
   try {
-    const response = await fetch(PRICE_CSV_URL, { next: { revalidate: 60 } })
+    const response = await fetch(PRICE_B64_URL, { cache: 'no-store' })
     if (!response.ok) return null
-    const rows = parseCSV(await response.text())
+    const csv = Buffer.from((await response.text()).trim(), 'base64').toString('utf8')
+    const rows = parseCSV(csv)
     const header = rows[0] ?? []
     const index = Object.fromEntries(header.map((name, i) => [name.trim(), i]))
     const targetKeys = new Set([canonicalKey(slug), title ? canonicalKey(title) : ''])
@@ -113,26 +121,31 @@ async function getSpreadsheetPricing(slug: string, title?: string | null): Promi
       const treatment = row[index.Treatment]?.trim()
       const area = row[index.Area]?.trim()
       const singlePrice = row[index['Single Price']]?.trim()
+      const packQty = row[index['Pack Quantity']]?.trim()
       const packagePrice = row[index['Package Price']]?.trim()
       const perTreatment = row[index['Per Treatment in Package']]?.trim()
+      const savings = row[index.Savings]?.trim()
+
       if (!treatment || !area || !targetKeys.has(canonicalKey(treatment))) continue
       if (singlePrice) singles.push({ label: area, price: money(singlePrice), subtitle: 'One session' })
-      if (packagePrice) {
-        const packName = packagePrice.split(' for ')[0]?.trim()
-        if (packName) {
-          packs[packName] ??= []
-          packs[packName].push({
-            label: area,
-            price: money(packagePrice.replace(/^\d+\s+for\s+/i, '')),
-            subtitle: perTreatment ? `${money(perTreatment)} per session` : undefined,
-          })
-        }
+      if (packQty && packagePrice) {
+        const packName = `Pack of ${packQty}`
+        packs[packName] ??= []
+        const subtitle = [
+          perTreatment ? `${money(perTreatment)} per session` : '',
+          savings ? `Save ${money(savings)}` : '',
+        ].filter(Boolean).join(', ')
+        packs[packName].push({
+          label: area,
+          price: money(packagePrice),
+          subtitle: subtitle || undefined,
+        })
       }
     }
 
     if (!singles.length) return null
     const groups: PricingGroup[] = [{ name: 'Single sessions', items: singles }]
-    Object.entries(packs).forEach(([packName, items]) => groups.push({ name: `Pack of ${packName}`, items }))
+    Object.entries(packs).forEach(([packName, items]) => groups.push({ name: packName, items }))
     return groups
   } catch {
     return null
@@ -178,7 +191,9 @@ export default async function ServicePage({ params }: Props) {
 
   if (!service) notFound()
 
-  const pricingGroups = (await getSpreadsheetPricing(slug, service.title)) ?? (service.body_html ? parsePricing(service.body_html) : null)
+  const host = (await headers()).get('host') ?? ''
+  const spreadsheetPricing = isVercelHost(host) ? await getSpreadsheetPricing(slug, service.title) : null
+  const pricingGroups = spreadsheetPricing ?? (service.body_html ? parsePricing(service.body_html) : null)
   const recommendedFor = service.body_html ? parseRecommendedFor(service.body_html) : null
 
   const strippedHtml = service.body_html
