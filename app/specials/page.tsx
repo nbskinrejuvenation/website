@@ -5,7 +5,6 @@ import { getSiteSettings } from '@/lib/data/site-settings'
 import { SpecialCard } from '@/components/sections/SpecialCard'
 import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
-import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
 const description =
@@ -23,15 +22,24 @@ export default async function SpecialsPage() {
 
   return (
     <>
-      <TreatmentHero title="Specials" subtitle="Our gift to you" />
+      <section className="border-b border-[#d9ded1] bg-[#f1f3ed] py-5 md:py-6">
+        <div className="section-container flex flex-col items-center justify-center gap-4 text-center md:flex-row md:gap-7">
+          <p className="max-w-4xl text-sm leading-relaxed text-ink/75 md:text-base">
+            Start with a <strong className="font-semibold text-ink">FREE consultation</strong> to assess your skin and receive a professional recommendation. You can also refer a friend, enjoy our current specials and ask family and friends for gift vouchers on special occasions.
+          </p>
+          <Link href="/book" className="shrink-0 rounded-sm bg-[#87947c] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#74826a]">
+            Free Consultation
+          </Link>
+        </div>
+      </section>
 
-      <section className="bg-cream py-12 md:py-16">
+      <section className="bg-white py-10 md:py-14">
         <div className="section-container text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-brand-500">Limited time</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-brand-500">Special Offers</p>
           <h1 className="font-display text-3xl font-light text-ink md:text-4xl">Our Gift To You</h1>
-          <div className="mx-auto mt-4 h-px w-16 bg-brand-300" />
+          <div className="mx-auto mt-4 h-px w-12 bg-brand-300" />
 
-          <div className="mx-auto mt-9 max-w-2xl overflow-hidden shadow-soft">
+          <div className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-sm shadow-soft">
             <img
               src="/images/share-the-glow-special.svg"
               alt="Share the Glow: 25% off each when you book with a friend on the same day, plus a complimentary neck treatment with facial microneedling."
@@ -39,29 +47,19 @@ export default async function SpecialsPage() {
             />
           </div>
 
-          <Link href="/book" className="mt-8 inline-flex items-center justify-center bg-brand-600 px-8 py-3.5 text-sm font-medium tracking-wide text-white transition-colors hover:bg-brand-700">
-            Book your treatment
+          <Link href="/book" className="mt-7 inline-flex items-center justify-center rounded-sm bg-brand-600 px-8 py-3.5 text-sm font-medium tracking-wide text-white transition-colors hover:bg-brand-700">
+            Book Appointment
           </Link>
         </div>
       </section>
 
-      <section className="bg-white py-14 text-center">
-        <div className="section-container">
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-ink/70">
-            Start with a FREE consultation to assess your skin and receive a professional recommendation. You can also refer a friend, enjoy our current specials and ask family and friends for gift vouchers on special occasions.
-          </p>
-        </div>
-      </section>
-
-      <section className="section-container py-16">
-        {specials.length === 0 ? (
-          <p className="text-center text-neutral-500">No other current specials. Check back soon or follow us on Instagram for the latest.</p>
-        ) : (
+      {specials.length > 0 && (
+        <section className="section-container py-12">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {specials.map(special => <SpecialCard key={special.id} special={special} />)}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       <InstagramSection {...instagramSectionFromSettings(settings)} />
 
