@@ -1,41 +1,56 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getSpecials } from '@/lib/data/specials'
-import { getSiteSettings } from '@/lib/data/site-settings'
-import { SpecialCard } from '@/components/sections/SpecialCard'
-import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
-import { CTABanner } from '@/components/sections/CTABanner'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
 const description = 'Exclusive offers and weekly specials at Naturally Beautiful Skin Rejuvenation.'
 export const metadata: Metadata = { title: pageTitle('Specials & Offers'), description, openGraph: openGraphDefaults('Specials & Offers', description), alternates: { canonical: '/specials' } }
 
-export default async function SpecialsPage() {
-  const [specials, settings] = await Promise.all([getSpecials(), getSiteSettings()])
+function Leaf({ flip = false }: { flip?: boolean }) {
+  return <svg aria-hidden="true" viewBox="0 0 220 95" className={`h-full w-full ${flip ? '-scale-x-100' : ''}`}><g fill="none" stroke="#7e8c73" strokeWidth="2" opacity=".65"><path d="M0 82C60 70 106 46 166 6"/><path d="M42 68C26 44 26 24 35 8c20 14 27 34 7 60ZM78 54C65 30 70 12 84 0c15 18 14 38-6 54ZM115 37c-7-22 2-35 18-42 8 19 2 34-18 42ZM149 20c0-17 10-27 25-29 3 16-6 27-25 29Z" fill="#9eaa95" stroke="none"/></g></svg>
+}
+
+export default function SpecialsPage() {
   return <>
-    <section className="border-b border-[#d9ded1] bg-[#f3f5ef] py-4 md:py-5">
-      <div className="section-container flex flex-col items-center justify-center gap-3 text-center md:flex-row md:gap-6">
-        <p className="max-w-4xl text-sm leading-relaxed text-ink/75 md:text-[15px]">Start with a <strong className="font-semibold text-ink">FREE consultation</strong> to assess your skin and receive a professional recommendation. You can also refer a friend, enjoy our current specials and ask family and friends for gift vouchers on special occasions.</p>
-        <Link href="/book" className="shrink-0 rounded-md bg-[#7f8f76] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#6f8067]">Free Consultation</Link>
+    <section className="relative overflow-hidden border-b border-[#dfe2d8] bg-[#f3f4ed] py-4 md:py-5">
+      <div className="pointer-events-none absolute -left-5 bottom-0 hidden h-20 w-48 md:block"><Leaf /></div>
+      <div className="pointer-events-none absolute -right-5 bottom-0 hidden h-20 w-48 md:block"><Leaf flip /></div>
+      <div className="section-container relative z-10 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
+        <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#a8b19e] text-[#74816c] md:flex" aria-hidden="true">♧</div>
+        <p className="max-w-3xl text-center text-[13px] leading-6 text-[#4f554f] md:text-left">Start with a <strong className="font-semibold text-[#28332d]">FREE consultation</strong> to assess your skin and receive a professional recommendation.<br className="hidden lg:block" /> You can also refer a friend, enjoy our current specials and ask family and friends for gift vouchers on special occasions.</p>
+        <Link href="/book" className="shrink-0 rounded bg-[#7d8b72] px-7 py-3 text-xs font-semibold text-white shadow-sm transition hover:bg-[#6e7d64]">Free Consultation</Link>
       </div>
     </section>
 
-    <section className="bg-[#fbfaf7] py-10 md:py-14">
-      <div className="section-container text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#9b6c63]">Special Offers</p>
-        <h1 className="font-display text-3xl font-light text-ink md:text-4xl">Our Gift To You</h1>
-        <div className="mx-auto mt-4 h-px w-12 bg-[#c9a39b]" />
-        <div className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-[1.25rem] border border-[#ebe4dc] bg-white shadow-soft">
-          <img src="/images/share-the-glow-special.svg" alt="Share the Glow specials: 25% off each when booking with a friend, and a complimentary neck treatment with facial microneedling." className="h-auto w-full" />
-          <div className="bg-white px-6 py-6">
-            <Link href="/book" className="inline-flex min-w-48 items-center justify-center rounded-md bg-[#9b6c63] px-8 py-3 text-sm font-medium text-white transition hover:bg-[#875c54]">Book Appointment</Link>
+    <main className="bg-white px-4 pb-16 pt-7 md:pb-20 md:pt-8">
+      <div className="mx-auto max-w-[920px] text-center">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.42em] text-[#a36e65]">Special Offers</p>
+        <h1 className="mt-3 font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
+        <div className="mx-auto mt-3 h-px w-7 bg-[#c99a90]" />
+
+        <div className="mx-auto mt-5 max-w-[640px] overflow-hidden rounded-xl bg-[#f8f7ef] text-left shadow-[0_12px_32px_rgba(45,45,35,0.10)]">
+          <div className="relative overflow-hidden px-7 pb-6 pt-7 md:min-h-[530px] md:px-9 md:pt-8">
+            <div className="relative z-10 max-w-[58%]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.42em] text-[#31443c]">Special Offers</p>
+              <h2 className="mt-2 font-display text-[48px] font-light leading-[.82] text-[#15372f] md:text-[61px]">Share the<br />Glow</h2>
+              <p className="mt-5 border-b border-[#354e46] pb-4 text-[10px] font-semibold uppercase tracking-[0.34em] text-[#30443e]">Treat yourself. Bring a friend.</p>
+
+              <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-2xl text-[#405149]">♧</div><div><h3 className="font-display text-xl text-[#243b34]">Bring a Friend</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#4e5752]">Book a treatment for yourself and a friend on the same day and receive <strong className="text-[#243b34]">25% off</strong> for each of you.</p></div></div>
+              <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-xl text-[#405149]">✧</div><div><h3 className="font-display text-xl text-[#243b34]">Microneedling Special</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#4e5752]">Book a facial microneedling treatment and receive a <strong className="text-[#243b34]">complimentary neck treatment.</strong></p></div></div>
+            </div>
+
+            <div className="absolute -right-16 top-0 hidden h-full w-[48%] overflow-hidden rounded-bl-[55%] bg-[#dfe4d6] md:block">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_35%,#f2e3d9_0,#d9c7bb_32%,#b5bea9_70%)]" />
+              <div className="absolute left-3 top-6 h-28 w-28 rounded-full bg-[#9da993] text-center text-[9px] font-semibold uppercase leading-5 tracking-[.24em] text-white"><span className="flex h-full items-center justify-center px-5">Skin<br/>Looks Better<br/>Together</span></div>
+              <div className="absolute bottom-0 left-0 right-0 h-40 bg-[#b8c3af]/70" />
+            </div>
+
+            <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 border-t border-[#53635b] pt-5 sm:flex-row sm:items-center">
+              <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#334940]">Beautiful Skin Together</p>
+              <Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link>
+            </div>
           </div>
         </div>
       </div>
-    </section>
-
-    {specials.length > 0 && <section className="section-container py-12"><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{specials.map(special => <SpecialCard key={special.id} special={special} />)}</div></section>}
-    <InstagramSection {...instagramSectionFromSettings(settings)} />
-    <CTABanner heading="Book your free consultation" body="Ready to treat yourself? Book a free consultation and discover which treatment is right for you." ctaLabel="Book Now" ctaHref="/book" phone={settings.phone ?? undefined} />
+    </main>
   </>
 }
