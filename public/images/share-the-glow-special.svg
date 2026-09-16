@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title id="title">Share the Glow special offers</title>
+  <desc id="desc">Naturally Beautiful special offers: bring a friend and both receive 25 percent off, or book facial microneedling and receive a complimentary neck treatment.</desc>
+  <rect width="1080" height="1350" fill="#F6ECE6"/>
+  <circle cx="1005" cy="115" r="250" fill="none" stroke="#D8B2A5" stroke-width="2" opacity=".45"/>
+  <circle cx="80" cy="1240" r="290" fill="none" stroke="#D8B2A5" stroke-width="2" opacity=".38"/>
+  <text x="540" y="150" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="25" font-weight="600" letter-spacing="8">NATURALLY BEAUTIFUL</text>
+  <text x="540" y="255" text-anchor="middle" fill="#2D2927" font-family="Georgia, serif" font-size="78">Share the Glow</text>
+  <line x1="455" y1="300" x2="625" y2="300" stroke="#C98E7F" stroke-width="2"/>
+  <text x="540" y="355" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="25">Two beautiful ways to treat yourself — and share the glow.</text>
+
+  <rect x="115" y="445" width="850" height="300" rx="4" fill="#FFFDFC" opacity=".92"/>
+  <text x="540" y="515" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="5">BRING A FRIEND</text>
+  <text x="540" y="595" text-anchor="middle" fill="#B47768" font-family="Georgia, serif" font-size="58">25% off each</text>
+  <text x="540" y="655" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">Book a treatment for yourself and a friend on the same day</text>
+  <text x="540" y="695" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">and receive 25% off for each of you.</text>
+
+  <rect x="115" y="785" width="850" height="330" rx="4" fill="#FFFDFC" opacity=".92"/>
+  <text x="540" y="855" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="5">MICRONEEDLING SPECIAL</text>
+  <text x="540" y="935" text-anchor="middle" fill="#B47768" font-family="Georgia, serif" font-size="54">Complimentary neck treatment</text>
+  <text x="540" y="995" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">Book a facial microneedling treatment and receive a</text>
+  <text x="540" y="1035" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">complimentary neck treatment.</text>
+
+  <text x="540" y="1215" text-anchor="middle" fill="#2D2927" font-family="Georgia, serif" font-size="32">Healthy Skin. Natural Confidence.</text>
+  <text x="540" y="1270" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="4">LIMITED-TIME OFFERS</text>
+</svg>
