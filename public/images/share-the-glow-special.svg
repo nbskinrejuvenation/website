@@ -1,26 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
-  <title id="title">Share the Glow special offers</title>
-  <desc id="desc">Naturally Beautiful special offers: bring a friend and both receive 25 percent off, or book facial microneedling and receive a complimentary neck treatment.</desc>
-  <rect width="1080" height="1350" fill="#F6ECE6"/>
-  <circle cx="1005" cy="115" r="250" fill="none" stroke="#D8B2A5" stroke-width="2" opacity=".45"/>
-  <circle cx="80" cy="1240" r="290" fill="none" stroke="#D8B2A5" stroke-width="2" opacity=".38"/>
-  <text x="540" y="150" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="25" font-weight="600" letter-spacing="8">NATURALLY BEAUTIFUL</text>
-  <text x="540" y="255" text-anchor="middle" fill="#2D2927" font-family="Georgia, serif" font-size="78">Share the Glow</text>
-  <line x1="455" y1="300" x2="625" y2="300" stroke="#C98E7F" stroke-width="2"/>
-  <text x="540" y="355" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="25">Two beautiful ways to treat yourself — and share the glow.</text>
-
-  <rect x="115" y="445" width="850" height="300" rx="4" fill="#FFFDFC" opacity=".92"/>
-  <text x="540" y="515" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="5">BRING A FRIEND</text>
-  <text x="540" y="595" text-anchor="middle" fill="#B47768" font-family="Georgia, serif" font-size="58">25% off each</text>
-  <text x="540" y="655" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">Book a treatment for yourself and a friend on the same day</text>
-  <text x="540" y="695" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">and receive 25% off for each of you.</text>
-
-  <rect x="115" y="785" width="850" height="330" rx="4" fill="#FFFDFC" opacity=".92"/>
-  <text x="540" y="855" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="5">MICRONEEDLING SPECIAL</text>
-  <text x="540" y="935" text-anchor="middle" fill="#B47768" font-family="Georgia, serif" font-size="54">Complimentary neck treatment</text>
-  <text x="540" y="995" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">Book a facial microneedling treatment and receive a</text>
-  <text x="540" y="1035" text-anchor="middle" fill="#655E5A" font-family="Arial, sans-serif" font-size="27">complimentary neck treatment.</text>
-
-  <text x="540" y="1215" text-anchor="middle" fill="#2D2927" font-family="Georgia, serif" font-size="32">Healthy Skin. Natural Confidence.</text>
-  <text x="540" y="1270" text-anchor="middle" fill="#B47768" font-family="Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="4">LIMITED-TIME OFFERS</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1220" viewBox="0 0 1080 1220" role="img" aria-labelledby="title desc">
+<title id="title">Share the Glow special offers</title><desc id="desc">Bring a friend and receive 25 percent off each, or receive a complimentary neck treatment with facial microneedling.</desc>
+<rect width="1080" height="1220" rx="34" fill="#F7F4E8"/><path d="M0 0h1080v180H0z" fill="#F4E5E0"/><circle cx="85" cy="95" r="42" fill="none" stroke="#A88983" stroke-width="2"/><path d="M55 98c20-36 55-36 76 0M66 111c17-23 38-23 55 0" fill="none" stroke="#A88983" stroke-width="2"/>
+<text x="540" y="82" text-anchor="middle" fill="#78605C" font-family="Georgia,serif" font-size="62">Share the Glow</text><text x="540" y="130" text-anchor="middle" fill="#7B736D" font-family="Arial,sans-serif" font-size="22" letter-spacing="3">SPECIAL OFFERS TO SHARE THE GLOW</text>
+<text x="540" y="235" text-anchor="middle" fill="#3F493F" font-family="Georgia,serif" font-size="40">Skin Looks Better Together</text><text x="540" y="278" text-anchor="middle" fill="#72766F" font-family="Arial,sans-serif" font-size="20">Two ways to treat yourself — and someone special.</text>
+<rect x="75" y="330" width="930" height="310" rx="22" fill="#F2E4DF"/><circle cx="185" cy="430" r="70" fill="#E6D3CC"/><path d="M155 440c12-55 55-55 65 0M142 477c28-32 72-32 95 0" fill="none" stroke="#9A7770" stroke-width="4"/>
+<text x="310" y="390" fill="#4D4A47" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">BRING A FRIEND</text><text x="310" y="455" fill="#A26D64" font-family="Georgia,serif" font-size="48">25% OFF EACH</text><text x="310" y="505" fill="#625E5A" font-family="Arial,sans-serif" font-size="23">Book a treatment for yourself and a friend</text><text x="310" y="540" fill="#625E5A" font-family="Arial,sans-serif" font-size="23">on the same day and you both receive 25% off.</text><text x="310" y="590" fill="#8A746D" font-family="Arial,sans-serif" font-size="19" font-style="italic">Because glowing is better together.</text>
+<rect x="75" y="680" width="930" height="310" rx="22" fill="#E7ECE0"/><circle cx="185" cy="780" r="70" fill="#D8E0D1"/><path d="M185 725c-35 45-35 90 0 120 35-30 35-75 0-120zM150 780h70" fill="none" stroke="#77866E" stroke-width="4"/>
+<text x="310" y="740" fill="#4D4A47" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">MICRONEEDLING SPECIAL</text><text x="310" y="805" fill="#65745E" font-family="Georgia,serif" font-size="43">COMPLIMENTARY NECK</text><text x="310" y="850" fill="#65745E" font-family="Georgia,serif" font-size="43">TREATMENT</text><text x="310" y="900" fill="#625E5A" font-family="Arial,sans-serif" font-size="23">Book a facial microneedling treatment and receive</text><text x="310" y="935" fill="#625E5A" font-family="Arial,sans-serif" font-size="23">a complimentary neck treatment.</text>
+<text x="540" y="1065" text-anchor="middle" fill="#4B5548" font-family="Georgia,serif" font-size="32">Healthy Skin. Natural Confidence.</text><text x="540" y="1110" text-anchor="middle" fill="#817873" font-family="Arial,sans-serif" font-size="19">Limited-time offers • Terms may apply</text><path d="M120 1160c80-70 140-60 190 0M960 1160c-80-70-140-60-190 0" fill="none" stroke="#A8B29C" stroke-width="3" opacity=".7"/>
 </svg>
