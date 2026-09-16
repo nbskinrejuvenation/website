@@ -21,68 +21,26 @@ export function Header({ settings, servicesByCategory }: Props) {
         <Logo variant="light" />
 
         <ul className="hidden items-center gap-0.5 md:flex" role="list">
-          <li>
-            <Link
-              href="/about"
-              className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200"
-            >
-              About
-            </Link>
-          </li>
+          <li><Link href="/about" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">About</Link></li>
           <li>
             {faceServices.length > 0 ? (
               <NavDropdown label="Face" services={faceServices} variant="light" />
             ) : (
-              <Link
-                href="/services#face"
-                className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200"
-              >
-                Face
-              </Link>
+              <Link href="/services#face" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Face</Link>
             )}
           </li>
           <li>
             {bodyServices.length > 0 ? (
               <NavDropdown label="Body" services={bodyServices} variant="light" />
             ) : (
-              <Link
-                href="/services#body"
-                className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200"
-              >
-                Body
-              </Link>
+              <Link href="/services#body" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Body</Link>
             )}
           </li>
-          <li>
-            <Link
-              href="/specials"
-              className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200"
-            >
-              Specials
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/contact"
-              className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200"
-            >
-              Contact
-            </Link>
-          </li>
+          <li><Link href="/specials" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Specials</Link></li>
+          <li><Link href="/contact" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Contact</Link></li>
         </ul>
 
-        <Link
-          href="/contact"
-          className="btn-phone hidden !bg-cream !px-5 !py-2.5 !text-brand-600 hover:!bg-brand-50 md:inline-flex"
-        >
-          Book Appointment
-        </Link>
-
-        <MobileMenu
-          settings={settings}
-          faceServices={faceServices}
-          bodyServices={bodyServices}
-        />
+        <MobileMenu settings={settings} faceServices={faceServices} bodyServices={bodyServices} />
       </nav>
     </header>
   )
