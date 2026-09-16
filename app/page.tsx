@@ -7,6 +7,7 @@ import { HeroSection } from '@/components/sections/HeroSection'
 import { TrustPillars } from '@/components/sections/TrustPillars'
 import { IntroStrip } from '@/components/sections/IntroStrip'
 import { TreatmentsGrid } from '@/components/sections/TreatmentsGrid'
+import { SpecialOffers } from '@/components/sections/SpecialOffers'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { InstagramSection, instagramSectionFromSettings } from '@/components/sections/InstagramSection'
 import { CTABanner } from '@/components/sections/CTABanner'
@@ -56,6 +57,10 @@ export default async function HomePage() {
 
       <Reveal>
         <TrustPillars fullAddress={fullAddress} />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <SpecialOffers />
       </Reveal>
 
       <Reveal delay={0.05}>
