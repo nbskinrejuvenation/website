@@ -37,7 +37,6 @@ export default function SpecialsPage() {
             </div>
             <div className="absolute -right-16 top-0 hidden h-full w-[48%] overflow-hidden rounded-bl-[55%] bg-[#dfe4d6] md:block">
               <img src="/images/specials-friends.jpg" alt="Two friends enjoying a skincare treatment together" className="absolute inset-0 h-full w-full object-cover object-center" />
-              <div className="absolute left-3 top-6 h-28 w-28 rounded-full bg-[#9da993]/95 text-center text-[9px] font-semibold uppercase leading-5 tracking-[.24em] text-white"><span className="flex h-full items-center justify-center px-5">Skin<br/>Looks Better<br/>Together</span></div>
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-[#b8c3af]/70" />
             </div>
             <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 border-t border-[#53635b] pt-5 sm:flex-row sm:items-center"><p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#334940]">Beautiful Skin Together</p><Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link></div>
