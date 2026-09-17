@@ -39,7 +39,7 @@ export default function SpecialsPage() {
               <img src="/images/specials-friends.jpg" alt="Two friends enjoying a skincare treatment together" className="absolute inset-0 h-full w-full scale-[1.32] object-cover object-[50%_76%]" />
               <div className="absolute left-3 top-2 h-24 w-24 rounded-full bg-[#9da993]/95 text-center text-[8px] font-semibold uppercase leading-[1.15rem] tracking-[.23em] text-white"><span className="flex h-full items-center justify-center px-4">Skin<br/>Looks Better<br/>Together</span></div>
             </div>
-            <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 border-t border-[#53635b] bg-[#f8f7ef] pt-5 sm:flex-row sm:items-center"><p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#334940]">Beautiful Skin Together</p><Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link></div>
+            <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 bg-[#f8f7ef] pt-5 sm:flex-row sm:items-center"><p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#334940]">Beautiful Skin Together</p><Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link></div>
           </div>
         </div>
       </div>
