@@ -12,7 +12,7 @@
 --   * Tattoo Removal with Saline Solution unpublished (redlined: no longer performed)
 --   * Fractional RF renamed to RF Needling (sheet note in cell B25); slug left unchanged
 --   * Laser Rejuvenation + Laser for Nail Fungus moved to the new 'laser' category
---   * 7 new laser treatments inserted
+--   * 9 new laser treatments inserted
 
 BEGIN;
 
@@ -688,30 +688,29 @@ UPDATE treatments SET
  WHERE slug = 'zena-algae-peel';
 
 -- ── 4. Move the existing laser treatments into the Laser category ───────────
-UPDATE treatments SET category = 'laser', sort_order = 20, updated_at = NOW()
+UPDATE treatments SET category = 'laser', sort_order = 25, updated_at = NOW()
  WHERE slug = 'laser-rejuvenation';
 
-UPDATE treatments SET category = 'laser', sort_order = 27, updated_at = NOW()
+UPDATE treatments SET category = 'laser', sort_order = 29, updated_at = NOW()
  WHERE slug = 'laser-for-nail-fungus';
 
 -- ── 5. New laser treatments ─────────────────────────────────────────────────
 -- Delete-then-insert rather than ON CONFLICT: this does not depend on a unique
 -- index existing on treatments.slug, and is safe to re-run.
-DELETE FROM treatments WHERE slug IN ('laser-hair-removal', 'laser-genesis', 'fractional-laser', 'laser-genesis-fractional-laser', 'pico-laser-pigmentation', 'laser-for-pigmentation', 'laser-for-vascular-lesions');
+DELETE FROM treatments WHERE slug IN ('laser-hair-removal', 'laser-hair-removal-for-face', 'laser-hair-removal-upper-body', 'laser-hair-removal-lower-body', 'laser-genesis', 'fractional-laser', 'laser-genesis-fractional-laser', 'pico-laser-pigmentation', 'laser-for-pigmentation', 'laser-for-vascular-lesions');
 
 INSERT INTO treatments (slug, title, subtitle, summary, body_html, category, status, sort_order, price_from, seo_title, seo_description, what_to_expect, schema_faq, duration_minutes, price_cents, bookable_online, created_at, updated_at)
 VALUES
  (
-   'laser-hair-removal',
-   'Laser Hair Removal',
-   'LASER HAIR REMOVAL FOR FACE AND BODY',
-   'Smooth, hair-free skin without the endless shaving and waxing.',
-   '<p class="lead">Smooth, hair-free skin without the endless shaving and waxing.</p>
+   'laser-hair-removal-for-face',
+   'Laser Hair Removal for Face',
+   'LASER HAIR REMOVAL',
+   'Smooth, hair-free skin on the face without the endless shaving and waxing.',
+   '<p class="lead">Smooth, hair-free skin on the face without the endless shaving and waxing.</p>
 
 <h2>Recommended for</h2>
 <ul>
-<li>Unwanted facial hair</li>
-<li>Unwanted body hair</li>
+<li>Unwanted hair</li>
 <li>Ingrown hairs</li>
 <li>Razor burn and irritation</li>
 <li>Folliculitis</li>
@@ -721,7 +720,118 @@ VALUES
 
 <h2>Pricing</h2>
 
-<h3>Upper body — single session</h3>
+<h3>Single sessions</h3>
+<table>
+<tbody>
+<tr><td>Chin (Female) $19</td></tr>
+<tr><td>Chin (Male) $32</td></tr>
+<tr><td>Ears (Female) $19</td></tr>
+<tr><td>Ears (Male) $19</td></tr>
+<tr><td>Full Face (Female) $49</td></tr>
+<tr><td>Full Face (Male) $69</td></tr>
+<tr><td>Lip (Female) $19</td></tr>
+<tr><td>Lip (Male) $32</td></tr>
+<tr><td>Lip and Chin (Female) $29</td></tr>
+<tr><td>Lip and Chin (Male) $43</td></tr>
+<tr><td>Nose (Female) $15</td></tr>
+<tr><td>Nose (Male) $18</td></tr>
+<tr><td>Face sides (Female) $19</td></tr>
+<tr><td>Face sides (Male) $29</td></tr>
+</tbody>
+</table>
+
+<h3>Pack of 6</h3>
+<table>
+<tbody>
+<tr><td>Chin (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Chin (Male) $154 $26 per session, Save $38</td></tr>
+<tr><td>Ears (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Ears (Male) $91 $15 per session, Save $23</td></tr>
+<tr><td>Full Face (Female) $235 $39 per session, Save $59</td></tr>
+<tr><td>Full Face (Male) $331 $55 per session, Save $83</td></tr>
+<tr><td>Lip (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Lip (Male) $154 $26 per session, Save $38</td></tr>
+<tr><td>Lip and Chin (Female) $139 $23 per session, Save $35</td></tr>
+<tr><td>Lip and Chin (Male) $206 $34 per session, Save $52</td></tr>
+<tr><td>Nose (Female) $72 $12 per session, Save $18</td></tr>
+<tr><td>Nose (Male) $86 $14 per session, Save $22</td></tr>
+<tr><td>Face sides (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Face sides (Male) $139 $23 per session, Save $35</td></tr>
+</tbody>
+</table>
+
+<h3>Add-on areas</h3>
+<table>
+<tbody>
+<tr><td>Anus (Female) $12</td></tr>
+<tr><td>Anus (Male) $60</td></tr>
+<tr><td>Face sides (Female) $19</td></tr>
+<tr><td>Face sides (Male) $29</td></tr>
+<tr><td>Feet (Female) $12</td></tr>
+<tr><td>Feet (Male) $25</td></tr>
+<tr><td>Lip OR Chin (Female) $12</td></tr>
+<tr><td>Lip OR Chin (Male) $25</td></tr>
+<tr><td>Lip and Chin (Female) $29</td></tr>
+<tr><td>Lip and Chin (Male) $43</td></tr>
+<tr><td>Snail trail (Female) $12</td></tr>
+<tr><td>Snail trail (Male) $25</td></tr>
+<tr><td>Shave (Female) $30</td></tr>
+<tr><td>Shave (Male) $40</td></tr>
+</tbody>
+</table>
+
+<h3>Add-on areas, pack of 6</h3>
+<table>
+<tbody>
+<tr><td>Anus (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Anus (Male) $288 $48 per session, Save $72</td></tr>
+<tr><td>Face sides (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Face sides (Male) $139 $23 per session, Save $35</td></tr>
+<tr><td>Feet (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Feet (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Lip OR Chin (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Lip OR Chin (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Lip and Chin (Female) $139 $23 per session, Save $35</td></tr>
+<tr><td>Lip and Chin (Male) $206 $34 per session, Save $52</td></tr>
+<tr><td>Snail trail (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Snail trail (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Shave (Female) $144 $24 per session, Save $36</td></tr>
+<tr><td>Shave (Male) $192 $32 per session, Save $48</td></tr>
+</tbody>
+</table>',
+   'laser',
+   'published',
+   19,
+   15,
+   'Laser Hair Removal for Face | Naturally Beautiful Skin Rejuvenation',
+   'Smooth, hair-free skin on the face without the endless shaving and waxing. Treatment available in Dee Why, Northern Beaches, Sydney.',
+   '["Permanent hair reduction", "Smoother skin", "No more ingrown hairs", "No razor burn", "Less time spent shaving", "Reduced irritation", "Comfortable, fast sessions", "Male and female pricing", "Progressive results over a course"]'::jsonb,
+   '[{"question": "How many sessions are recommended?", "answer": "Hair grows in cycles, so a course of 6 sessions spaced a few weeks apart is standard. Pack pricing below is built around a course of 6."}, {"question": "How long does the treatment take?", "answer": "From 10 minutes for a small area such as the lip or nose, up to around 30 minutes for a full face."}, {"question": "Is this treatment suitable for everyone?", "answer": "A patch test and skin assessment are carried out before your first treatment. Your therapist will confirm this at your free consultation."}, {"question": "Is the treatment painful?", "answer": "Most clients describe the sensation as a warm flick against the skin. Your therapist will confirm this at your free consultation."}]'::jsonb,
+   60,
+   NULL,
+   false,
+   NOW(), NOW()
+ ),
+ (
+   'laser-hair-removal-upper-body',
+   'Laser Hair Removal Upper Body',
+   'LASER HAIR REMOVAL',
+   'Smooth, hair-free skin from the waist up without the endless shaving and waxing.',
+   '<p class="lead">Smooth, hair-free skin from the waist up without the endless shaving and waxing.</p>
+
+<h2>Recommended for</h2>
+<ul>
+<li>Unwanted hair</li>
+<li>Ingrown hairs</li>
+<li>Razor burn and irritation</li>
+<li>Folliculitis</li>
+<li>Shaving rash</li>
+<li>Waxing sensitivity</li>
+</ul>
+
+<h2>Pricing</h2>
+
+<h3>Single sessions</h3>
 <table>
 <tbody>
 <tr><td>Areola (Female) $10</td></tr>
@@ -757,7 +867,7 @@ VALUES
 </tbody>
 </table>
 
-<h3>Upper body — pack of 6</h3>
+<h3>Pack of 6</h3>
 <table>
 <tbody>
 <tr><td>Areola (Female) $48 $8 per session, Save $12</td></tr>
@@ -793,7 +903,78 @@ VALUES
 </tbody>
 </table>
 
-<h3>Lower body — single session</h3>
+<h3>Add-on areas</h3>
+<table>
+<tbody>
+<tr><td>Anus (Female) $12</td></tr>
+<tr><td>Anus (Male) $60</td></tr>
+<tr><td>Face sides (Female) $19</td></tr>
+<tr><td>Face sides (Male) $29</td></tr>
+<tr><td>Feet (Female) $12</td></tr>
+<tr><td>Feet (Male) $25</td></tr>
+<tr><td>Lip OR Chin (Female) $12</td></tr>
+<tr><td>Lip OR Chin (Male) $25</td></tr>
+<tr><td>Lip and Chin (Female) $29</td></tr>
+<tr><td>Lip and Chin (Male) $43</td></tr>
+<tr><td>Snail trail (Female) $12</td></tr>
+<tr><td>Snail trail (Male) $25</td></tr>
+<tr><td>Shave (Female) $30</td></tr>
+<tr><td>Shave (Male) $40</td></tr>
+</tbody>
+</table>
+
+<h3>Add-on areas, pack of 6</h3>
+<table>
+<tbody>
+<tr><td>Anus (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Anus (Male) $288 $48 per session, Save $72</td></tr>
+<tr><td>Face sides (Female) $91 $15 per session, Save $23</td></tr>
+<tr><td>Face sides (Male) $139 $23 per session, Save $35</td></tr>
+<tr><td>Feet (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Feet (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Lip OR Chin (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Lip OR Chin (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Lip and Chin (Female) $139 $23 per session, Save $35</td></tr>
+<tr><td>Lip and Chin (Male) $206 $34 per session, Save $52</td></tr>
+<tr><td>Snail trail (Female) $58 $10 per session, Save $14</td></tr>
+<tr><td>Snail trail (Male) $120 $20 per session, Save $30</td></tr>
+<tr><td>Shave (Female) $144 $24 per session, Save $36</td></tr>
+<tr><td>Shave (Male) $192 $32 per session, Save $48</td></tr>
+</tbody>
+</table>',
+   'laser',
+   'published',
+   20,
+   10,
+   'Laser Hair Removal Upper Body | Naturally Beautiful Skin Rejuvenation',
+   'Smooth, hair-free skin from the waist up without the endless shaving and waxing. Treatment available in Dee Why, Northern Beaches, Sydney.',
+   '["Permanent hair reduction", "Smoother skin", "No more ingrown hairs", "No razor burn", "Less time spent shaving", "Reduced irritation", "Comfortable, fast sessions", "Male and female pricing", "Progressive results over a course"]'::jsonb,
+   '[{"question": "How many sessions are recommended?", "answer": "Hair grows in cycles, so a course of 6 sessions spaced a few weeks apart is standard. Pack pricing below is built around a course of 6."}, {"question": "How long does the treatment take?", "answer": "From 15 minutes for a small area such as underarms, up to around an hour for a full back and shoulders."}, {"question": "Is this treatment suitable for everyone?", "answer": "A patch test and skin assessment are carried out before your first treatment. Your therapist will confirm this at your free consultation."}, {"question": "Is the treatment painful?", "answer": "Most clients describe the sensation as a warm flick against the skin. Your therapist will confirm this at your free consultation."}]'::jsonb,
+   60,
+   NULL,
+   false,
+   NOW(), NOW()
+ ),
+ (
+   'laser-hair-removal-lower-body',
+   'Laser Hair Removal Lower Body',
+   'LASER HAIR REMOVAL',
+   'Smooth, hair-free skin from the waist down without the endless shaving and waxing.',
+   '<p class="lead">Smooth, hair-free skin from the waist down without the endless shaving and waxing.</p>
+
+<h2>Recommended for</h2>
+<ul>
+<li>Unwanted hair</li>
+<li>Ingrown hairs</li>
+<li>Razor burn and irritation</li>
+<li>Folliculitis</li>
+<li>Shaving rash</li>
+<li>Waxing sensitivity</li>
+</ul>
+
+<h2>Pricing</h2>
+
+<h3>Single sessions</h3>
 <table>
 <tbody>
 <tr><td>Anus (Female) $15</td></tr>
@@ -821,7 +1002,7 @@ VALUES
 </tbody>
 </table>
 
-<h3>Lower body — pack of 6</h3>
+<h3>Pack of 6</h3>
 <table>
 <tbody>
 <tr><td>Anus (Female) $72 $12 per session, Save $18</td></tr>
@@ -849,47 +1030,7 @@ VALUES
 </tbody>
 </table>
 
-<h3>Face — single session</h3>
-<table>
-<tbody>
-<tr><td>Chin (Female) $19</td></tr>
-<tr><td>Chin (Male) $32</td></tr>
-<tr><td>Ears (Female) $19</td></tr>
-<tr><td>Ears (Male) $19</td></tr>
-<tr><td>Full Face (Female) $49</td></tr>
-<tr><td>Full Face (Male) $69</td></tr>
-<tr><td>Lip (Female) $19</td></tr>
-<tr><td>Lip (Male) $32</td></tr>
-<tr><td>Lip and Chin (Female) $29</td></tr>
-<tr><td>Lip and Chin (Male) $43</td></tr>
-<tr><td>Nose (Female) $15</td></tr>
-<tr><td>Nose (Male) $18</td></tr>
-<tr><td>Face sides (Female) $19</td></tr>
-<tr><td>Face sides (Male) $29</td></tr>
-</tbody>
-</table>
-
-<h3>Face — pack of 6</h3>
-<table>
-<tbody>
-<tr><td>Chin (Female) $91 $15 per session, Save $23</td></tr>
-<tr><td>Chin (Male) $154 $26 per session, Save $38</td></tr>
-<tr><td>Ears (Female) $91 $15 per session, Save $23</td></tr>
-<tr><td>Ears (Male) $91 $15 per session, Save $23</td></tr>
-<tr><td>Full Face (Female) $235 $39 per session, Save $59</td></tr>
-<tr><td>Full Face (Male) $331 $55 per session, Save $83</td></tr>
-<tr><td>Lip (Female) $91 $15 per session, Save $23</td></tr>
-<tr><td>Lip (Male) $154 $26 per session, Save $38</td></tr>
-<tr><td>Lip and Chin (Female) $139 $23 per session, Save $35</td></tr>
-<tr><td>Lip and Chin (Male) $206 $34 per session, Save $52</td></tr>
-<tr><td>Nose (Female) $72 $12 per session, Save $18</td></tr>
-<tr><td>Nose (Male) $86 $14 per session, Save $22</td></tr>
-<tr><td>Face sides (Female) $91 $15 per session, Save $23</td></tr>
-<tr><td>Face sides (Male) $139 $23 per session, Save $35</td></tr>
-</tbody>
-</table>
-
-<h3>Add-on areas — single session</h3>
+<h3>Add-on areas</h3>
 <table>
 <tbody>
 <tr><td>Anus (Female) $12</td></tr>
@@ -909,7 +1050,7 @@ VALUES
 </tbody>
 </table>
 
-<h3>Add-on areas — pack of 6</h3>
+<h3>Add-on areas, pack of 6</h3>
 <table>
 <tbody>
 <tr><td>Anus (Female) $58 $10 per session, Save $14</td></tr>
@@ -930,12 +1071,12 @@ VALUES
 </table>',
    'laser',
    'published',
-   19,
-   10,
-   'Laser Hair Removal | Naturally Beautiful Skin Rejuvenation',
-   'Smooth, hair-free skin without the endless shaving and waxing. Treatment available in Dee Why, Northern Beaches, Sydney.',
-   '["Permanent hair reduction", "Smoother skin", "No more ingrown hairs", "No razor burn", "Less time spent shaving", "Reduced irritation", "Comfortable, fast sessions", "Treatment for face and body", "Progressive results over a course"]'::jsonb,
-   '[{"question": "How many sessions are recommended?", "answer": "Hair grows in cycles, so a course of 6 sessions spaced a few weeks apart is standard. Pack pricing below is built around a course of 6."}, {"question": "How long does the treatment take?", "answer": "From 10 minutes for a small area such as the lip, up to around an hour for full legs or a full back."}, {"question": "Is this treatment suitable for everyone?", "answer": "A patch test and skin assessment are carried out before your first treatment. Your therapist will confirm this at your free consultation."}, {"question": "Is the treatment painful?", "answer": "Most clients describe the sensation as a warm flick against the skin. Your therapist will confirm this at your free consultation."}]'::jsonb,
+   21,
+   15,
+   'Laser Hair Removal Lower Body | Naturally Beautiful Skin Rejuvenation',
+   'Smooth, hair-free skin from the waist down without the endless shaving and waxing. Treatment available in Dee Why, Northern Beaches, Sydney.',
+   '["Permanent hair reduction", "Smoother skin", "No more ingrown hairs", "No razor burn", "Less time spent shaving", "Reduced irritation", "Comfortable, fast sessions", "Male and female pricing", "Progressive results over a course"]'::jsonb,
+   '[{"question": "How many sessions are recommended?", "answer": "Hair grows in cycles, so a course of 6 sessions spaced a few weeks apart is standard. Pack pricing below is built around a course of 6."}, {"question": "How long does the treatment take?", "answer": "From 15 minutes for a small area such as knees, up to around an hour for full legs."}, {"question": "Is this treatment suitable for everyone?", "answer": "A patch test and skin assessment are carried out before your first treatment. Your therapist will confirm this at your free consultation."}, {"question": "Is the treatment painful?", "answer": "Most clients describe the sensation as a warm flick against the skin. Your therapist will confirm this at your free consultation."}]'::jsonb,
    60,
    NULL,
    false,
@@ -981,7 +1122,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   21,
+   22,
    180,
    'Laser Genesis | Naturally Beautiful Skin Rejuvenation',
    'Gentle laser therapy that calms redness and rebuilds collagen with no downtime. Treatment available in Dee Why, Northern Beaches, Sydney.',
@@ -1032,7 +1173,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   22,
+   23,
    180,
    'Fractional Laser | Naturally Beautiful Skin Rejuvenation',
    'Targeted resurfacing that softens scarring, lines and sun damage. Treatment available in Dee Why, Northern Beaches, Sydney.',
@@ -1083,7 +1224,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   23,
+   24,
    280,
    'Laser Genesis + Fractional Laser | Naturally Beautiful Skin Rejuvenation',
    'Our two signature laser therapies in one session for a deeper result. Treatment available in Dee Why, Northern Beaches, Sydney.',
@@ -1136,7 +1277,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   24,
+   26,
    150,
    'Pico Laser Pigmentation | Naturally Beautiful Skin Rejuvenation',
    'Picosecond laser energy that breaks down stubborn pigment. Treatment available in Dee Why, Northern Beaches, Sydney.',
@@ -1192,7 +1333,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   25,
+   27,
    120,
    'Laser for Pigmentation | Naturally Beautiful Skin Rejuvenation',
    'Targeted laser treatment for melasma, freckles and pigment patches. Treatment available in Dee Why, Northern Beaches, Sydney.',
@@ -1254,7 +1395,7 @@ VALUES
 </table>',
    'laser',
    'published',
-   26,
+   28,
    70,
    'Laser for Vascular Lesions | Naturally Beautiful Skin Rejuvenation',
    'Clears visible vessels, redness and cherry angiomas. Treatment available in Dee Why, Northern Beaches, Sydney.',
