@@ -21,7 +21,7 @@ export default function SpecialsPage() {
       </div>
     </section>
 
-    <main className="bg-white px-4 pb-16 pt-7 md:pb-20 md:pt-8">
+    <main className="bg-[#eef1e8] px-4 pb-16 pt-7 md:pb-20 md:pt-8">
       <div className="mx-auto max-w-[920px] text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.42em] text-[#a36e65]">Special Offers</p>
         <h1 className="mt-3 font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
@@ -35,7 +35,11 @@ export default function SpecialsPage() {
               <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-2xl text-[#405149]">♧</div><div><h3 className="font-display text-xl text-[#243b34]">Bring a Friend</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#4e5752]">Book a treatment for yourself and a friend on the same day and receive <strong className="text-[#243b34]">25% off</strong> for each of you.</p></div></div>
               <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-xl text-[#405149]">✧</div><div><h3 className="font-display text-xl text-[#243b34]">Microneedling Special</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#4e5752]">Book a facial microneedling treatment and receive a <strong className="text-[#243b34]">complimentary neck treatment.</strong></p></div></div>
             </div>
-            <div className="absolute -right-16 top-0 hidden h-full w-[48%] overflow-hidden rounded-bl-[55%] bg-[#dfe4d6] md:block"><div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_35%,#f2e3d9_0,#d9c7bb_32%,#b5bea9_70%)]" /><div className="absolute left-3 top-6 h-28 w-28 rounded-full bg-[#9da993] text-center text-[9px] font-semibold uppercase leading-5 tracking-[.24em] text-white"><span className="flex h-full items-center justify-center px-5">Skin<br/>Looks Better<br/>Together</span></div><div className="absolute bottom-0 left-0 right-0 h-40 bg-[#b8c3af]/70" /></div>
+            <div className="absolute -right-16 top-0 hidden h-full w-[48%] overflow-hidden rounded-bl-[55%] bg-[#dfe4d6] md:block">
+              <img src="/images/specials-friends.jpg" alt="Two friends enjoying a skincare treatment together" className="absolute inset-0 h-full w-full object-cover object-center" />
+              <div className="absolute left-3 top-6 h-28 w-28 rounded-full bg-[#9da993]/95 text-center text-[9px] font-semibold uppercase leading-5 tracking-[.24em] text-white"><span className="flex h-full items-center justify-center px-5">Skin<br/>Looks Better<br/>Together</span></div>
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-[#b8c3af]/70" />
+            </div>
             <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 border-t border-[#53635b] pt-5 sm:flex-row sm:items-center"><p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#334940]">Beautiful Skin Together</p><Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link></div>
           </div>
         </div>
