@@ -10,9 +10,10 @@ interface Props {
   settings: SiteSettings
   faceServices: TreatmentCard[]
   bodyServices: TreatmentCard[]
+  laserServices: TreatmentCard[]
 }
 
-export function MobileMenu({ settings, faceServices, bodyServices }: Props) {
+export function MobileMenu({ settings, faceServices, bodyServices, laserServices }: Props) {
   const [open, setOpen] = useState(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const close = () => {
@@ -71,6 +72,13 @@ export function MobileMenu({ settings, faceServices, bodyServices }: Props) {
               services={bodyServices}
               expanded={expandedCategory === 'body'}
               onToggle={() => setExpandedCategory(p => (p === 'body' ? null : 'body'))}
+              onLinkClick={close}
+            />
+            <CategoryAccordion
+              label="Laser"
+              services={laserServices}
+              expanded={expandedCategory === 'laser'}
+              onToggle={() => setExpandedCategory(p => (p === 'laser' ? null : 'laser'))}
               onLinkClick={close}
             />
             <li>

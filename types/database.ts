@@ -6,7 +6,7 @@
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 export type ContentStatus = 'draft' | 'published'
-export type TreatmentCategory = 'face' | 'body'
+export type TreatmentCategory = 'face' | 'body' | 'laser'
 
 // ─── Site Settings ────────────────────────────────────────────────────────────
 

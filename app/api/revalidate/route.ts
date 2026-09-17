@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
   // ── Revalidate by table ────────────────────────────────────────────────────
   try {
     switch (table) {
+      // 'treatments' is the actual table name; 'services' is kept for older webhooks
+      case 'treatments':
       case 'services':
         revalidateTag('services')
         revalidateTag('homepage')

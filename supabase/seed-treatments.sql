@@ -349,10 +349,6 @@ INSERT INTO treatments (
 <tr><td>TCA 15% or Berry Pigment Control - Face & Neck $220 One session</td></tr>
 <tr><td>TCA 15% or Berry Pigment Control - Face, Neck & Décolletage $250 One session</td></tr>
 <tr><td>TCA 15% or Berry Pigment Control - Back From $190 One session</td></tr>
-<tr><td>Tretinoin - Face only $160 One session</td></tr>
-<tr><td>Tretinoin - Face & Neck $240 One session</td></tr>
-<tr><td>Tretinoin - Face, Neck & Décolletage $320 One session</td></tr>
-<tr><td>Tretinoin - Back From $160 One session</td></tr>
 </tbody>
 </table>
 
@@ -367,10 +363,6 @@ INSERT INTO treatments (
 <tr><td>TCA 15% or Berry Pigment Control - Face & Neck $528 $176 per session, Save $132</td></tr>
 <tr><td>TCA 15% or Berry Pigment Control - Face, Neck & Décolletage $600 $200 per session, Save $150</td></tr>
 <tr><td>TCA 15% or Berry Pigment Control - Back From $456 From $152 per session, Save from $114</td></tr>
-<tr><td>Tretinoin - Face only $384 $128 per session, Save $96</td></tr>
-<tr><td>Tretinoin - Face & Neck $576 $192 per session, Save $144</td></tr>
-<tr><td>Tretinoin - Face, Neck & Décolletage $768 $256 per session, Save $192</td></tr>
-<tr><td>Tretinoin - Back From $384 From $128 per session, Save from $96</td></tr>
 </tbody>
 </table>
 
@@ -481,7 +473,6 @@ INSERT INTO treatments (
 <tr><td>Face & Neck $210 One session</td></tr>
 <tr><td>Face, Neck & Décolletage $230 One session</td></tr>
 <tr><td>Stretch marks From $190 One session</td></tr>
-<tr><td>Add Tretinoin peel From $60 One session</td></tr>
 </tbody>
 </table>
 
@@ -492,7 +483,6 @@ INSERT INTO treatments (
 <tr><td>Face & Neck $504 $168 per session, Save $126</td></tr>
 <tr><td>Face, Neck & Décolletage $552 $184 per session, Save $138</td></tr>
 <tr><td>Stretch marks From $456 From $152 per session, Save from $114</td></tr>
-<tr><td>Add Tretinoin peel From $144 From $48 per session, Save from $36</td></tr>
 </tbody>
 </table>
 

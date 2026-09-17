@@ -11,6 +11,7 @@ interface Props {
 export function Header({ settings, servicesByCategory }: Props) {
   const faceServices = servicesByCategory['face'] ?? []
   const bodyServices = servicesByCategory['body'] ?? []
+  const laserServices = servicesByCategory['laser'] ?? []
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-brand-500 bg-brand-600 shadow-[0_2px_20px_-4px_rgba(42,38,36,0.25)]">
@@ -36,11 +37,18 @@ export function Header({ settings, servicesByCategory }: Props) {
               <Link href="/services#body" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Body</Link>
             )}
           </li>
+          <li>
+            {laserServices.length > 0 ? (
+              <NavDropdown label="Laser" services={laserServices} variant="light" />
+            ) : (
+              <Link href="/services#laser" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Laser</Link>
+            )}
+          </li>
           <li><Link href="/specials" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Specials</Link></li>
           <li><Link href="/contact" className="rounded-sm px-3 py-2 text-sm font-medium text-cream/95 transition-colors hover:text-brand-200">Contact</Link></li>
         </ul>
 
-        <MobileMenu settings={settings} faceServices={faceServices} bodyServices={bodyServices} />
+        <MobileMenu settings={settings} faceServices={faceServices} bodyServices={bodyServices} laserServices={laserServices} />
       </nav>
     </header>
   )
