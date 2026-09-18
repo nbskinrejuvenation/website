@@ -36,20 +36,6 @@ export default function SpecialsPage() {
             sizes="(max-width: 700px) 100vw, 640px"
             className="h-auto w-full"
           />
-          <div className="space-y-5 px-7 py-7 text-left md:px-10">
-            <div>
-              <h2 className="font-display text-2xl text-[#536b61]">Refer a Friend</h2>
-              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">Refer a friend and get a <strong className="text-[#536b61]">$50 voucher</strong> for yourself once they book a treatment.</p>
-            </div>
-            <div className="border-t border-[#d8ddd3] pt-5">
-              <h2 className="font-display text-2xl text-[#536b61]">3 Sessions Pack</h2>
-              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">When you buy a 3 sessions pack you get a <strong className="text-[#536b61]">discount</strong> on the treatments.</p>
-            </div>
-            <div className="border-t border-[#d8ddd3] pt-5">
-              <h2 className="font-display text-2xl text-[#536b61]">Get a Gift Voucher</h2>
-              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">Get a gift voucher for someone special.</p>
-            </div>
-          </div>
           <figcaption className="flex justify-center px-7 pb-7">
             <Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link>
           </figcaption>
