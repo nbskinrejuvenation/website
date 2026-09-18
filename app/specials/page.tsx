@@ -28,10 +28,10 @@ export default function SpecialsPage() {
         <div className="mx-auto mt-3 h-px w-7 bg-[#c99a90]" />
         <figure className="mx-auto mt-5 max-w-[640px] overflow-hidden rounded-xl bg-[#f8f7ef] shadow-[0_12px_32px_rgba(45,45,35,0.10)]">
           <Image
-            src="/images/specials-share-the-glow.png"
-            alt="Share the Glow. Treat yourself, bring a friend. Bring a Friend: book a treatment for yourself and a friend on the same day and receive 25% off for each of you. Microneedling Special: book a facial microneedling treatment and receive a complimentary neck treatment."
-            width={1254}
-            height={1254}
+            src="/images/specials-share-the-glow-v2.png"
+            alt="Share the Glow. Treat yourself, bring a friend. Bring a Friend: book a treatment for yourself and a friend on the same day and receive 25% off for each of you. Microneedling Special: book a facial microneedling treatment and receive a complimentary neck treatment. Refer a Friend: refer a friend and get a $50 voucher for yourself once they book a treatment. 3 Sessions Pack: when you buy a 3 sessions pack you get a discount on the treatments. Get a Gift Voucher: the perfect gift for someone special, available in any amount."
+            width={1024}
+            height={1536}
             priority
             sizes="(max-width: 700px) 100vw, 640px"
             className="h-auto w-full"
