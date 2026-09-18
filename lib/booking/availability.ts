@@ -149,8 +149,17 @@ export async function getBusyIntervals(
     getConsultationBusyBetween(from, to, exclude),
     getTreatmentBusyBetween(from, to, exclude),
     getScheduleBlocksBetween(from, to),
+    // Google is the only source here we do not own. If it fails (expired refresh
+    // token, API outage) we fall back to our own busy intervals rather than
+    // rejecting: a Promise.all rejection used to take down the whole slots API,
+    // so every date showed "no slots" and nobody could book at all. Losing
+    // calendar conflicts risks a double booking the clinic can see and fix;
+    // losing availability loses the booking outright.
     isGoogleCalendarConfigured()
-      ? getGoogleBusyIntervals(from, to)
+      ? getGoogleBusyIntervals(from, to).catch((error: unknown) => {
+          console.error('[availability] Google busy lookup failed, continuing without it:', error)
+          return []
+        })
       : Promise.resolve([]),
   ])
   return [...consultations, ...treatments, ...blocks, ...googleBusy]
