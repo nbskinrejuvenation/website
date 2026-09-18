@@ -50,6 +50,33 @@ body {
     linear-gradient(135deg, #f0e6e3 0%, #e5d4cf 35%, #d4b5ad 70%, #c49a8f 100%);
 }
 
+/*
+ * Page hero with no photograph. Separate from .hero-placeholder above, which
+ * washes a light section in cream — this one is a deliberately dark title panel
+ * so a cream headline and breadcrumb keep their contrast without needing a
+ * second overlay on top. The bloom top-right echoes the light-based treatments.
+ */
+.hero-fallback {
+  background:
+    radial-gradient(118% 88% at 78% 16%, rgba(196, 154, 143, 0.5) 0%, rgba(196, 154, 143, 0) 58%),
+    radial-gradient(64% 56% at 95% 4%, rgba(250, 248, 246, 0.2) 0%, rgba(250, 248, 246, 0) 62%),
+    linear-gradient(160deg, #563d38 0%, #3d2a26 45%, #2a2624 100%);
+}
+
+/* Faint concentric rings, faded out behind the text at the bottom. */
+.hero-fallback::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-radial-gradient(
+    circle at 79% 13%,
+    rgba(250, 248, 246, 0.055) 0 1px,
+    transparent 1px 74px
+  );
+  -webkit-mask-image: linear-gradient(to top, transparent 24%, #000 74%);
+  mask-image: linear-gradient(to top, transparent 24%, #000 74%);
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-sm bg-brand-500 px-8 py-3.5

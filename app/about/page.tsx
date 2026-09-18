@@ -29,6 +29,7 @@ export default async function AboutPage() {
       <TreatmentHero
         title="About"
         subtitle="Our story"
+        breadcrumb={[]}
       />
 
       <AboutStory />

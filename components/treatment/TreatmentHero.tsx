@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
@@ -9,9 +10,18 @@ interface Props {
   priceFrom?: number
   packNote?: string
   heroImageUrl?: string
+  heroImageAlt?: string
+  /**
+   * Trail shown between Home and the page title. Defaults to the Treatments
+   * index because most callers are treatment pages; /about and /contact pass an
+   * empty array so they stop claiming to live under Treatments.
+   */
+  breadcrumb?: Array<{ label: string; href: string }>
   bookOnlineUrl?: string
   bookOnlineLabel?: string
 }
+
+const TREATMENT_TRAIL = [{ label: 'Treatments', href: '/services' }]
 
 export function TreatmentHero({
   title,
@@ -20,6 +30,8 @@ export function TreatmentHero({
   priceFrom,
   packNote,
   heroImageUrl,
+  heroImageAlt,
+  breadcrumb = TREATMENT_TRAIL,
   bookOnlineUrl,
   bookOnlineLabel = 'Book & pay online',
 }: Props) {
@@ -35,7 +47,7 @@ export function TreatmentHero({
           <>
             <Image
               src={heroImageUrl}
-              alt={title}
+              alt={heroImageAlt ?? title}
               fill
               className="object-cover"
               priority
@@ -44,10 +56,10 @@ export function TreatmentHero({
             <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent" />
           </>
         ) : (
-          <>
-            <div className="hero-placeholder h-full w-full opacity-90" aria-hidden="true" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-          </>
+          // No photograph for this slug yet: a designed dark panel reads as
+          // deliberate, where the light cream placeholder left the heading
+          // floating on a washed-out gradient.
+          <div className="hero-fallback relative h-full w-full" aria-hidden="true" />
         )}
       </div>
 
@@ -56,14 +68,14 @@ export function TreatmentHero({
           className="mb-6 flex items-center gap-1 text-xs text-cream/50"
           aria-label="Breadcrumb"
         >
-          <Link href="/" className="transition-colors hover:text-cream">
-            Home
-          </Link>
-          <ChevronRight className="h-3 w-3" aria-hidden="true" />
-          <Link href="/services" className="transition-colors hover:text-cream">
-            Treatments
-          </Link>
-          <ChevronRight className="h-3 w-3" aria-hidden="true" />
+          {[{ label: 'Home', href: '/' }, ...breadcrumb].map(crumb => (
+            <Fragment key={crumb.href}>
+              <Link href={crumb.href} className="transition-colors hover:text-cream">
+                {crumb.label}
+              </Link>
+              <ChevronRight className="h-3 w-3" aria-hidden="true" />
+            </Fragment>
+          ))}
           <span className="text-cream/80" aria-current="page">
             {title}
           </span>

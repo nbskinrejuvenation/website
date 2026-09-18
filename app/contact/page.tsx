@@ -57,7 +57,14 @@ export default async function ContactPage() {
       <StructuredData type="LocalBusiness" settings={settings} />
 
       {/* Dark hero — matches original navy style */}
-      <TreatmentHero title="Contact Us" subtitle="Get in touch" />
+      <TreatmentHero
+        title="Contact Us"
+        subtitle="Get in touch"
+        summary="Dee Why, Northern Beaches — with three hours of free parking directly across the road."
+        breadcrumb={[]}
+        heroImageUrl="/images/treatments/laser-rejuvenation.png"
+        heroImageAlt="A treatment room at the clinic, lit by the window"
+      />
 
       {/* 4-column info cards */}
       <section className="bg-white py-16">
