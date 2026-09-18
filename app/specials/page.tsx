@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
@@ -26,21 +27,23 @@ export default function SpecialsPage() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.42em] text-[#a36e65]">Special Offers</p>
         <h1 className="mt-3 font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
         <div className="mx-auto mt-3 h-px w-7 bg-[#c99a90]" />
-        <div className="mx-auto mt-5 max-w-[640px] overflow-hidden rounded-xl bg-[#f8f7ef] text-left shadow-[0_12px_32px_rgba(45,45,35,0.10)]">
-          <div className="relative overflow-hidden px-7 pb-6 pt-7 md:min-h-[530px] md:px-9 md:pt-8">
-            <div className="relative z-10 max-w-[58%]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.42em] text-[#536b61]">Special Offers</p>
-              <h2 className="mt-2 font-display text-[48px] font-light leading-[.82] text-[#536b61] md:text-[61px]">Share the<br />Glow</h2>
-              <p className="mt-5 border-b border-[#71857b] pb-4 text-[10px] font-semibold uppercase tracking-[0.34em] text-[#536b61]">Treat yourself. Bring a friend.</p>
-              <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-2xl text-[#71857b]">♧</div><div><h3 className="font-display text-xl text-[#536b61]">Bring a Friend</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#65746d]">Book a treatment for yourself and a friend on the same day and receive <strong className="text-[#536b61]">25% off</strong> for each of you.</p></div></div>
-              <div className="mt-5 grid grid-cols-[54px_1fr] gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9e8de] text-xl text-[#71857b]">✧</div><div><h3 className="font-display text-xl text-[#536b61]">Microneedling Special</h3><p className="mt-1 text-[13px] leading-[1.25] text-[#65746d]">Book a facial microneedling treatment and receive a <strong className="text-[#536b61]">complimentary neck treatment.</strong></p></div></div>
-            </div>
-            <div className="absolute -right-16 bottom-0 top-0 hidden w-[48%] overflow-hidden bg-[#f8f7ef] md:block">
-              <img src="/images/specials-friends.jpg" alt="Two friends enjoying a skincare treatment together" className="absolute inset-0 h-full w-full scale-[1.32] object-cover object-[50%_76%]" />
-            </div>
-            <div className="relative z-20 mt-7 flex flex-col items-start justify-between gap-4 pt-5 sm:flex-row sm:items-center"><p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#536b61]">Beautiful Skin Together</p><Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link></div>
-          </div>
-        </div>
+        {/* The flyer artwork carries the offer copy, so the alt text has to state
+            both offers in full: they exist nowhere else on the page. */}
+        <figure className="mx-auto mt-5 max-w-[640px] overflow-hidden rounded-xl bg-[#f8f7ef] shadow-[0_12px_32px_rgba(45,45,35,0.10)]">
+          <Image
+            src="/images/specials-share-the-glow.png"
+            alt="Share the Glow. Treat yourself, bring a friend. Bring a Friend: book a treatment for yourself and a friend on the same day and receive 25% off for each of you. Microneedling Special: book a facial microneedling treatment and receive a complimentary neck treatment."
+            width={1254}
+            height={1254}
+            priority
+            sizes="(max-width: 700px) 100vw, 640px"
+            className="h-auto w-full"
+          />
+          {/* Only the CTA: the flyer already signs off with "Beautiful Skin Together". */}
+          <figcaption className="flex justify-center px-7 pb-7">
+            <Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link>
+          </figcaption>
+        </figure>
       </div>
     </main>
   </>
