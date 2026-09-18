@@ -10,6 +10,22 @@ export function isGoogleCalendarConfigured(): boolean {
   )
 }
 
+/**
+ * Probes the refresh token without touching a calendar. Used by /api/health so an
+ * expired token is visible: booking failures here are swallowed by design, which
+ * once let a dead token go unnoticed for months.
+ */
+export async function checkGoogleCalendarAccess(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  try {
+    await getAccessToken()
+    return { ok: true }
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}
+
 async function getAccessToken(): Promise<string> {
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
