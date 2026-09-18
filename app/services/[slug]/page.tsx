@@ -222,7 +222,7 @@ export default async function ServicePage({ params }: Props) {
       <TreatmentHero title={service.title} subtitle={service.subtitle ?? undefined} summary={service.summary ?? undefined} priceFrom={service.price_from ?? undefined} packNote={packNote} heroImageUrl={service.hero_image ?? undefined} bookOnlineUrl={bookOnlineUrl} bookOnlineLabel={bookOnlineLabel} />
       {bodyHtml && <TreatmentBody bodyHtml={bodyHtml} />}
       {recommendedFor && <TreatmentRecommendedFor conditions={recommendedFor} />}
-      {service.what_to_expect && service.what_to_expect.length > 0 && <TreatmentWhatToExpect items={service.what_to_expect as string[]} />}
+      {service.what_to_expect && service.what_to_expect.length > 0 && <TreatmentWhatToExpect items={service.what_to_expect as string[]} compact={slug === 'carbon-peel'} />}
       {pricingGroups && <TreatmentPricing groups={pricingGroups} />}
       {hasFaqs && <TreatmentFAQ faqs={service.schema_faq!} serviceName={service.title} />}
       <InstagramSection {...instagramSectionFromSettings(settings)} />
