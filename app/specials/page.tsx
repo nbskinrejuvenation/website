@@ -24,8 +24,8 @@ export default function SpecialsPage() {
 
     <main className="bg-[#eef1e8] px-4 pb-16 pt-7 md:pb-20 md:pt-8">
       <div className="mx-auto max-w-[920px] text-center">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.42em] text-[#a36e65]">Special Offers</p>
-        <h1 className="mt-3 font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
+        {/* No "Special Offers" eyebrow here: the flyer below opens with that line itself. */}
+        <h1 className="font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
         <div className="mx-auto mt-3 h-px w-7 bg-[#c99a90]" />
         {/* The flyer artwork carries the offer copy, so the alt text has to state
             both offers in full: they exist nowhere else on the page. */}
