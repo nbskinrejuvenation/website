@@ -24,11 +24,8 @@ export default function SpecialsPage() {
 
     <main className="bg-[#eef1e8] px-4 pb-16 pt-7 md:pb-20 md:pt-8">
       <div className="mx-auto max-w-[920px] text-center">
-        {/* No "Special Offers" eyebrow here: the flyer below opens with that line itself. */}
         <h1 className="font-display text-3xl font-light text-[#252523] md:text-[38px]">Our Gift To You</h1>
         <div className="mx-auto mt-3 h-px w-7 bg-[#c99a90]" />
-        {/* The flyer artwork carries the offer copy, so the alt text has to state
-            both offers in full: they exist nowhere else on the page. */}
         <figure className="mx-auto mt-5 max-w-[640px] overflow-hidden rounded-xl bg-[#f8f7ef] shadow-[0_12px_32px_rgba(45,45,35,0.10)]">
           <Image
             src="/images/specials-share-the-glow.png"
@@ -39,7 +36,20 @@ export default function SpecialsPage() {
             sizes="(max-width: 700px) 100vw, 640px"
             className="h-auto w-full"
           />
-          {/* Only the CTA: the flyer already signs off with "Beautiful Skin Together". */}
+          <div className="space-y-5 px-7 py-7 text-left md:px-10">
+            <div>
+              <h2 className="font-display text-2xl text-[#536b61]">Refer a Friend</h2>
+              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">Refer a friend and get a <strong className="text-[#536b61]">$50 voucher</strong> for yourself once they book a treatment.</p>
+            </div>
+            <div className="border-t border-[#d8ddd3] pt-5">
+              <h2 className="font-display text-2xl text-[#536b61]">3 Sessions Pack</h2>
+              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">When you buy a 3 sessions pack you get a <strong className="text-[#536b61]">discount</strong> on the treatments.</p>
+            </div>
+            <div className="border-t border-[#d8ddd3] pt-5">
+              <h2 className="font-display text-2xl text-[#536b61]">Get a Gift Voucher</h2>
+              <p className="mt-1 text-[14px] leading-6 text-[#65746d]">Get a gift voucher for someone special.</p>
+            </div>
+          </div>
           <figcaption className="flex justify-center px-7 pb-7">
             <Link href="/book" className="inline-flex items-center gap-5 rounded bg-[#a36d63] px-6 py-3 text-xs font-medium text-white transition hover:bg-[#8f5e55]">Book Appointment <span aria-hidden="true">→</span></Link>
           </figcaption>
