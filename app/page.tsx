@@ -13,7 +13,7 @@ import { InstagramSection, instagramSectionFromSettings } from '@/components/sec
 import { CTABanner } from '@/components/sections/CTABanner'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { CLINIC_ADDRESS_FULL, formatFullAddress } from '@/lib/site/address'
-import { HERO_POSTER_URL, HERO_VIDEO_URL } from '@/lib/site/hero'
+import { HERO_IMAGE_URLS, HERO_POSTER_URL, HERO_VIDEO_POSTER_URL, HERO_VIDEO_URL } from '@/lib/site/hero'
 
 export const metadata: Metadata = {
   description: `Luxury skin rejuvenation on Sydney's Northern Beaches. Visit us at ${CLINIC_ADDRESS_FULL} — book your free consultation today.`,
@@ -51,7 +51,9 @@ export default async function HomePage() {
         secondaryCtaLabel="See all treatments"
         secondaryCtaHref="/services"
         heroVideoUrl={HERO_VIDEO_URL}
+        heroImageUrls={HERO_IMAGE_URLS}
         heroImageUrl={HERO_POSTER_URL}
+        heroPosterUrl={HERO_VIDEO_POSTER_URL}
         heroImageAlt={`Healthy, glowing skin — luxury skin rejuvenation at Naturally Beautiful, ${fullAddress}`}
       />
 

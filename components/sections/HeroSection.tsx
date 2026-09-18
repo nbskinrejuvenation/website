@@ -1,10 +1,13 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import { heroStagger, kenBurns } from '@/lib/motion/config'
+
+/** How long each hero photo holds before cross-fading to the next. */
+const SLIDE_MS = 6500
 
 interface Props {
   eyebrow?: string
@@ -16,8 +19,20 @@ interface Props {
   secondaryCtaHref?: string
   /** Background video (e.g. /videos/hero.mp4) */
   heroVideoUrl?: string
-  /** Poster / fallback image when video is loading or motion is reduced */
+  /**
+   * Two or more clinic photos to cross-fade instead of the video. Supplying
+   * these takes precedence over heroVideoUrl, so swapping stock footage for the
+   * clinic's own photography needs no code change.
+   */
+  heroImageUrls?: string[]
+  /** Single fallback image: used when motion is reduced, and as the video poster */
   heroImageUrl?: string
+  /**
+   * Compressed still for the <video poster> attribute. The poster attribute does
+   * not go through next/image, so pointing it at a large PNG downloads the whole
+   * file before the video paints.
+   */
+  heroPosterUrl?: string
   heroImageAlt?: string
   /** Full clinic address shown under CTAs */
   locationLine?: string
@@ -38,13 +53,25 @@ export function HeroSection({
   secondaryCtaLabel,
   secondaryCtaHref,
   heroVideoUrl,
+  heroImageUrls,
   heroImageUrl,
+  heroPosterUrl,
   heroImageAlt,
   locationLine,
 }: Props) {
   const reduceMotion = useReducedMotion()
-  const showVideo = Boolean(heroVideoUrl) && !reduceMotion
-  const showImage = Boolean(heroImageUrl) && (!showVideo || reduceMotion)
+  const slideshow = heroImageUrls ?? []
+  const hasSlideshow = slideshow.length > 1
+  const showVideo = Boolean(heroVideoUrl) && !reduceMotion && !hasSlideshow
+  const showSlideshow = hasSlideshow && !reduceMotion
+  const showImage = Boolean(heroImageUrl) && !showVideo && !showSlideshow
+
+  const [slide, setSlide] = useState(0)
+  useEffect(() => {
+    if (!showSlideshow) return
+    const id = setInterval(() => setSlide(i => (i + 1) % slideshow.length), SLIDE_MS)
+    return () => clearInterval(id)
+  }, [showSlideshow, slideshow.length])
 
   return (
     <section className="relative min-h-[88vh] overflow-hidden">
@@ -58,11 +85,37 @@ export function HeroSection({
               loop
               playsInline
               preload="metadata"
-              poster={heroImageUrl}
+              poster={heroPosterUrl ?? heroImageUrl}
               aria-hidden="true"
             >
               <source src={heroVideoUrl} type="video/mp4" />
             </video>
+            <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/80 to-cream/30" />
+          </>
+        ) : showSlideshow ? (
+          <>
+            {slideshow.map((src, i) => (
+              <motion.div
+                key={src}
+                className="absolute inset-0"
+                initial={false}
+                animate={{ opacity: i === slide ? 1 : 0, scale: i === slide ? kenBurns.scale : 1 }}
+                transition={{
+                  opacity: { duration: 1.4, ease: 'easeInOut' },
+                  scale: kenBurns.transition,
+                }}
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  className="object-cover object-center"
+                  // Only the first frame blocks paint; the rest load as they come up.
+                  priority={i === 0}
+                  sizes="100vw"
+                />
+              </motion.div>
+            ))}
             <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/80 to-cream/30" />
           </>
         ) : showImage ? (
