@@ -123,7 +123,7 @@ export function stripRecommendedForSection(bodyHtml: string): string {
 
 /**
  * Remove the leading <p class="lead"> paragraph.
- * Its content equals the treatment's summary field, which is shown in TreatmentIntro.
+ * Its content equals the treatment's summary field, which is shown in TreatmentHero.
  */
 export function stripLeadParagraph(bodyHtml: string): string {
   return bodyHtml

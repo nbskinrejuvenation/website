@@ -7,7 +7,6 @@ import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 import { TreatmentBody } from '@/components/treatment/TreatmentBody'
 import { TreatmentPricing } from '@/components/treatment/TreatmentPricing'
 import { TreatmentFAQ } from '@/components/treatment/TreatmentFAQ'
-import { TreatmentIntro } from '@/components/treatment/TreatmentIntro'
 import { TreatmentRecommendedFor } from '@/components/treatment/TreatmentRecommendedFor'
 import { TreatmentWhatToExpect } from '@/components/treatment/TreatmentWhatToExpect'
 import {
@@ -205,6 +204,12 @@ export default async function ServicePage({ params }: Props) {
   const hasFaqs = allFaqs.length > 0
   const indexableFaqs = getIndexableFaqs(allFaqs)
 
+  // Smallest pack on offer, surfaced in the hero so the discount is visible above the fold.
+  const packSizes = (pricingGroups ?? [])
+    .map(g => Number(/pack of (\d+)/i.exec(g.name)?.[1]))
+    .filter(n => Number.isFinite(n))
+  const packNote = packSizes.length ? `${Math.min(...packSizes)}-session packs available` : undefined
+
   const canBookOnline = isStripeConfigured() && service.bookable_online && service.price_cents != null && service.price_cents > 0
   const bookOnlineUrl = canBookOnline ? `/book/treatment/${slug}` : undefined
   const bookOnlineLabel = service.price_cents != null ? `Book & pay from ${formatAudFromCents(service.price_cents)}` : 'Book & pay online'
@@ -214,8 +219,7 @@ export default async function ServicePage({ params }: Props) {
       <StructuredData type="Service" treatment={service} settings={settings} />
       <JsonLd data={buildBreadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Treatments', path: '/services' }, { name: service.title, path: `/services/${slug}` }])} />
       {indexableFaqs.length > 0 && <StructuredData type="FAQPage" faqs={indexableFaqs} />}
-      <TreatmentHero title={service.title} subtitle={service.subtitle ?? undefined} heroImageUrl={service.hero_image ?? undefined} bookOnlineUrl={bookOnlineUrl} bookOnlineLabel={bookOnlineLabel} />
-      <TreatmentIntro title={service.title} subtitle={service.subtitle ?? service.title} summary={service.summary ?? service.subtitle ?? service.title} heroImageUrl={service.hero_image ?? undefined} />
+      <TreatmentHero title={service.title} subtitle={service.subtitle ?? undefined} summary={service.summary ?? undefined} priceFrom={service.price_from ?? undefined} packNote={packNote} heroImageUrl={service.hero_image ?? undefined} bookOnlineUrl={bookOnlineUrl} bookOnlineLabel={bookOnlineLabel} />
       {bodyHtml && <TreatmentBody bodyHtml={bodyHtml} />}
       {recommendedFor && <TreatmentRecommendedFor conditions={recommendedFor} />}
       {service.what_to_expect && service.what_to_expect.length > 0 && <TreatmentWhatToExpect items={service.what_to_expect as string[]} />}
