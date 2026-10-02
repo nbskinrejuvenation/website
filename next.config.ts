@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname: '*.cdninstagram.com',
       },
       {
+        // Carbon Peel hero image
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
+      {
         protocol: 'https',
         hostname: '*.fbcdn.net',
       },
