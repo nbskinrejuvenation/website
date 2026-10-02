@@ -12,14 +12,14 @@ export function AboutStory({ imageUrl }: Props) {
         <div className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
 
           {/* Left: photo */}
-          <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-brand-100">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl bg-brand-100">
             {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt="Lilian, founder of Naturally Beautiful Skin Rejuvenation"
                 fill
                 className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 448px"
               />
             ) : (
               <div className="hero-placeholder h-full w-full opacity-50" aria-hidden="true" />

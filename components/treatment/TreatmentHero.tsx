@@ -43,7 +43,7 @@ export function TreatmentHero({
   const showKicker = subtitle && subtitle.trim().toLowerCase() !== summary?.trim().toLowerCase()
 
   return (
-    <section className={`relative flex ${compact ? 'min-h-[30vh]' : 'min-h-[60vh]'} items-end overflow-hidden`}>
+    <section className={`relative flex ${compact ? 'min-h-[15vh]' : 'min-h-[60vh]'} items-end overflow-hidden`}>
       <div className="absolute inset-0">
         {heroImageUrl ? (
           <>
@@ -65,9 +65,9 @@ export function TreatmentHero({
         )}
       </div>
 
-      <div className="section-container relative z-10 pb-16 pt-28">
+      <div className={`section-container relative z-10 ${compact ? 'pb-6 pt-24' : 'pb-16 pt-28'}`}>
         <nav
-          className="mb-6 flex items-center gap-1 text-xs text-cream/50"
+          className={`${compact ? 'mb-3' : 'mb-6'} flex items-center gap-1 text-xs text-cream/50`}
           aria-label="Breadcrumb"
         >
           {[{ label: 'Home', href: '/' }, ...breadcrumb].map(crumb => (
@@ -106,7 +106,7 @@ export function TreatmentHero({
           </p>
         )}
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className={`${compact ? 'mt-4' : 'mt-8'} flex flex-wrap gap-3`}>
           {bookOnlineUrl ? (
             <Link href={bookOnlineUrl} className="btn-primary">
               {bookOnlineLabel}
