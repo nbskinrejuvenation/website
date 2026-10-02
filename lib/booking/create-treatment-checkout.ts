@@ -6,6 +6,8 @@ import {
   loadTreatmentBookingWithClient,
 } from '@/lib/booking/finalize-treatment-booking'
 import { resolveTreatmentBookingPricing } from '@/lib/booking/treatment-booking-pricing'
+import { getActivePriceOption } from '@/lib/data/price-options-admin'
+import { priceOptionLabel } from '@/lib/data/price-options'
 import { redeemPackageCredit } from '@/lib/packages/credits'
 import { incrementPromoRedemption } from '@/lib/promo/validate'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -26,6 +28,7 @@ export interface CreateTreatmentCheckoutInput {
   source_page?: string
   promo_code?: string
   package_id?: string
+  price_option_id?: string
   client_package_credit_id?: string
 }
 
@@ -56,9 +59,19 @@ export async function createTreatmentCheckout(
     throw new Error('Package credits cannot be combined with promo codes or new packages.')
   }
 
+  // Never trust an amount from the client: the row is re-read and must belong to this treatment.
+  const priceOption =
+    input.price_option_id && !usingCredit
+      ? await getActivePriceOption(input.price_option_id, treatment.id)
+      : null
+  if (input.price_option_id && !usingCredit && !priceOption) {
+    throw new Error('This price option is no longer available. Please go back and choose again.')
+  }
+
   const pricing = await resolveTreatmentBookingPricing({
     treatment,
     packageId: input.package_id,
+    priceOption,
     promoCode: input.promo_code,
     usePackageCredit: usingCredit,
   })
@@ -83,6 +96,9 @@ export async function createTreatmentCheckout(
       promo_code_id: pricing.promoCodeId,
       treatment_package_id: pricing.treatmentPackageId,
       client_package_credit_id: usingCredit ? input.client_package_credit_id : null,
+      ...(priceOption
+        ? { price_option_id: priceOption.id, price_option_label: priceOptionLabel(priceOption) }
+        : {}),
       currency: 'aud',
       message: input.message?.trim() || null,
       source_page: input.source_page || null,
@@ -173,7 +189,9 @@ export async function createTreatmentCheckout(
 
   const productName = isPackagePurchase
     ? `${treatment.title} — ${pricing.packageSessionCount}-session package`
-    : `${treatment.title} — ${paymentLabel}`
+    : priceOption
+      ? `${treatment.title} (${priceOptionLabel(priceOption)}) — ${paymentLabel}`
+      : `${treatment.title} — ${paymentLabel}`
 
   let description = `Appointment: ${whenLabel} (${duration} min)`
   if (pricing.discountCents > 0 && pricing.promoLabel) {

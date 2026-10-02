@@ -18,7 +18,11 @@ export interface FinalizeTreatmentBookingInput {
 export async function finalizeTreatmentBooking(
   input: FinalizeTreatmentBookingInput,
 ): Promise<TreatmentBooking> {
-  const { booking, client, treatmentTitle } = input
+  const { booking, client } = input
+  // Show the booked price row ("Pack of 3: Full face") in the calendar, alerts and emails.
+  const treatmentTitle = booking.price_option_label
+    ? `${input.treatmentTitle} (${booking.price_option_label})`
+    : input.treatmentTitle
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
 

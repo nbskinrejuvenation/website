@@ -64,7 +64,8 @@ This adds `treatment_bookings`, `duration_minutes`, `price_cents`, and `bookable
 - `price_cents` — amount charged online (`price_from × 100`, set by migration).
 - `bookable_online` — shows **Book & pay** on the treatment page.
 - `duration_minutes` — slot length (default 60).
-- `deposit_percent` — percent of a single session charged online (1–100). Blank / `NULL` uses `STRIPE_DEPOSIT_PERCENT`. The balance is paid at the clinic and is shown on the booking page, Stripe Checkout and the confirmation emails. Deposits are rounded to whole dollars. Packages are always charged in full. Set it in **Admin → Treatments** (requires `supabase/migrations/20261002_treatment_deposit_percent.sql`).
+- `deposit_percent` — percent of a session or package charged online (1–100). Blank / `NULL` uses `STRIPE_DEPOSIT_PERCENT`. The balance is paid at the clinic and is shown on the booking page, Stripe Checkout and the confirmation emails. Deposits are rounded to whole dollars. Set it in **Admin → Treatments** (requires `supabase/migrations/20261002_treatment_deposit_percent.sql`).
+- **Bookable price rows** — each row of a treatment page's price list (`treatment_price_options`, edited in **Admin → Prices**) has a Book button that opens `/book/treatment/[slug]?option=<id>`. The checkout re-reads the row server-side and charges the deposit percent of that row's price; the client never sends an amount. Requires `supabase/migrations/20261002_treatment_price_options.sql`; load the rows from the price spreadsheet with `node scripts/generate-price-options-sql.mjs prices.csv`.
 
 To disable online booking for a treatment:
 

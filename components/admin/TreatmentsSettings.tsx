@@ -211,9 +211,9 @@ export function TreatmentsSettings({
       {message && <p className="text-sm text-brand-600">{message}</p>}
       <p className="text-xs text-ink-faint">
         Online price updates the &quot;from&quot; price shown on treatment pages. Deposit is the
-        share of a single session charged when booking online; the client pays the rest at the
-        clinic. Leave it blank to use the clinic default ({defaultDepositPercent}%). Packages are
-        always charged in full. Slot length controls calendar availability for paid bookings.
+        share of a session or package charged when booking online; the client pays the rest at the
+        clinic. Leave it blank to use the clinic default ({defaultDepositPercent}%). Bookable price
+        rows are edited under Prices. Slot length controls calendar availability for paid bookings.
       </p>
     </div>
   )

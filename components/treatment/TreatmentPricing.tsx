@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { PricingGroup } from '@/lib/treatment/parse-pricing'
 
 interface Props {
@@ -47,9 +48,19 @@ export function TreatmentPricing({ groups }: Props) {
                         }}
                         aria-hidden
                       />
-                      <span className="shrink-0 text-lg font-bold text-white">
-                        {item.price}
-                      </span>
+                      {item.bookHref ? (
+                        <Link
+                          href={item.bookHref}
+                          aria-label={`Book ${item.label} for ${item.price}`}
+                          className="shrink-0 self-center rounded-sm bg-cream px-4 py-1.5 text-sm font-medium tracking-wide text-brand-800 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-800"
+                        >
+                          Book <span className="font-bold">{item.price}</span>
+                        </Link>
+                      ) : (
+                        <span className="shrink-0 text-lg font-bold text-white">
+                          {item.price}
+                        </span>
+                      )}
                     </div>
 
                     {/* Subtitle */}

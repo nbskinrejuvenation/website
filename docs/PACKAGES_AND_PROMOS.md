@@ -18,7 +18,7 @@ Seeds example packs for **Fractional RF** and **Carbon Peel** (adjust in admin).
 ## Session packages
 
 1. Client selects **Pack of 3** (or other pack) when booking.
-2. Pays full package price via Stripe (deposit % applies if `STRIPE_DEPOSIT_PERCENT` &lt; 100).
+2. Pays the treatment's deposit % of the package price via Stripe; the balance is collected at the clinic.
 3. On payment success, a **client package credit** row is created with `sessions_used = 1` (first visit).
 4. For visit 2+, client books same treatment, enters email → **Use prepaid package** → no Stripe charge.
 

@@ -1,11 +1,13 @@
 import { getPackageById } from '@/lib/packages/credits'
 import { validatePromoCode } from '@/lib/promo/validate'
 import { calculateChargeCents, resolveDepositPercent } from '@/lib/stripe/config'
-import type { BookableTreatment } from '@/types/database'
+import type { BookableTreatment, TreatmentPriceOption } from '@/types/database'
 
 export interface TreatmentBookingPricingInput {
   treatment: BookableTreatment
   packageId?: string
+  /** Row from the treatment page's price list; already checked against the treatment. */
+  priceOption?: TreatmentPriceOption | null
   promoCode?: string
   usePackageCredit?: boolean
 }
@@ -47,6 +49,13 @@ export async function resolveTreatmentBookingPricing(
   let treatmentPackageId: string | null = null
   let packageSessionCount: number | null = null
 
+  if (input.priceOption && input.packageId) {
+    throw new Error('Choose either a price option or a package, not both.')
+  }
+  if (input.priceOption) {
+    baseCents = input.priceOption.price_cents
+  }
+
   if (input.packageId) {
     const pkg = await getPackageById(input.packageId, input.treatment.id)
     if (!pkg) {
@@ -61,7 +70,12 @@ export async function resolveTreatmentBookingPricing(
   let promoCodeId: string | null = null
   let promoLabel: string | null = null
 
-  if (input.promoCode?.trim() && !input.packageId) {
+  const isPack = Boolean(input.packageId) || (input.priceOption?.session_count ?? 1) > 1
+  if (input.promoCode?.trim() && isPack) {
+    throw new Error('Promo codes apply to single sessions only.')
+  }
+
+  if (input.promoCode?.trim()) {
     const promoResult = await validatePromoCode(
       input.promoCode,
       input.treatment.id,
@@ -75,11 +89,9 @@ export async function resolveTreatmentBookingPricing(
     promoLabel = promoResult.promo.code
   }
 
-  // Packages are prepaid in full: their credits book later sessions with no
-  // payment, so there is no visit at which a package balance would be collected.
-  const depositPercent = treatmentPackageId
-    ? 100
-    : resolveDepositPercent(input.treatment.deposit_percent)
+  // Packages take the same deposit as single sessions; the clinic collects the
+  // package balance at the first visit.
+  const depositPercent = resolveDepositPercent(input.treatment.deposit_percent)
   const afterDiscount = Math.max(0, baseCents - discountCents)
   const chargeCents =
     afterDiscount === 0 ? 0 : calculateChargeCents(afterDiscount, depositPercent)

@@ -9,7 +9,7 @@ import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
 interface Props {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ cancelled?: string }>
+  searchParams: Promise<{ cancelled?: string; option?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BookTreatmentPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { cancelled } = await searchParams
+  const { cancelled, option } = await searchParams
 
   if (!isStripeConfigured()) {
     return (
@@ -55,7 +55,10 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
     )
   }
 
-  const options = await getTreatmentBookingOptions(slug)
+  const options = await getTreatmentBookingOptions(
+    slug,
+    option && /^[0-9a-f-]{36}$/i.test(option) ? option : undefined,
+  )
   if (!options) notFound()
 
   const settings = await getSiteSettings()
@@ -66,6 +69,11 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
         <div className="section-container text-center">
           <p className="eyebrow mb-3">Book &amp; pay</p>
           <h1 className="section-heading">{options.treatment.title}</h1>
+          {options.priceOption && (
+            <p className="mt-3 font-display text-xl text-ink">
+              {options.priceOption.label} · {options.priceOption.priceLabel}
+            </p>
+          )}
           <p className="mx-auto mt-4 max-w-lg text-ink-muted">
             {options.single.balanceLabel
               ? `Pick a time and secure it with a ${options.single.depositPercent}% deposit online; the balance is paid at the clinic`
@@ -80,6 +88,7 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
           slug={slug}
           treatmentTitle={options.treatment.title}
           durationMinutes={options.treatment.duration_minutes}
+          priceOption={options.priceOption}
           singleChargeLabel={options.single.chargeLabel}
           singleBalanceLabel={options.single.balanceLabel}
           depositPercent={options.single.depositPercent}

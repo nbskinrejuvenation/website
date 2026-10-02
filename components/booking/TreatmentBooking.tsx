@@ -26,7 +26,17 @@ export interface PackageOption {
   label: string
   sessionCount: number
   chargeLabel: string
+  /** Left to pay at the clinic; null when paid in full. */
+  balanceLabel: string | null
   savingsCents: number | null
+}
+
+/** Row from the treatment page's price list; its price sets the single-session amounts. */
+export interface SelectedPriceOption {
+  id: string
+  label: string
+  priceLabel: string
+  sessionCount: number
 }
 
 interface CreditOption {
@@ -39,6 +49,7 @@ interface Props {
   slug: string
   treatmentTitle: string
   durationMinutes: number
+  priceOption?: SelectedPriceOption | null
   singleChargeLabel: string
   /** Left to pay at the clinic for a single session; null when paid in full. */
   singleBalanceLabel: string | null
@@ -55,6 +66,7 @@ export function TreatmentBooking({
   slug,
   treatmentTitle,
   durationMinutes,
+  priceOption,
   singleChargeLabel,
   singleBalanceLabel,
   depositPercent,
@@ -100,16 +112,21 @@ export function TreatmentBooking({
   const selectedPackage = packages.find(p => p.id === selectedPackageId)
   const usingCredit = Boolean(selectedCreditId)
   const usingPackage = purchaseKind === 'package' && selectedPackage && !usingCredit
+  // Promo codes apply to single sessions only, not to packs.
+  const promoAllowed = !usingPackage && !usingCredit && (priceOption?.sessionCount ?? 1) === 1
 
   const singleCharge = promoCharge?.charge ?? singleChargeLabel
   const singleBalance = promoCharge ? promoCharge.balance : singleBalanceLabel
-  // Packages are always paid in full; only single sessions can carry a balance.
-  const balanceLabel = usingCredit || usingPackage ? null : singleBalance
+  const balanceLabel = usingCredit
+    ? null
+    : usingPackage
+      ? selectedPackage.balanceLabel
+      : singleBalance
 
   const payLabel = usingCredit
     ? 'prepaid session'
     : usingPackage
-      ? selectedPackage.chargeLabel
+      ? `${selectedPackage.chargeLabel}${balanceLabel ? ' deposit' : ''}`
       : `${singleCharge}${balanceLabel ? ' deposit' : ''}${promoLabel ? ' (promo applied)' : ''}`
 
   const loadCalendar = useCallback(async () => {
@@ -178,14 +195,18 @@ export function TreatmentBooking({
   }
 
   const applyPromo = async () => {
-    if (!promoInput.trim() || usingPackage || usingCredit) return
+    if (!promoInput.trim() || !promoAllowed) return
     setApplyingPromo(true)
     setPromoError(null)
     try {
       const res = await fetch('/api/booking/treatment/validate-promo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, code: promoInput }),
+        body: JSON.stringify({
+          slug,
+          code: promoInput,
+          ...(priceOption ? { price_option_id: priceOption.id } : {}),
+        }),
       })
       const json = (await res.json()) as {
         valid?: boolean
@@ -246,7 +267,8 @@ export function TreatmentBooking({
             ? { client_package_credit_id: selectedCreditId }
             : {}),
           ...(usingPackage && selectedPackageId ? { package_id: selectedPackageId } : {}),
-          ...(promoCode && !usingPackage && !usingCredit ? { promo_code: promoCode } : {}),
+          ...(priceOption && !usingCredit ? { price_option_id: priceOption.id } : {}),
+          ...(promoCode && promoAllowed ? { promo_code: promoCode } : {}),
         }),
       })
       const json = (await res.json()) as { error?: string; checkoutUrl?: string }
@@ -276,7 +298,8 @@ export function TreatmentBooking({
           {step === 'datetime' ? 'Choose a time' : 'Your details'}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-          {treatmentTitle} · {durationMinutes} min
+          {treatmentTitle}
+          {priceOption && <> · {priceOption.label}</>} · {durationMinutes} min
           {step === 'details' && (
             <>
               {' '}
@@ -334,6 +357,8 @@ export function TreatmentBooking({
                       }}
                       title={pkg.label}
                       subtitle={`${pkg.sessionCount} sessions · Pay ${pkg.chargeLabel} now${
+                        pkg.balanceLabel ? `, ${pkg.balanceLabel} at the clinic` : ''
+                      }${
                         pkg.savingsCents
                           ? ` · Save ${formatAudFromCents(pkg.savingsCents)}`
                           : ''
@@ -517,7 +542,7 @@ export function TreatmentBooking({
               </div>
             )}
 
-            {!usingPackage && !usingCredit && (
+            {promoAllowed && (
               <div className="mt-6">
                 <p className="mb-2 flex items-center gap-2 text-sm font-medium text-ink">
                   <Tag className="h-4 w-4 text-brand-600" />

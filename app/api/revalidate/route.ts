@@ -51,6 +51,10 @@ export async function POST(request: NextRequest) {
         revalidateTag('services')
         break
 
+      case 'treatment_price_options':
+        revalidateTag('price-options')
+        break
+
       case 'pages':
         revalidateTag('pages')
         if (slug) revalidatePath(`/${slug === 'home' ? '' : slug}`)

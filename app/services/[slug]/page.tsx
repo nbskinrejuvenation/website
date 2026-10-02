@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getAllServiceSlugs, getServiceBySlug } from '@/lib/data/services'
 import { getSiteSettings } from '@/lib/data/site-settings'
+import { getPriceOptionsForTreatment, priceOptionsToGroups } from '@/lib/data/price-options'
 import { TreatmentHero } from '@/components/treatment/TreatmentHero'
 import { TreatmentBody } from '@/components/treatment/TreatmentBody'
 import { TreatmentPricing } from '@/components/treatment/TreatmentPricing'
@@ -191,8 +192,13 @@ export default async function ServicePage({ params }: Props) {
   if (!service) notFound()
 
   const host = (await headers()).get('host') ?? ''
-  const spreadsheetPricing = isVercelHost(host) ? await getSpreadsheetPricing(slug, service.title) : null
-  const pricingGroups = spreadsheetPricing ?? (service.body_html ? parsePricing(service.body_html) : null)
+  const canBookPriceRows = isStripeConfigured() && service.bookable_online
+  // Bookable rows from treatment_price_options; the spreadsheet / body_html lists are display-only fallbacks.
+  const priceOptions = await getPriceOptionsForTreatment(service.id)
+  const spreadsheetPricing = !priceOptions.length && isVercelHost(host) ? await getSpreadsheetPricing(slug, service.title) : null
+  const pricingGroups = priceOptions.length
+    ? priceOptionsToGroups(priceOptions, canBookPriceRows ? slug : null)
+    : spreadsheetPricing ?? (service.body_html ? parsePricing(service.body_html) : null)
   const recommendedFor = service.body_html ? parseRecommendedFor(service.body_html) : null
 
   const strippedHtml = service.body_html

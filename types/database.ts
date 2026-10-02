@@ -162,6 +162,9 @@ export interface TreatmentBooking {
   promo_code_id: string | null
   treatment_package_id: string | null
   client_package_credit_id: string | null
+  price_option_id: string | null
+  /** Price row booked, copied at booking time, e.g. "Pack of 3: Full face". */
+  price_option_label: string | null
   currency: string
   stripe_checkout_session_id: string | null
   stripe_payment_intent_id: string | null
@@ -205,6 +208,21 @@ export interface TreatmentPackage {
   price_cents: number
   active: boolean
   sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+/** A bookable row on a treatment page's price list. */
+export interface TreatmentPriceOption {
+  id: string
+  treatment_id: string
+  group_name: string
+  label: string
+  price_cents: number
+  session_count: number
+  subtitle: string | null
+  sort_order: number
+  active: boolean
   created_at: string
   updated_at: string
 }

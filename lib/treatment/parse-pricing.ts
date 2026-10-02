@@ -15,6 +15,8 @@ export interface PricingItem {
   label: string
   price: string
   subtitle?: string
+  /** Booking link for this exact row; only rows from treatment_price_options have one. */
+  bookHref?: string
 }
 
 export interface PricingGroup {

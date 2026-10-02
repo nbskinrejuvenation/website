@@ -6,6 +6,7 @@ export type AdminNavId =
   | 'clients'
   | 'messages'
   | 'treatments'
+  | 'prices'
   | 'promotions'
   | 'reports'
   | 'availability'
@@ -34,6 +35,12 @@ export const ADMIN_NAV: AdminNavItem[] = [
     label: 'Treatments',
     href: '/admin/treatments',
     description: 'Online booking & pricing',
+  },
+  {
+    id: 'prices',
+    label: 'Prices',
+    href: '/admin/prices',
+    description: 'Bookable price list rows',
   },
   {
     id: 'promotions',
