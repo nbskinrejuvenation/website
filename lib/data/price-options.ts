@@ -4,8 +4,7 @@ import { formatAudFromCents } from '@/lib/stripe/config'
 import type { PricingGroup } from '@/lib/treatment/parse-pricing'
 import type { TreatmentPriceOption } from '@/types/database'
 
-/** Active price rows for a treatment page, in display order. */
-export const getPriceOptionsForTreatment = unstable_cache(
+const getCachedPriceOptions = unstable_cache(
   async (treatmentId: string): Promise<TreatmentPriceOption[]> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = createPublicClient() as any
@@ -16,17 +15,28 @@ export const getPriceOptionsForTreatment = unstable_cache(
       .eq('active', true)
       .order('sort_order', { ascending: true })
 
-    // Before 20261002_treatment_price_options.sql is applied the table doesn't
-    // exist; the page then shows its older display-only price list.
-    if (error) {
-      console.error('[getPriceOptionsForTreatment]', error.message)
-      return []
-    }
+    // Throwing keeps a failed read out of the cache.
+    if (error) throw new Error(`getPriceOptionsForTreatment: ${error.message}`)
     return (data ?? []) as TreatmentPriceOption[]
   },
-  ['price-options-by-treatment'],
+  ['price-options-by-treatment-v2'],
   { tags: ['services', 'price-options'], revalidate: 3600 },
 )
+
+/**
+ * Active price rows for a treatment page, in display order. If they can't be
+ * read (e.g. the table is missing) the page shows its older display-only list.
+ */
+export async function getPriceOptionsForTreatment(
+  treatmentId: string,
+): Promise<TreatmentPriceOption[]> {
+  try {
+    return await getCachedPriceOptions(treatmentId)
+  } catch (err) {
+    console.error('[getPriceOptionsForTreatment]', err)
+    return []
+  }
+}
 
 /** "Full face" for a single session, "Pack of 3: Full face" for a pack. */
 export function priceOptionLabel(option: { group_name: string; label: string; session_count: number }): string {
