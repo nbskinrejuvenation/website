@@ -15,8 +15,8 @@ export function Logo({ variant = 'default' }: Props) {
         aria-label="Naturally Beautiful Skin Rejuvenation — home"
         className="block transition-opacity hover:opacity-80"
       >
-        <div className="relative h-14 w-[164px]">
-          <div className="absolute inset-x-0 top-0 h-[48px] overflow-hidden">
+        <div className="relative h-[64px] w-[164px]">
+          <div className="absolute inset-x-0 top-0 h-14 overflow-visible">
             <Image
               src="/logo.png"
               alt="Naturally Beautiful"
@@ -26,7 +26,7 @@ export function Logo({ variant = 'default' }: Props) {
               className="h-14 w-auto brightness-0 invert"
             />
           </div>
-          <span className="absolute bottom-[-1px] left-[58%] -translate-x-1/2 whitespace-nowrap text-[6px] font-medium tracking-[0.14em] text-cream">
+          <span className="absolute left-[58%] top-[54px] w-[56px] -translate-x-1/2 text-center text-[5px] font-medium leading-none tracking-[0.05em] text-cream">
             Skin rejuvenation
           </span>
         </div>
