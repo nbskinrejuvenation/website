@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getBookableTreatmentBySlug } from '@/lib/booking/get-bookable-treatment'
 import { validatePromoCode } from '@/lib/promo/validate'
-import { formatAudFromCents } from '@/lib/stripe/config'
+import {
+  calculateChargeCents,
+  formatAudFromCents,
+  resolveDepositPercent,
+} from '@/lib/stripe/config'
 
 const schema = z.object({
   slug: z.string().min(1),
@@ -37,8 +41,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ valid: false, error: promoResult.error }, { status: 200 })
   }
 
+  const afterDiscount = Math.max(0, treatment.price_cents - promoResult.promo.discountCents)
+  const chargeCents =
+    afterDiscount === 0
+      ? 0
+      : calculateChargeCents(afterDiscount, resolveDepositPercent(treatment.deposit_percent))
+  const balanceCents = Math.max(0, afterDiscount - chargeCents)
+
   return NextResponse.json({
     valid: true,
+    chargeLabel: formatAudFromCents(chargeCents),
+    balanceLabel: balanceCents > 0 ? formatAudFromCents(balanceCents) : null,
     code: promoResult.promo.code,
     discountCents: promoResult.promo.discountCents,
     discountLabel: formatAudFromCents(promoResult.promo.discountCents),

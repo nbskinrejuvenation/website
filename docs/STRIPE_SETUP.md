@@ -23,7 +23,7 @@ Optional:
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `STRIPE_DEPOSIT_PERCENT` | `100` | Percent of `price_cents` to charge (100 = full payment) |
+| `STRIPE_DEPOSIT_PERCENT` | `100` | Clinic default: percent of `price_cents` to charge (100 = full payment). Used for any treatment whose own **Deposit %** is blank |
 
 ## 3. Webhook
 
@@ -64,6 +64,7 @@ This adds `treatment_bookings`, `duration_minutes`, `price_cents`, and `bookable
 - `price_cents` — amount charged online (`price_from × 100`, set by migration).
 - `bookable_online` — shows **Book & pay** on the treatment page.
 - `duration_minutes` — slot length (default 60).
+- `deposit_percent` — percent of a single session charged online (1–100). Blank / `NULL` uses `STRIPE_DEPOSIT_PERCENT`. The balance is paid at the clinic and is shown on the booking page, Stripe Checkout and the confirmation emails. Deposits are rounded to whole dollars. Packages are always charged in full. Set it in **Admin → Treatments** (requires `supabase/migrations/20261002_treatment_deposit_percent.sql`).
 
 To disable online booking for a treatment:
 

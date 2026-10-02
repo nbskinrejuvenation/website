@@ -57,6 +57,7 @@ export interface Treatment {
   duration_minutes: number        // Appointment length for online booking
   price_cents: number | null      // Online booking price in cents (AUD)
   bookable_online: boolean          // Show "Book & pay" on treatment page
+  deposit_percent: number | null  // Percent of price_cents charged online; null = STRIPE_DEPOSIT_PERCENT
   what_to_expect: string[] | null // Outcome/benefit strings for the "What To Expect" grid
   seo_title: string | null
   seo_description: string | null
@@ -225,7 +226,14 @@ export interface ClientPackageCredit {
 /** Treatment fields required for online booking flow */
 export type BookableTreatment = Pick<
   Treatment,
-  'id' | 'slug' | 'title' | 'duration_minutes' | 'price_cents' | 'bookable_online' | 'price_from'
+  | 'id'
+  | 'slug'
+  | 'title'
+  | 'duration_minutes'
+  | 'price_cents'
+  | 'bookable_online'
+  | 'price_from'
+  | 'deposit_percent'
 >
 
 // ─── Schedule blocks (agenda time off) ────────────────────────────────────────

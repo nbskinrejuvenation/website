@@ -11,6 +11,8 @@ export interface TreatmentBookingEmailInput {
   message?: string | null
   startsAt: Date
   amountCents: number
+  /** Still to pay at the clinic when only a deposit was taken online. */
+  balanceCents?: number
   calendarSynced: boolean
   bookingId: string
   managementToken?: string | null
@@ -18,6 +20,9 @@ export interface TreatmentBookingEmailInput {
 }
 
 function paymentSummaryHtml(input: TreatmentBookingEmailInput): string {
+  if (input.amountCents > 0 && input.balanceCents) {
+    return `We have received your deposit of <strong>${escapeHtml(formatAudFromCents(input.amountCents))}</strong>. The remaining <strong>${escapeHtml(formatAudFromCents(input.balanceCents))}</strong> is payable at the clinic on the day.`
+  }
   if (input.amountCents > 0) {
     return `We have received your payment of <strong>${escapeHtml(formatAudFromCents(input.amountCents))}</strong>.`
   }
@@ -58,7 +63,9 @@ function clinicNotificationHtml(input: TreatmentBookingEmailInput, when: string)
   const adminUrl = `${getSiteUrl()}/admin/appointments?kind=treatment`
   const paid =
     input.amountCents > 0
-      ? formatAudFromCents(input.amountCents)
+      ? input.balanceCents
+        ? `${formatAudFromCents(input.amountCents)} deposit · ${formatAudFromCents(input.balanceCents)} due at clinic`
+        : formatAudFromCents(input.amountCents)
       : input.packageSessionsRemaining != null
         ? `Package session (${input.packageSessionsRemaining} remaining)`
         : 'No charge'

@@ -6,6 +6,7 @@ const patchSchema = z.object({
   price_cents: z.number().int().min(50),
   duration_minutes: z.number().int().min(15).max(240),
   bookable_online: z.boolean(),
+  deposit_percent: z.number().int().min(1).max(100).nullable(),
 })
 
 interface Props {

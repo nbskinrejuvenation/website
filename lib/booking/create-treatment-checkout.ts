@@ -11,11 +11,7 @@ import { incrementPromoRedemption } from '@/lib/promo/validate'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getSiteUrl } from '@/lib/email/resend'
 import { getStripe } from '@/lib/stripe/client'
-import {
-  formatAudFromCents,
-  getStripeDepositPercent,
-  isStripeConfigured,
-} from '@/lib/stripe/config'
+import { formatAudFromCents, isStripeConfigured } from '@/lib/stripe/config'
 import { PENDING_PAYMENT_HOLD_MINUTES } from '@/lib/booking/constants'
 import type { Client, TreatmentBooking } from '@/types/database'
 
@@ -160,7 +156,6 @@ export async function createTreatmentCheckout(
 
   const siteUrl = getSiteUrl()
   const stripe = getStripe()
-  const depositPercent = getStripeDepositPercent()
   const whenLabel = startsAt.toLocaleString('en-AU', {
     weekday: 'short',
     day: 'numeric',
@@ -172,7 +167,7 @@ export async function createTreatmentCheckout(
 
   const isPackagePurchase = Boolean(pricing.treatmentPackageId)
   const paymentLabel =
-    depositPercent < 100 && !isPackagePurchase
+    pricing.balanceCents > 0
       ? `${formatAudFromCents(pricing.chargeCents)} deposit`
       : formatAudFromCents(pricing.chargeCents)
 
@@ -183,6 +178,9 @@ export async function createTreatmentCheckout(
   let description = `Appointment: ${whenLabel} (${duration} min)`
   if (pricing.discountCents > 0 && pricing.promoLabel) {
     description += ` · Promo ${pricing.promoLabel} applied`
+  }
+  if (pricing.balanceCents > 0) {
+    description += ` · Balance of ${formatAudFromCents(pricing.balanceCents)} payable at the clinic`
   }
 
   try {

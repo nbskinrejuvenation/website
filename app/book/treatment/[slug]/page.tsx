@@ -67,8 +67,10 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
           <p className="eyebrow mb-3">Book &amp; pay</p>
           <h1 className="section-heading">{options.treatment.title}</h1>
           <p className="mx-auto mt-4 max-w-lg text-ink-muted">
-            Choose single session or a multi-session package, pick a time, and pay securely online (
-            {options.treatment.duration_minutes} minutes per visit).
+            {options.single.balanceLabel
+              ? `Pick a time and secure it with a ${options.single.depositPercent}% deposit online; the balance is paid at the clinic`
+              : 'Choose single session or a multi-session package, pick a time, and pay securely online'}{' '}
+            ({options.treatment.duration_minutes} minutes per visit).
           </p>
         </div>
       </section>
@@ -79,6 +81,8 @@ export default async function BookTreatmentPage({ params, searchParams }: Props)
           treatmentTitle={options.treatment.title}
           durationMinutes={options.treatment.duration_minutes}
           singleChargeLabel={options.single.chargeLabel}
+          singleBalanceLabel={options.single.balanceLabel}
+          depositPercent={options.single.depositPercent}
           packages={options.packages}
           phone={settings.phone ?? undefined}
           cancelled={cancelled === '1'}

@@ -1,12 +1,18 @@
 import { getActivePackagesForTreatment } from '@/lib/packages/credits'
 import { getBookableTreatmentBySlug } from '@/lib/booking/get-bookable-treatment'
-import { calculateChargeCents, formatAudFromCents } from '@/lib/stripe/config'
+import {
+  calculateChargeCents,
+  formatAudFromCents,
+  resolveDepositPercent,
+} from '@/lib/stripe/config'
 
 export interface TreatmentBookingOption {
   kind: 'single'
   label: string
   priceCents: number
   chargeLabel: string
+  depositPercent: number
+  balanceLabel: string | null
 }
 
 export interface TreatmentPackageOption {
@@ -27,7 +33,9 @@ export async function getTreatmentBookingOptions(slug: string): Promise<{
   const treatment = await getBookableTreatmentBySlug(slug)
   if (!treatment) return null
 
-  const singleCharge = calculateChargeCents(treatment.price_cents!)
+  const depositPercent = resolveDepositPercent(treatment.deposit_percent)
+  const singleCharge = calculateChargeCents(treatment.price_cents!, depositPercent)
+  const singleBalance = treatment.price_cents! - singleCharge
   const packages = await getActivePackagesForTreatment(treatment.id)
 
   return {
@@ -37,9 +45,11 @@ export async function getTreatmentBookingOptions(slug: string): Promise<{
       label: 'Single session',
       priceCents: treatment.price_cents!,
       chargeLabel: formatAudFromCents(singleCharge),
+      depositPercent,
+      balanceLabel: singleBalance > 0 ? formatAudFromCents(singleBalance) : null,
     },
     packages: packages.map(pkg => {
-      const charge = calculateChargeCents(pkg.price_cents)
+      const charge = calculateChargeCents(pkg.price_cents, 100)
       const perSessionIfSingle = treatment.price_cents! * pkg.session_count
       return {
         kind: 'package' as const,

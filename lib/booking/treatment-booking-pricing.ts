@@ -1,6 +1,6 @@
 import { getPackageById } from '@/lib/packages/credits'
 import { validatePromoCode } from '@/lib/promo/validate'
-import { calculateChargeCents } from '@/lib/stripe/config'
+import { calculateChargeCents, resolveDepositPercent } from '@/lib/stripe/config'
 import type { BookableTreatment } from '@/types/database'
 
 export interface TreatmentBookingPricingInput {
@@ -14,6 +14,10 @@ export interface TreatmentBookingPricing {
   baseCents: number
   discountCents: number
   chargeCents: number
+  /** Percent of the (discounted) price charged now; 100 = paid in full. */
+  depositPercent: number
+  /** Left to pay at the clinic. */
+  balanceCents: number
   promoCodeId: string | null
   treatmentPackageId: string | null
   packageSessionCount: number | null
@@ -29,6 +33,8 @@ export async function resolveTreatmentBookingPricing(
       baseCents: input.treatment.price_cents!,
       discountCents: input.treatment.price_cents!,
       chargeCents: 0,
+      depositPercent: 100,
+      balanceCents: 0,
       promoCodeId: null,
       treatmentPackageId: null,
       packageSessionCount: null,
@@ -69,13 +75,21 @@ export async function resolveTreatmentBookingPricing(
     promoLabel = promoResult.promo.code
   }
 
+  // Packages are prepaid in full: their credits book later sessions with no
+  // payment, so there is no visit at which a package balance would be collected.
+  const depositPercent = treatmentPackageId
+    ? 100
+    : resolveDepositPercent(input.treatment.deposit_percent)
   const afterDiscount = Math.max(0, baseCents - discountCents)
-  const chargeCents = afterDiscount === 0 ? 0 : calculateChargeCents(afterDiscount)
+  const chargeCents =
+    afterDiscount === 0 ? 0 : calculateChargeCents(afterDiscount, depositPercent)
 
   return {
     baseCents,
     discountCents,
     chargeCents,
+    depositPercent,
+    balanceCents: Math.max(0, afterDiscount - chargeCents),
     promoCodeId,
     treatmentPackageId,
     packageSessionCount,

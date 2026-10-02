@@ -79,6 +79,12 @@ export async function finalizeTreatmentBooking(
     message: booking.message,
     startsAt,
     amountCents: booking.amount_cents,
+    balanceCents: Math.max(
+      0,
+      (booking.original_amount_cents ?? booking.amount_cents) -
+        booking.discount_cents -
+        booking.amount_cents,
+    ),
     calendarSynced,
     bookingId: booking.id,
     managementToken: booking.management_token,

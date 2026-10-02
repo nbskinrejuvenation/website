@@ -8,7 +8,7 @@ export async function getBookableTreatmentBySlug(
   const supabase = createAdminClient() as any
   const { data, error } = await supabase
     .from('treatments')
-    .select('id, slug, title, duration_minutes, price_cents, bookable_online, price_from')
+    .select('id, slug, title, duration_minutes, price_cents, bookable_online, price_from, deposit_percent')
     .eq('slug', slug)
     .eq('status', 'published')
     .eq('bookable_online', true)
@@ -26,7 +26,7 @@ export async function getBookableTreatmentById(
   const supabase = createAdminClient() as any
   const { data, error } = await supabase
     .from('treatments')
-    .select('id, slug, title, duration_minutes, price_cents, bookable_online, price_from')
+    .select('id, slug, title, duration_minutes, price_cents, bookable_online, price_from, deposit_percent')
     .eq('id', treatmentId)
     .eq('bookable_online', true)
     .maybeSingle()

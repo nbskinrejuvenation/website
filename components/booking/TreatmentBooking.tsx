@@ -40,6 +40,9 @@ interface Props {
   treatmentTitle: string
   durationMinutes: number
   singleChargeLabel: string
+  /** Left to pay at the clinic for a single session; null when paid in full. */
+  singleBalanceLabel: string | null
+  depositPercent: number
   packages: PackageOption[]
   phone?: string
   cancelled?: boolean
@@ -53,6 +56,8 @@ export function TreatmentBooking({
   treatmentTitle,
   durationMinutes,
   singleChargeLabel,
+  singleBalanceLabel,
+  depositPercent,
   packages,
   phone,
   cancelled,
@@ -77,6 +82,9 @@ export function TreatmentBooking({
   const [promoInput, setPromoInput] = useState('')
   const [promoCode, setPromoCode] = useState<string | null>(null)
   const [promoLabel, setPromoLabel] = useState<string | null>(null)
+  const [promoCharge, setPromoCharge] = useState<{ charge: string; balance: string | null } | null>(
+    null,
+  )
   const [promoError, setPromoError] = useState<string | null>(null)
   const [applyingPromo, setApplyingPromo] = useState(false)
 
@@ -93,13 +101,16 @@ export function TreatmentBooking({
   const usingCredit = Boolean(selectedCreditId)
   const usingPackage = purchaseKind === 'package' && selectedPackage && !usingCredit
 
+  const singleCharge = promoCharge?.charge ?? singleChargeLabel
+  const singleBalance = promoCharge ? promoCharge.balance : singleBalanceLabel
+  // Packages are always paid in full; only single sessions can carry a balance.
+  const balanceLabel = usingCredit || usingPackage ? null : singleBalance
+
   const payLabel = usingCredit
     ? 'prepaid session'
     : usingPackage
       ? selectedPackage.chargeLabel
-      : promoLabel
-        ? `${singleChargeLabel} (promo applied)`
-        : singleChargeLabel
+      : `${singleCharge}${balanceLabel ? ' deposit' : ''}${promoLabel ? ' (promo applied)' : ''}`
 
   const loadCalendar = useCallback(async () => {
     setLoadingCalendar(true)
@@ -136,6 +147,7 @@ export function TreatmentBooking({
           setPurchaseKind('single')
           setPromoCode(null)
           setPromoLabel(null)
+          setPromoCharge(null)
         }
       } catch {
         setCredits([])
@@ -180,15 +192,21 @@ export function TreatmentBooking({
         error?: string
         code?: string
         discountLabel?: string
+        chargeLabel?: string
+        balanceLabel?: string | null
       }
       if (!json.valid) {
         setPromoCode(null)
         setPromoLabel(null)
+        setPromoCharge(null)
         setPromoError(json.error ?? 'Invalid promo code')
         return
       }
       setPromoCode(json.code ?? promoInput.trim().toUpperCase())
       setPromoLabel(json.discountLabel ?? null)
+      setPromoCharge(
+        json.chargeLabel ? { charge: json.chargeLabel, balance: json.balanceLabel ?? null } : null,
+      )
       setPromoError(null)
     } catch {
       setPromoError('Could not validate promo code')
@@ -201,6 +219,7 @@ export function TreatmentBooking({
     setPromoInput('')
     setPromoCode(null)
     setPromoLabel(null)
+    setPromoCharge(null)
     setPromoError(null)
   }
 
@@ -297,7 +316,11 @@ export function TreatmentBooking({
                       setSelectedCreditId(null)
                     }}
                     title="Single session"
-                    subtitle={`Pay ${singleChargeLabel} for this visit`}
+                    subtitle={
+                      singleBalanceLabel
+                        ? `Pay a ${singleChargeLabel} deposit now (${depositPercent}%), ${singleBalanceLabel} at the clinic`
+                        : `Pay ${singleChargeLabel} for this visit`
+                    }
                   />
                   {packages.map(pkg => (
                     <PurchaseOption
@@ -543,6 +566,9 @@ export function TreatmentBooking({
                 <CreditCard className="mt-0.5 h-4 w-4 shrink-0" />
                 You&apos;ll be redirected to Stripe to pay {payLabel}. Your appointment is confirmed
                 once payment succeeds.
+                {balanceLabel && (
+                  <> The remaining {balanceLabel} is paid at the clinic on the day.</>
+                )}
                 {usingPackage && selectedPackage && (
                   <> Remaining sessions can be booked later with the same email.</>
                 )}
