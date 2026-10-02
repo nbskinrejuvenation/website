@@ -219,7 +219,7 @@ export default async function ServicePage({ params }: Props) {
       <StructuredData type="Service" treatment={service} settings={settings} />
       <JsonLd data={buildBreadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Treatments', path: '/services' }, { name: service.title, path: `/services/${slug}` }])} />
       {indexableFaqs.length > 0 && <StructuredData type="FAQPage" faqs={indexableFaqs} />}
-      <TreatmentHero title={service.title} subtitle={service.subtitle ?? undefined} summary={service.summary ?? undefined} priceFrom={service.price_from ?? undefined} packNote={packNote} heroImageUrl={service.hero_image ?? undefined} bookOnlineUrl={bookOnlineUrl} bookOnlineLabel={bookOnlineLabel} />
+      <TreatmentHero title={service.title} subtitle={service.subtitle ?? undefined} summary={service.summary ?? undefined} priceFrom={service.price_from ?? undefined} packNote={packNote} heroImageUrl={slug === 'carbon-peel' ? '/images/carbon-peel-treatment.jpg' : (service.hero_image ?? undefined)} bookOnlineUrl={bookOnlineUrl} bookOnlineLabel={bookOnlineLabel} />
       {bodyHtml && <TreatmentBody bodyHtml={bodyHtml} />}
       {recommendedFor && <TreatmentRecommendedFor conditions={recommendedFor} />}
       {service.what_to_expect && service.what_to_expect.length > 0 && <TreatmentWhatToExpect items={service.what_to_expect as string[]} compact />}
