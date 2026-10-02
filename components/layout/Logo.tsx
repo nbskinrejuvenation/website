@@ -26,8 +26,8 @@ export function Logo({ variant = 'default' }: Props) {
               className="h-14 w-auto brightness-0 invert"
             />
           </div>
-          <div className="absolute bottom-0 left-[28%] h-[9px] w-[62%] bg-brand-600" aria-hidden="true" />
-          <span className="absolute bottom-[1px] left-[50%] -translate-x-1/2 whitespace-nowrap text-[5px] font-medium leading-none tracking-[0.08em] text-cream">
+          <div className="absolute bottom-0 left-[20%] h-[10px] w-[70%] bg-brand-600" aria-hidden="true" />
+          <span className="absolute bottom-[1px] left-[43%] -translate-x-1/2 whitespace-nowrap text-[4px] font-medium leading-none tracking-[0.04em] text-cream">
             Skin rejuvenation
           </span>
         </div>
