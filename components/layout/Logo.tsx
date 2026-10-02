@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Props {
   businessName?: string
@@ -6,30 +7,19 @@ interface Props {
   variant?: 'default' | 'light'
 }
 
-/** Wordmark — drop your existing logo into public/logo.png when ready. */
-export function Logo({ businessName: _businessName, variant = 'default' }: Props) {
-  const isLight = variant === 'light'
-
+export function Logo({ variant = 'default' }: Props) {
   return (
-    <Link href="/" className="group flex flex-col leading-tight" aria-label="Naturally Beautiful — home">
-      <span
-        className={
-          isLight
-            ? 'font-display text-xl font-light tracking-tight text-cream transition-colors group-hover:text-brand-200 md:text-[1.35rem]'
-            : 'font-display text-xl font-light tracking-tight text-ink transition-colors group-hover:text-brand-600 md:text-[1.35rem]'
-        }
-      >
-        Naturally Beautiful
-      </span>
-      <span
-        className={
-          isLight
-            ? 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-200'
-            : 'text-[10px] font-medium uppercase tracking-[0.28em] text-brand-700'
-        }
-      >
-        Skin Rejuvenation
-      </span>
+    <Link href="/" aria-label="Naturally Beautiful Skin Rejuvenation — home">
+      <Image
+        src="/logo.png"
+        alt="Naturally Beautiful Skin Rejuvenation"
+        width={500}
+        height={171}
+        priority
+        className={`h-14 w-auto object-contain transition-opacity hover:opacity-80 ${
+          variant === 'light' ? 'brightness-0 invert' : ''
+        }`}
+      />
     </Link>
   )
 }
