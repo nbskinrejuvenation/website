@@ -8,6 +8,32 @@ interface Props {
 }
 
 export function Logo({ variant = 'default' }: Props) {
+  if (variant === 'light') {
+    return (
+      <Link
+        href="/"
+        aria-label="Naturally Beautiful Skin Rejuvenation — home"
+        className="block transition-opacity hover:opacity-80"
+      >
+        <div className="relative h-14 w-[164px]">
+          <div className="absolute inset-x-0 top-0 h-[43px] overflow-hidden">
+            <Image
+              src="/logo.png"
+              alt="Naturally Beautiful"
+              width={500}
+              height={171}
+              priority
+              className="h-14 w-auto brightness-0 invert"
+            />
+          </div>
+          <span className="absolute bottom-[1px] left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-medium tracking-[0.18em] text-cream">
+            Skin rejuvenation
+          </span>
+        </div>
+      </Link>
+    )
+  }
+
   return (
     <Link href="/" aria-label="Naturally Beautiful Skin Rejuvenation — home">
       <Image
@@ -16,9 +42,7 @@ export function Logo({ variant = 'default' }: Props) {
         width={500}
         height={171}
         priority
-        className={`h-14 w-auto object-contain transition-opacity hover:opacity-80 ${
-          variant === 'light' ? 'brightness-0 invert' : ''
-        }`}
+        className="h-14 w-auto object-contain transition-opacity hover:opacity-80"
       />
     </Link>
   )
