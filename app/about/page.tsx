@@ -30,6 +30,7 @@ export default async function AboutPage() {
         title="About"
         subtitle="Our story"
         breadcrumb={[]}
+        compact
       />
 
       <AboutStory imageUrl="/images/lilian-about.webp" />

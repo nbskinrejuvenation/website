@@ -19,6 +19,7 @@ interface Props {
   breadcrumb?: Array<{ label: string; href: string }>
   bookOnlineUrl?: string
   bookOnlineLabel?: string
+  compact?: boolean
 }
 
 const TREATMENT_TRAIL = [{ label: 'Treatments', href: '/services' }]
@@ -34,6 +35,7 @@ export function TreatmentHero({
   breadcrumb = TREATMENT_TRAIL,
   bookOnlineUrl,
   bookOnlineLabel = 'Book & pay online',
+  compact = false,
 }: Props) {
   // `subtitle` is a short kicker and `summary` the descriptive line. They come from
   // separate columns but on some treatments hold near-identical slogans, so only
@@ -41,7 +43,7 @@ export function TreatmentHero({
   const showKicker = subtitle && subtitle.trim().toLowerCase() !== summary?.trim().toLowerCase()
 
   return (
-    <section className="relative flex min-h-[60vh] items-end overflow-hidden">
+    <section className={`relative flex ${compact ? 'min-h-[30vh]' : 'min-h-[60vh]'} items-end overflow-hidden`}>
       <div className="absolute inset-0">
         {heroImageUrl ? (
           <>
