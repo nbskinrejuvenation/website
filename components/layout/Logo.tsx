@@ -16,7 +16,7 @@ export function Logo({ variant = 'default' }: Props) {
         className="block transition-opacity hover:opacity-80"
       >
         <div className="relative h-14 w-[164px]">
-          <div className="absolute inset-x-0 top-0 h-[43px] overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[48px] overflow-hidden">
             <Image
               src="/logo.png"
               alt="Naturally Beautiful"
@@ -26,7 +26,7 @@ export function Logo({ variant = 'default' }: Props) {
               className="h-14 w-auto brightness-0 invert"
             />
           </div>
-          <span className="absolute bottom-[1px] left-[58%] -translate-x-1/2 whitespace-nowrap text-[8px] font-medium tracking-[0.18em] text-cream">
+          <span className="absolute bottom-[-1px] left-[58%] -translate-x-1/2 whitespace-nowrap text-[6px] font-medium tracking-[0.14em] text-cream">
             Skin rejuvenation
           </span>
         </div>
