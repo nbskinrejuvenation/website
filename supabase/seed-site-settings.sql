@@ -9,8 +9,8 @@ SET
   suburb = 'Dee Why',
   state = 'NSW',
   postcode = '2099',
-  lat = -33.7509,
-  lng = 151.2863,
+  lat = -33.75436,
+  lng = 151.28517,
   instagram_url = 'https://www.instagram.com/nb_skin_rejuv/',
   booking_url = '/book',
   updated_at = NOW()
@@ -37,8 +37,8 @@ SELECT
   'Dee Why',
   'NSW',
   '2099',
-  -33.7509,
-  151.2863,
+  -33.75436,
+  151.28517,
   'https://www.instagram.com/nb_skin_rejuv/',
   '/book',
   NOW()
