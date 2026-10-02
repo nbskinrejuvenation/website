@@ -1,48 +1,26 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import { LeafBranch } from './AboutIllustrations'
 
-interface Props {
-  imageUrl?: string
-}
-
-export function AboutStory({ imageUrl }: Props) {
+export function AboutStory() {
   return (
-    <section className="bg-white py-16 md:py-24">
-      <div className="section-container">
-        <div className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
+    <section className="relative overflow-hidden bg-sage-200 py-16 md:py-24">
+      <div className="mx-auto max-w-[920px] px-4">
+        <div className="text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-sage-700">
+            Meet the founder
+          </p>
+          <h2 className="font-display text-3xl font-light text-sage-900 md:text-[38px]">
+            Lilian&apos;s story
+          </h2>
+          <div className="mx-auto mt-3 h-px w-7 bg-brand-400" />
+        </div>
 
-          {/* Left: photo */}
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl bg-brand-100">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt="Lilian, founder of Naturally Beautiful Skin Rejuvenation"
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, 448px"
-              />
-            ) : (
-              <div className="hero-placeholder h-full w-full opacity-50" aria-hidden="true" />
-            )}
-          </div>
+        <article className="relative mt-10 overflow-hidden rounded-xl bg-sage-50 px-6 py-10 shadow-[0_12px_32px_rgba(45,45,35,0.10)] md:px-14 md:py-14">
+          <LeafBranch className="pointer-events-none absolute -right-8 -top-2 hidden h-20 w-48 rotate-180 opacity-50 md:block" />
 
-          {/* Right: text */}
-          <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-brand-500">
-              Why us
-            </p>
-            <h2 className="font-display text-3xl font-light leading-snug text-ink md:text-4xl lg:text-5xl">
-              We believe in natural beauty
-            </h2>
-            <div className="mt-5 h-px w-16 bg-brand-300" />
-
-            <div className="mt-8 space-y-4 text-[15px] leading-relaxed text-ink/70">
+          <div className="grid gap-10 md:grid-cols-[1.3fr_1fr] md:gap-12">
+            <div className="space-y-4 text-[15px] leading-relaxed text-sage-800">
               <p>
-                Naturally Beautiful was born from a desire to inspire, encourage and empower women
-                to acknowledge and embrace their natural beauty.
-              </p>
-              <p>
-                Lilian, NB's founder and head therapist, is a qualified nutritionist who
+                Lilian, NB&apos;s founder and head therapist, is a qualified nutritionist who
                 discovered her love for Beauty Therapy in 2010 and never looked back.
               </p>
               <p>
@@ -50,32 +28,33 @@ export function AboutStory({ imageUrl }: Props) {
                 years and completed several courses in various areas of beauty therapy.
               </p>
               <p>
-                Her accrued knowledge and years of experience led her to pursue the dream of
-                opening her own clinic, using only the best products and equipment in the market to
-                achieve the best possible results for each individual.
-              </p>
-              <p>
-                Lilian believes in taking a holistic approach when assisting her clients. Knowing
-                the importance of self-love, she goes beyond the pursuit for the perfect skin,
-                promoting a healthier and more balanced lifestyle, always reminding her clients
-                that beauty comes from inside out, and that the treatments she offers only enhance
-                their natural beauty.
-              </p>
-              <p>
-                Located in Dee Why, at the beautiful Northern Beaches, we offer a FREE consultation
-                where we assess your skin type, main concerns and most suitable treatments. Give
-                yourself this gift, it's free and only takes 30 minutes.
+                Her accrued knowledge and years of experience led her to pursue the dream of opening
+                her own clinic, using only the best products and equipment in the market to achieve
+                the best possible results for each individual.
               </p>
             </div>
 
-            <div className="mt-10">
-              <Link href="/book" className="btn-primary">
-                Book a free consultation
-              </Link>
-            </div>
+            <figure className="flex flex-col justify-center border-t border-sage-300 pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+              <span
+                className="font-display text-6xl leading-none text-brand-400"
+                aria-hidden="true"
+              >
+                &ldquo;
+              </span>
+              <blockquote className="-mt-4 font-display text-2xl font-light leading-snug text-sage-900 md:text-[26px]">
+                Beauty comes from inside out.
+              </blockquote>
+              <figcaption className="mt-4 text-[13px] leading-relaxed text-sage-800">
+                Knowing the importance of self-love, Lilian goes beyond the pursuit for the perfect
+                skin, promoting a healthier and more balanced lifestyle. The treatments she offers
+                only enhance your natural beauty.
+              </figcaption>
+              <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.3em] text-sage-700">
+                Lilian · Founder &amp; head therapist
+              </p>
+            </figure>
           </div>
-
-        </div>
+        </article>
       </div>
     </section>
   )

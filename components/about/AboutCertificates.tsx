@@ -1,4 +1,4 @@
-import { Award } from 'lucide-react'
+import { IconBadge, IconRosette, LeafBranch } from './AboutIllustrations'
 
 const CERTIFICATES = [
   'GentleMax Laser System',
@@ -10,43 +10,37 @@ const CERTIFICATES = [
 
 export function AboutCertificates() {
   return (
-    <section className="relative overflow-hidden bg-brand-800 py-20 md:py-28">
-      {/* Subtle background texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-10"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 50%, var(--color-brand-500) 0%, transparent 50%), radial-gradient(circle at 80% 20%, var(--color-brand-600) 0%, transparent 40%)',
-        }}
-        aria-hidden="true"
+    <section className="relative overflow-hidden bg-sage-100 py-16 md:py-24">
+      <LeafBranch className="pointer-events-none absolute -left-6 bottom-0 hidden h-20 w-48 md:block" />
+      <LeafBranch
+        flip
+        className="pointer-events-none absolute -right-6 bottom-0 hidden h-20 w-48 md:block"
       />
 
       <div className="section-container relative">
-        {/* Header */}
-        <div className="mb-14 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-brand-200">
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-sage-700">
             Personal
           </p>
-          <h2 className="font-display text-3xl font-light text-white md:text-4xl">
+          <h2 className="font-display text-3xl font-light text-sage-900 md:text-[38px]">
             Courses &amp; Certificates
           </h2>
-          <div className="mx-auto mt-4 h-px w-16 bg-brand-500" />
+          <div className="mx-auto mt-3 h-px w-7 bg-brand-400" />
         </div>
 
-        {/* Certificate cards — max 3 per row, centred when fewer */}
-        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {CERTIFICATES.map((cert) => (
-            <div
+        <ul className="flex flex-wrap justify-center gap-5 md:gap-6" role="list">
+          {CERTIFICATES.map(cert => (
+            <li
               key={cert}
-              className="flex w-44 flex-col items-center gap-4 rounded-xl bg-white/10 px-6 py-8 text-center backdrop-blur-sm ring-1 ring-white/10 md:w-52"
+              className="flex w-40 flex-col items-center gap-4 rounded-xl bg-sage-50 px-5 py-8 text-center shadow-[0_8px_24px_rgba(45,45,35,0.07)] ring-1 ring-sage-300/70 md:w-48"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/15 text-brand-200">
-                <Award className="h-7 w-7" strokeWidth={1.25} />
-              </div>
-              <p className="text-sm font-medium leading-snug text-white">{cert}</p>
-            </div>
+              <IconBadge>
+                <IconRosette />
+              </IconBadge>
+              <p className="font-display text-lg leading-snug text-sage-900">{cert}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

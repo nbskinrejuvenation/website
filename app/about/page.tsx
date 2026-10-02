@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { getTestimonialsByPage } from '@/lib/data/testimonials'
 import { getSiteSettings } from '@/lib/data/site-settings'
-import { TreatmentHero } from '@/components/treatment/TreatmentHero'
+import { AboutHero } from '@/components/about/AboutHero'
+import { AboutValues } from '@/components/about/AboutValues'
 import { AboutStory } from '@/components/about/AboutStory'
 import { AboutCertificates } from '@/components/about/AboutCertificates'
-import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
-import { CTABanner } from '@/components/sections/CTABanner'
+import { AboutTestimonials } from '@/components/about/AboutTestimonials'
+import { AboutConsultation } from '@/components/about/AboutConsultation'
 import { openGraphDefaults, pageTitle } from '@/lib/seo/metadata'
 
 const description =
@@ -26,32 +27,12 @@ export default async function AboutPage() {
 
   return (
     <>
-      <TreatmentHero
-        title="About"
-        subtitle="Our story"
-        breadcrumb={[]}
-        compact
-      />
-
-      <AboutStory imageUrl="/images/lilian-about.webp" />
-
+      <AboutHero imageUrl="/images/lilian-about.webp" />
+      <AboutValues />
+      <AboutStory />
       <AboutCertificates />
-
-      {testimonials.length > 0 && (
-        <TestimonialsSection
-          testimonials={testimonials}
-          eyebrow="See what"
-          heading="Our clients say"
-        />
-      )}
-
-      <CTABanner
-        heading="Book your free consultation"
-        body="We'd love to meet you. Book a FREE 30-minute consultation and let us help you be the best version of yourself."
-        ctaLabel="Contact Us"
-        ctaHref="/book"
-        phone={settings.phone ?? undefined}
-      />
+      {testimonials.length > 0 && <AboutTestimonials testimonials={testimonials} />}
+      <AboutConsultation phone={settings.phone ?? undefined} />
     </>
   )
 }

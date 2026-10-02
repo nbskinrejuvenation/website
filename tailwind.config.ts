@@ -36,6 +36,19 @@ const config: Config = {
           muted: '#6E6863',
           faint: '#9A948E',
         },
+        // Botanical sage, from the Specials page artwork; used by the About page
+        sage: {
+          50: '#F8F7EF',
+          100: '#F3F4ED',
+          200: '#EEF1E8',
+          300: '#DFE2D8',
+          400: '#A8B19E',
+          500: '#9EAA95',
+          600: '#7D8B72',
+          700: '#6E7D64',
+          800: '#4F554F',
+          900: '#28332D',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
