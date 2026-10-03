@@ -18,7 +18,7 @@ const pillars = (fullAddress: string) => [
   {
     icon: Heart,
     title: 'Holistic approach',
-    description: 'Nutrition-informed care that enhances your natural beauty — never overwhelms it.',
+    description: 'Whole-person care that enhances your natural beauty, never overwhelms it.',
   },
   {
     icon: MapPin,
