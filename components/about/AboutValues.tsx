@@ -2,15 +2,15 @@ import {
   IconBadge,
   IconDropper,
   IconHeartHands,
-  IconNutrition,
+  IconRosette,
   IconSparkleFace,
 } from './AboutIllustrations'
 
 const VALUES = [
   {
-    icon: <IconNutrition />,
-    title: 'Qualified nutritionist',
-    body: 'Lilian, our founder and head therapist, is a qualified nutritionist.',
+    icon: <IconRosette />,
+    title: 'Qualified professional',
+    body: 'Certified in laser, IPL, laser hair removal and skin penetration treatments.',
   },
   {
     icon: <IconSparkleFace />,

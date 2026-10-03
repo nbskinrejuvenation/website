@@ -106,16 +106,6 @@ function LineIcon({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function IconNutrition() {
-  return (
-    <LineIcon>
-      <path d="M24 15c-4-3-12-3-14 4-2 8 3 21 9 22 2 .4 3-1 5-1s3 1.4 5 1c6-1 11-14 9-22-2-7-10-7-14-4Z" />
-      <path d="M24 15c0-4 1-7 4-9" />
-      <path d="M27 11c3-3 8-3 10-1-2 3-6 4-10 1Z" />
-    </LineIcon>
-  )
-}
-
 export function IconSparkleFace() {
   return (
     <LineIcon>

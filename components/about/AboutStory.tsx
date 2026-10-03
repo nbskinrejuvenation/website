@@ -20,8 +20,8 @@ export function AboutStory() {
           <div className="grid gap-10 md:grid-cols-[1.3fr_1fr] md:gap-12">
             <div className="space-y-4 text-[15px] leading-relaxed text-sage-800">
               <p>
-                Lilian, NB&apos;s founder and head therapist, is a qualified nutritionist who
-                discovered her love for Beauty Therapy in 2010 and never looked back.
+                Lilian, NB&apos;s founder and head therapist, discovered her love for Beauty Therapy
+                in 2010 and never looked back.
               </p>
               <p>
                 Lilian worked in some of the most recognised skin clinics in Australia for many
